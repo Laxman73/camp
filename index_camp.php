@@ -1,8 +1,11 @@
 <?php
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
+
 include "includes/common.php";
 
+$page_title = 'Camp Quarter';
+$TITLE = SITE_NAME . ' | ' . $page_title;
 
 $rid = (isset($_GET['rid'])) ? $_GET['rid'] : '';
 $pid = (isset($_GET['pid'])) ? $_GET['pid'] : '';
@@ -13,6 +16,8 @@ if (empty($USER_ID) || (!empty($USER_ID) && !is_numeric($USER_ID))) {
 	echo 'Invalid Access Detected!!!';
 	exit;
 }
+
+
 
 // getting role and profile id of user
 $ROLE_ID = GetXFromYID("select roleid from user2role where userid='" . $USER_ID . "'");
@@ -29,6 +34,8 @@ $curr_dt = date('Y-m-d');
 $curr_fyear = GetXFromYID("SELECT financial_year FROM financialyear where '" . $curr_dt . "' between from_date and to_date ");
 
 $SPECILITY_ARR = GetXArrFromYID("select specialityid as id,specialityname as name from speciality where  in_use=0 AND fyear='$curr_fyear' and division='$division' ", '3');
+$QUARTER_ARR=GetXArrFromYID("select quarterid,quarter_name from crm_naf_quarter_master ",'3');
+
 
 $selectoption = '';
 
@@ -122,10 +129,14 @@ $selectoption = '';
 									<div class="col-9">
 										<div class="input-wrapper">
 											<select class="form-control custom-select" name="Quarter" id="Quarter">
-												<option value="1">January to March</option>
-												<option value="2">April to June</option>
-												<option value="3">July to September</option>
-												<option value="4">October to December</option>
+											<?php
+												foreach ($QUARTER_ARR as $key => $value) {
+													//echo $value[$key]['iModID'];
+													$selected = '';
+													echo '<option value="' . $key . '" ' . $selected . ' >' . $value . '</option>';
+												}
+												?>
+												
 											</select>
 										</div>
 									</div>

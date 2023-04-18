@@ -1,20 +1,32 @@
+<?php
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
+include "includes/common.php";
+
+
+$page_title = 'Request Letter';
+$TITLE = SITE_NAME . ' | ' . $page_title;
+
+$rid = (isset($_GET['rid'])) ? $_GET['rid'] : '';
+$pid = (isset($_GET['pid'])) ? $_GET['pid'] : '';
+$USER_ID = (isset($_GET['userid'])) ? $_GET['userid'] : '';
+$display_all = (isset($_GET['display_all'])) ? $_GET['display_all'] : '0';
+
+if (empty($USER_ID) || (!empty($USER_ID) && !is_numeric($USER_ID))) {
+	echo 'Invalid Access Detected!!!';
+	exit;
+}
+
+// getting role and profile id of user
+$ROLE_ID = GetXFromYID("select roleid from user2role where userid='" . $USER_ID . "'");
+$PROFILE_ID = GetXFromYID("select profileid from role2profile where roleid='" . $ROLE_ID . "'");
+
+?>
 <!doctype html>
 <html lang="en">
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#000000">
-    <title>Microlabs</title>
-    <meta name="description" content="Mobilekit HTML Mobile UI Kit">
-    <meta name="keywords" content="bootstrap 4, mobile template, cordova, phonegap, mobile, html" />
-    <link rel="icon" type="image/png" href="assets/img/favicon.png" sizes="32x32">
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/img/icon/192x192.png">
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="manifest" href="__manifest.json">
+    <?php include 'load.header.php';?>
 
 </head>
 
@@ -170,7 +182,7 @@
         <div class="card">
         <div class="card-body">
 
-            <div class="wide-block pt-2 pb-2">
+            <!-- <div class="wide-block pt-2 pb-2">
 
 				<div class="row">
 					<div class="col-3">
@@ -186,7 +198,7 @@
 					</div>
 				</div>
 							
-			</div>
+			</div> -->
 
 
 	        </div>

@@ -4,6 +4,9 @@ ini_set('display_errors', '1');
 include "includes/common.php";
 
 
+$page_title = 'Camp Activity';
+$TITLE = SITE_NAME . ' | ' . $page_title;
+
 $rid = (isset($_GET['rid'])) ? $_GET['rid'] : '';
 $pid = (isset($_GET['pid'])) ? $_GET['pid'] : '';
 $USER_ID = (isset($_GET['userid'])) ? $_GET['userid'] : '';
@@ -17,18 +20,17 @@ if (empty($USER_ID) || (!empty($USER_ID) && !is_numeric($USER_ID))) {
 // getting role and profile id of user
 $ROLE_ID = GetXFromYID("select roleid from user2role where userid='" . $USER_ID . "'");
 $PROFILE_ID = GetXFromYID("select profileid from role2profile where roleid='" . $ROLE_ID . "'");
-//$User_division = GetXFromYID("select division from users where id='$USER_ID' "); //Getting division
+$User_division = GetXFromYID("select division from users where id='$USER_ID' "); //Getting division
 $SPECILITY_ARR = $CRM_FILEDS = array();
 
 $ACTIVITY_ARR = GetXArrFromYID('SELECT id as id,`activityname`  as name FROM `crm_naf_activitymaster` where deleted=0', '3');
 
-$division = GetXFromYID("select division from users where id='$USER_ID' ");
+// $division = GetXFromYID("select division from users where id='$USER_ID' ");
 $curr_dt = date('Y-m-d');
 // $financial_qry = "SELECT financial_year FROM financialyear where '".$curr_dt."' between from_date and to_date";
 // $financial_qry_res = sql_query($financial_qry);
 $curr_fyear = GetXFromYID("SELECT financial_year FROM financialyear where '" . $curr_dt . "' between from_date and to_date ");
 
-$SPECILITY_ARR = GetXArrFromYID("select specialityid as id,specialityname as name from speciality where  in_use=0 AND fyear='$curr_fyear' and division='$division' ", '3');
 
 $selectoption = $readonly = '';
 
@@ -38,6 +40,9 @@ $cond = '';
 if (!empty($User_division) && (isset($User_division))) {
 	$cond .= " and division=$User_division ";
 }
+
+
+$SPECILITY_ARR = GetXArrFromYID("select specialityid as id,specialityname as name from speciality where  in_use=0 AND fyear='$curr_fyear'   ".$cond, '3');
 
 $PRODUCTS_ARR = GetXArrFromYID("select productbrandtypeid as id ,productbrandtype as name from productbrandtype where presence=1 " . $cond . " order by productbrandtype ASC", '3');
 
@@ -154,9 +159,7 @@ $_r = sql_query($_q, "");
 													$selected =    ($productID == $key) ? 'selected' : '';
 													echo '<option value="' . $key . '" ' . $selected . ' >' . $value . '</option>';
 												}
-												$k = 0;
-												//$selected =    ($productID == $k) ? 'selected' : '';
-												echo '<option value="' . $k . '" > Others </option>';
+											
 												?>
 											</select>
 										</div>
