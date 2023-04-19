@@ -17,34 +17,41 @@ if (empty($USER_ID) || (!empty($USER_ID) && !is_numeric($USER_ID))) {
 	exit;
 }
 
+if (empty($rid) || (!empty($rid) && !is_numeric($rid))) {
+	echo 'Invalid Access Detected!!!';
+	exit;
+}
+
 // getting role and profile id of user
 $ROLE_ID = GetXFromYID("select roleid from user2role where userid='" . $USER_ID . "'");
 $PROFILE_ID = GetXFromYID("select profileid from role2profile where roleid='" . $ROLE_ID . "'");
+
+$HCP_UNIVERSAL_ID = GetXArrFromYID("select contactid,masterid from contactdetails order by contactid LIMIT 500 ", "3");
 
 ?>
 <!doctype html>
 <html lang="en">
 
 <head>
-    <?php include 'load.header.php';?>
+	<?php include 'load.header.php'; ?>
 
 </head>
 
 <body>
 
 
-    <div class="appHeader bg-primary">
-        <div class="left">
-            <a href="javascript:;" class="headerButton goBack">
-                <ion-icon name="chevron-back-outline"></ion-icon>
-            </a>
-        </div>
-        <div class="pageTitle">Camp Request letter</div>
-        <div class="right"></div>
-    </div>
+	<div class="appHeader bg-primary">
+		<div class="left">
+			<a href="javascript:;" class="headerButton goBack">
+				<ion-icon name="chevron-back-outline"></ion-icon>
+			</a>
+		</div>
+		<div class="pageTitle">Camp Request letter</div>
+		<div class="right"></div>
+	</div>
 
 
-       <!--<div class="section full mt-7">
+	<!--<div class="section full mt-7">
             <div class="wide-block pt-2 pb-2">
 
                 <div class="row">
@@ -59,206 +66,182 @@ $PROFILE_ID = GetXFromYID("select profileid from role2profile where roleid='" . 
 
             </div>
         </div>-->
-	
-	
 
 
-    <div id="appCapsule">
 
 
-        <div class="tab-content mt-1">
+	<div id="appCapsule">
+
+<form action="save_camp_letter.php" method="post">
+	<input type="hidden" name="userid" value="<?php echo $USER_ID;?>">
+	<input type="hidden" name="rid" value="<?php echo $rid;?>">
+		<div class="tab-content mt-1">
 
 
-						
-		<div class="section mt-7">
-            <div class="card">
-                <div class="card-body">
 
-                <div class="wide-block pt-2 pb-2">
+			<div class="section mt-7">
+				<div class="card">
+					<div class="card-body">
 
-						
-							
+						<div class="wide-block pt-2 pb-2">
+
+
+
 							<div class="row">
-							
-								
-							
+
+
+
 								<div class="col-3">
-									<b>Name of HCP:</b>
+									<b>HCP Universal ID:<span style="color:#ff0000">*</span></b>
 								</div>
-								
+
 								<div class="col-9">
 									<div class="input-wrapper">
-										<input type="text" class="form-control" id="" placeholder="" required>
+										<select class="form-control custom-select"  id="DoctorID" name="DoctorID" required="">
+											<option value="">--select--</option>
+											<?php
+											foreach ($HCP_UNIVERSAL_ID as $key => $value) {
+												//echo $value[$key]['iModID'];
+												//$selected =    ($SELECTED_AMENITIES[$key]['iVAID'] == $key) ? 'selected' : '';
+												echo '<option value="' . $key . '" >' . $value . '</option>';
+											}
+											?>
+										</select>
 									</div>
 								</div>
 							</div>
-							
+
 							<br>
-							
+
 							<div class="row">
-							
-								
-							
+
+
+
 								<div class="col-3">
-									<b>Nature of the camp:</b>
+									<b>Nature of the camp:<span style="color:#ff0000">*</span></b>
 								</div>
-								
+
 								<div class="col-9">
 									<div class="input-wrapper">
-										<input type="text" class="form-control" id="" placeholder="" required>
+										<input type="text" class="form-control" id="nature_of_camp" name="nature_of_camp" placeholder="" required>
 									</div>
 								</div>
 							</div>
-							
-							<br>
-							
-														
-							<div class="row">
-							
-							
-							
-								<div class="col-3">
-									<b>Proposed Camp Date:</b>
-								</div>
-								
-								<div class="col-9">
-									<div class="input-wrapper">
-										<input type="text" class="form-control" id="" placeholder="" required>
-									</div>
-								</div>
-								
-							</div>
 
-
-
-							<br>
-							
-							<div class="row">
-							
-							
-							
-								<div class="col-3">
-									<b>Proposed Camp Location:</b>
-								</div>
-								
-								<div class="col-9">
-									<div class="input-wrapper"><input type="text" class="form-control" id="" required></div>
-								</div>
-								
-							</div>
-							
 							<br>
 
 
 							<div class="row">
-							
-							
+
+
+
 								<div class="col-3">
-									<b>Proposed Camp Duration:</b>
+									<b>Proposed Camp Date:<span style="color:#ff0000">*</span></b>
 								</div>
-								
+
 								<div class="col-9">
 									<div class="input-wrapper">
-										<input type="text" class="form-control" id="" placeholder="" >
+										<input type="date" class="form-control" name="camp_date" id="" min="<?php echo TODAY;?>" required>
 									</div>
 								</div>
-								
+
 							</div>
 
-				
-		
-		
-		
-				</div>	
 
 
-  
-                </div>
-            </div>
-        </div>
-						
+							<br>
+
+							<div class="row">
+
+
+
+								<div class="col-3">
+									<b>Proposed Camp Location:<span style="color:#ff0000">*</span></b>
+								</div>
+
+								<div class="col-9">
+									<div class="input-wrapper"><input type="text" class="form-control" id="camp_location" name="camp_location" required></div>
+								</div>
+
+							</div>
+
+							<br>
+
+
+							<div class="row">
+
+
+								<div class="col-3">
+									<b>Proposed Camp Duration:<span style="color:#ff0000">*</span></b>
+								</div>
+
+								<div class="col-9">
+									<div class="input-wrapper">
+										<input type="number" class="form-control" id="camp_duration" name="camp_duration" placeholder="" required>
+									</div>
+								</div>
+
+							</div>
+
+
+
+
+
+						</div>
+
+
+
+					</div>
+				</div>
+			</div>
+
+
 			
-		<div class="section mt-7">
-        <div class="card">
-        <div class="card-body">
-
-            <!-- <div class="wide-block pt-2 pb-2">
-
-				<div class="row">
-					<div class="col-3">
-						HCP Sign  & Sign: ___________________
+			<div class="section full mt-2">
+	
+	
+	
+				<div class="section full mt-2">
+					<div class="wide-block pt-2 pb-2">
+	
+						<div class="row">
+							<!-- <div class="col"><button type="button" class="exampleBox btn btn-primary rounded me-1">Save</button>
+							</div> -->
+							<div class="col">
+								<button type="submit" class="exampleBox btn btn-primary rounded me-1">Submit</button>
+							</div>
+							<!-- <div class="col">
+								<a href="#"><button type="button" class="exampleBox btn btn-primary rounded me-1">Cancel</button></a>
+							</div> -->
+						</div>
+	
 					</div>
 				</div>
-      
-				<br><br>
-  
-				<div class="row">
-					<div class="col-3">
-						Dated: ___________________
-					</div>
-				</div>
-							
-			</div> -->
-
-
-	        </div>
-        </div>
+			</div>
 		</div>
-		</div>		
+		</form>
 
 
 
-	<div class="section full mt-2">
-  
-
-		
-		<div class="section full mt-2">
-            <div class="wide-block pt-2 pb-2">
-
-                <div class="row">
-                    <div class="col"><button type="button" class="exampleBox btn btn-primary rounded me-1">Save</button>
-                    </div>
-                    <div class="col">
-                        <a href="hcp_form_camp.php"><button type="button" class="exampleBox btn btn-primary rounded me-1">Submit</button></a>
-                    </div>
-                    <div class="col">
-                        <a href="#"><button type="button" class="exampleBox btn btn-primary rounded me-1">Cancel</button></a>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-		
-		
-		
-        
 
 
-          
+	</div>
 
 
 
-        </div>
 
-
-
-    </div>
-
-
- 
-
-    <!-- ///////////// Js Files ////////////////////  -->
-    <!-- Jquery -->
-    <script src="assets/js/lib/jquery-3.4.1.min.js"></script>
-    <!-- Bootstrap-->
-    <script src="assets/js/lib/popper.min.js"></script>
-    <script src="assets/js/lib/bootstrap.min.js"></script>
-    <!-- Ionicons -->
-    <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
-    <!-- Owl Carousel -->
-    <script src="assets/js/plugins/owl-carousel/owl.carousel.min.js"></script>
-    <!-- Base Js File -->
-    <script src="assets/js/base.js"></script>
+	<!-- ///////////// Js Files ////////////////////  -->
+	<!-- Jquery -->
+	<script src="assets/js/lib/jquery-3.4.1.min.js"></script>
+	<!-- Bootstrap-->
+	<script src="assets/js/lib/popper.min.js"></script>
+	<script src="assets/js/lib/bootstrap.min.js"></script>
+	<!-- Ionicons -->
+	<script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
+	<!-- Owl Carousel -->
+	<script src="assets/js/plugins/owl-carousel/owl.carousel.min.js"></script>
+	<!-- Base Js File -->
+	<script src="assets/js/base.js"></script>
 
 
 </body>

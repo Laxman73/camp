@@ -13,7 +13,7 @@ $User_division = GetXFromYID("select division from users where id='$USER_ID' ");
 
 $DIVISION_ARR = GetXArrFromYID("select divisionid,name from division ", '3');
 $ACTIVITY_ARR = GetXArrFromYID('SELECT id as id,`activityname`  as name FROM `crm_naf_activitymaster` where deleted=0', '3');
-$empcode=GetXFromYID("select user_name from users where id='$USER_ID' and deleted=0 ");
+$empcode=GetXFromYID("select user_name from users where id='$USER_ID' and deleted=0 ");//getting empcode of user
 $initiater=GetXFromYID("SELECT CONCAT(first_name, ' ', last_name) AS result from users where id='$USER_ID' and deleted=0 ");
 
 
