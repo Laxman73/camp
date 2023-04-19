@@ -133,3 +133,26 @@ CREATE TABLE `crm_hcp_information` (
   KEY `crm_request_main_id` (`crm_request_main_id`),
   KEY `deleted` (`deleted`)
 ) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=latin1;
+
+
+CREATE TABLE `crm_request_details` (
+  `id` int(15) NOT NULL AUTO_INCREMENT,
+  `crm_request_main_id` int(15) NOT NULL,
+  `hcp_id` varchar(255) NOT NULL,
+  `hcp_address` varchar(255) NOT NULL,
+  `hcp_pan` varchar(255) NOT NULL,
+  `hcp_qualification` varchar(255) NOT NULL,
+  `hcp_associated_hospital_id` varchar(100) NOT NULL,
+  `govt_type` varchar(25) NOT NULL,
+  `yr_of_experience` int(11) NOT NULL DEFAULT '0',
+  `role_of_hcp` varchar(20) NOT NULL,
+  `honorarium_amount` int(25) NOT NULL,
+  `mobile` varchar(20) NOT NULL,
+  `submitted_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted` int(1) NOT NULL DEFAULT '0',
+  `deleted_on` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `crm_request_main_id` (`crm_request_main_id`),
+  KEY `hcp_id` (`hcp_id`),
+  KEY `deleted` (`deleted`)
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=latin1;
