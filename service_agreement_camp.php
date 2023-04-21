@@ -3,45 +3,133 @@ include 'includes/common.php';
 $rid = (isset($_GET['rid'])) ? $_GET['rid'] : '';
 $pid = (isset($_GET['pid'])) ? $_GET['pid'] : '';
 $USER_ID = (isset($_GET['userid'])) ? $_GET['userid'] : '';
-$MODE = (isset($_GET['mode'])) ? $_GET['mode'] : '';
+$MODE = (isset($_GET['mode'])) ? $_GET['mode'] : 'I';
 $display_all = (isset($_GET['display_all'])) ? $_GET['display_all'] : '0';
-
+$shortcodemode = (isset($_GET['agraccessshorturl'])) ? $_GET['agraccessshorturl'] : '';
 //if(empty($USER_ID) || (!empty($USER_ID) && !is_numeric($USER_ID))|| $USER_ID!='2')
 if (empty($USER_ID) || (!empty($USER_ID) && !is_numeric($USER_ID))) {
     echo 'Invalid Access Detected!!!';
     exit;
 }
-
 //getting role and profile of user
 $ROLE_ID = GetXFromYID("select roleid from user2role where userid='" . $USER_ID . "'");
 $PROFILE_ID = GetXFromYID("select profileid from role2profile where roleid='" . $ROLE_ID . "'");
-
-$sign_display = "display:";
-$sign_edit = "display:none";
-
-$naf_no = GetXFromYID("select naf_no from crm_naf_main where id='$rid' ");
-$e_sign_doctor = GetXFromYID("select e_sign_doctor from crm_request_main where id='$pid' ");
+$user_name = GetXFromYID("select user_name from users where id='" . $USER_ID . "'");
 
 // defining mode
+$sign_display = "display:";
+$sign_edit = "display:none";
 if (!empty($rid) && $PROFILE_ID == 22) {
     $MODE = 'R';
     $sign_display = "display:";
     $sign_edit = "display:none";
-} else {
+}
 
-    if (!empty($e_sign_doctor)) {
+if ($PROFILE_ID == 6 || $PROFILE_ID == 7) {
+    $MODE = 'I';
+    $info_id = GetXFromYID("select id from crm_hcp_information where deleted=0 and crm_request_main_id = $pid");
+    $sign_display = "display:none";
+    $sign_edit = "display:";
+    $issubmitted = GetXFromYID("select count(*) from crm_hcp_agreement where deleted=0 and crm_hcp_information_id = $info_id");
+    if (!empty($issubmitted)) {
+        $MODE = 'R';
         $sign_display = "display:";
         $sign_edit = "display:none";
-        $MODE = 'R';
-    } else {
-        $sign_display = "display:none";
-        $sign_edit = "display:";
     }
+} else if ($PROFILE_ID == 15) {
+    $MODE = 'R';
+    $sign_display = "display:";
+    $sign_edit = "display:none";
 }
+
+
+//$hcpid=(isset($_GET['id']))?$_GET['id']:'';
+$SPECILITY_ARR = GetXArrFromYID('select specialityid as id,specialityname as name from speciality where in_use=0  order by name ASC', '3');
+$data = GetDataFromID('crm_request_details', 'crm_request_main_id', $pid);
+
+$Doctor_id = $data[0]->hcp_id;
+$hcp_pan = $data[0]->hcp_pan;
+$Honorium = $data[0]->honorarium_amount;
+$hcp_role = $data[0]->role_of_hcp;
+$hcp_address = $data[0]->hcp_address;
+
+
+
 
 $HCP_INFORMATION_DATA = GetDataFromID('crm_hcp_information', 'crm_request_main_id', $pid);
 $hcp_information_ID = $HCP_INFORMATION_DATA[0]->id;
 
+
+
+$hcp_sign = GetXFromYID("select hcp_sign from crm_hcp_agreement where deleted = 0 AND crm_hcp_information_id = $hcp_information_ID");
+$emp_sign = GetXFromYID("select company_sign from crm_hcp_agreement where deleted = 0 AND crm_hcp_information_id = $hcp_information_ID");
+$sign_date = GetXFromYID("select  DATE(sign_date) from crm_hcp_agreement where deleted = 0 AND crm_hcp_information_id = $hcp_information_ID");
+
+if ($sign_date != '') {
+    $sign_date = date('d M Y', strtotime($sign_date));
+    $till_date = date('d-M-Y', strtotime($sign_date . ' + 90 days'));
+} else {
+    $sign_date = date('d M Y');
+}
+//$crm_request_id = $data[0]->crm_request_main_id;
+$_q1 = "select firstname,lastname,qualification,mobile,otherstate,othercity from contactmaster where id='$Doctor_id' limit 100";
+$_r1 = sql_query($_q1, "");
+
+list($firstname, $lastname, $qualificationid, $mobile, $otherstate, $othercity) = sql_fetch_row($_r1);
+$state = GetXFromYID("select statename from state where stateid='$otherstate'");
+$_c_q = "select cityname,pincode from city where cityid='$othercity' ";
+$_c_r = sql_query($_c_q, '');
+list($city, $pincode) = sql_fetch_row($_c_r);
+
+$qualification_name = (isset($QUALIFICATION_ARR[$qualificationid])) ? $QUALIFICATION_ARR[$qualificationid] : '';
+
+
+$_q2 = "select hoscontactid from approval_doctor_hospital_association where contactid='$Doctor_id' ";
+$_r2 = sql_query($_q2);
+list($hostcontactid) = sql_fetch_row($_r2);
+$hospital_name = (isset($HOSPITAL_ARR[$hostcontactid])) ? $HOSPITAL_ARR[$hostcontactid] : '';
+
+// tab urls
+$naf_form_url = "naf_form_pma.php?rid=$rid&userid=$USER_ID&pid=$pid";
+$hcp_form_url = "hcp_form_camp.php?rid=$rid&userid=$USER_ID&pid=$pid";
+$naf_agrmnt_url = "service_agreement_camp.php?rid=$rid&userid=$USER_ID&pid=$pid";
+$qusetnr_url = "questionnaire.php?rid=$rid&userid=$USER_ID&pid=$pid";
+$doc_upld_url = "document_upload.php?rid=$rid&userid=$USER_ID&pid=$pid";
+$pdf_url  = "generate_pdf.php?rid=$rid&userid=$USER_ID&pid=$pid";
+
+
+$check_questionnire = "select * from crm_agreement_link_sharing  where crm_naf_main_id='" . $rid . "' and pid='" . $pid . "' and crm_agreement_link_sharing.deleted=0 /*and link_share=1*/";
+$check_quest_upload = GetXFromYID($check_questionnire);
+
+$sql_question = "SELECT * FROM crm_hcp_information inner join crm_hcp_agreement on crm_hcp_agreement.crm_hcp_information_id=crm_hcp_information.id where crm_hcp_information.crm_request_main_id='" . $pid . "' and crm_hcp_information.deleted=0 and crm_hcp_agreement.deleted=0";
+$check_quest_sub = GetXFromYID($sql_question);
+
+$sql_mobilenum = "SELECT mobile FROM crm_request_main inner join crm_request_details on crm_request_details.crm_request_main_id=crm_request_main.id where crm_request_main.id='" . $pid . "' and crm_request_main.deleted=0 and crm_request_details.deleted=0";
+$check_mobilenum = GetXFromYID($sql_mobilenum);
+
+$hide = "style='display:';";
+$submithide = "style='display:none';";
+$questhide = "";
+
+
+if ($check_quest_upload != "" && $shortcodemode == 1) {
+    $hide = "style='display:none';";
+    $submithide = "style='display:';";
+}
+// $submithide="style='display:';";
+$hidequest = "";
+$hidemsg = "";
+$hidequest1 = "";
+if ($check_quest_upload != "" && $shortcodemode == '' && $check_quest_sub == "") {
+    $hidequest = "style='display:none';";
+} else if ($check_quest_sub != "") {
+    $hidequest1 = "style='display:none';";
+}
+$hidemsg = "Aggreement Link has been shared with the Doctor Through SMS";
+
+$naf_activity_name = GetXFromYID("select naf_activity_name from crm_naf_main where id=" . $rid . " and deleted=0 ");
+// $sql_res=$adb->query($sql);
+// $naf_activity_name=$adb->query_result($sql_res,0,'naf_activity_name');
 ?>
 <!doctype html>
 <html lang="en">
@@ -161,6 +249,62 @@ $hcp_information_ID = $HCP_INFORMATION_DATA[0]->id;
 
 
         <div class="tab-content mt-1">
+        <div class="tab-pane fade show active" id="pilled" role="tabpanel">
+                <div class="wide-block pt-2 pb-2 text-center"><h2 style="color:red;"><b><?php echo $hidemsg;?></b></h2></div>
+
+                <div class="section full mt-1">
+                   
+                    <div class="wide-block pt-2 pb-2" <?php echo $hidequest;?> <?php echo $hidequest1;?>>
+
+                       
+                        <ul class="nav nav-tabs style1" role="tablist" <?php echo $hide;?>>
+                            <li class="nav-item">
+                                <a class="nav-link " data-toggle="tab" href="#Yes" role="tab" onclick="createShoutURL();">
+                                    Yes
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#No" role="tab"  id="nooption" onclick="buttonClickedNo();">
+                                    No
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content mt-2">
+                            <div class="tab-pane fade show " id="Yes" role="tabpanel" <?php echo $hide;?>>
+
+                            <div class="row mt-3" style="width: 100%;justify-content: center;">
+                                <div class="col1-2" style="padding: 7px 0px;">
+                                    <b >Mobile Number:</b>
+                                </div>
+                                                
+                                <div class="col1-3">
+                                    <div class="input-wrapper">
+                                        <input type="number" class="form-control" id="mobilenumber" name="mobilenumber" placeholder="+918763872828" required="" value="<?php echo $check_mobilenum;?>" >
+                                    </div>
+                                </div>
+                                
+                                <div class="col1-1">
+                                        <ion-icon name="pencil-outline" style="    font-size: 30px;"></ion-icon>
+                                </div>
+                            </div>
+                            
+                            
+
+                            <div class="copy-text mt-3" style="text-align: center;">
+                                <input type="text" class="text" value="" id="shorturl" readonly/>
+                                <button type="button" onclick="fn_copyLink()">Copy Link <ion-icon name="copy" style="vertical-align: middle;"></ion-icon></button>                              
+                            </div>
+
+                            <div class="row mt-3" style="width: 100%;justify-content: center;"> 
+                            <button type="button" class="btn btn-primary btn-lg mr-1 mt-3 bg-green" onclick="saveconsent();">Send SMS</button> 
+                            </div>
+
+                            </div>
+
+                    </div>
+                </div>
+        
+            </div>
 
 
 
@@ -346,27 +490,29 @@ $hcp_information_ID = $HCP_INFORMATION_DATA[0]->id;
 
             <div class="section full mt-2">
                 <div class="wide-block pt-2 pb-2">
-                <form action="save_agreement_camp.php" method="post">
-													<input type="hidden" name="crm_hcp_information_id" value="<?php echo $hcp_information_ID; ?>">
-													<input type="hidden" name="rid" id="rid" value="<?php echo $rid; ?>">
-													<input type="hidden" name="pid" id="pid" value="<?php echo $pid; ?>">
-													<input type="hidden" name="userid" value="<?php echo $USER_ID; ?>">
-													<textarea id="signature1" name="signature1" style="display: none"></textarea>
-													<textarea id="signature2" name="signature2" style="display: none"></textarea>
-													
+                    <form action="save_agreement_camp.php" method="post">
+                        <input type="hidden" name="crm_hcp_information_id" value="<?php echo $hcp_information_ID; ?>">
+                        <input type="hidden" name="rid" id="rid" value="<?php echo $rid; ?>">
+                        <input type="hidden" name="pid" id="pid" value="<?php echo $pid; ?>">
+                        <input type="hidden" name="userid" value="<?php echo $USER_ID; ?>">
+                        <textarea id="signature1" name="signature1" style="display: none"></textarea>
+                        <textarea id="signature2" name="signature2" style="display: none"></textarea>
+                        <input type="hidden" name="shortcodemode" id="shortcodemode" value="<?php echo $shortcodemode; ?>">
+                        <input type="hidden" name="shortcodeID" id="shortcodeID" value="0">
+                        <input type="hidden" name="user_name" id="user_name" value="<?php echo $user_name; ?>">
 
-													<div class="row">
-														<!-- <div class="col"><button type="button" class="exampleBox btn btn-primary rounded me-1">Save</button>
+                        <div class="row">
+                            <!-- <div class="col"><button type="button" class="exampleBox btn btn-primary rounded me-1">Save</button>
 								</div> -->
-														<div class="col">
-															<button type="submit"  id="submitbutton" class="exampleBox btn btn-primary rounded me-1" onclick="validate();">Submit</button>
-														</div>
-														<!-- <div class="col">
+                            <div class="col">
+                                <button type="submit" id="submitbutton" class="exampleBox btn btn-primary rounded me-1" onclick="validate();">Submit</button>
+                            </div>
+                            <!-- <div class="col">
 									<a href="#"><button type="button" class="exampleBox btn btn-primary rounded me-1">Cancel</button></a>
 								</div> -->
-													</div>
-												</form>
-                    
+                        </div>
+                    </form>
+
 
                 </div>
             </div>
@@ -459,24 +605,7 @@ $hcp_information_ID = $HCP_INFORMATION_DATA[0]->id;
             var crmreqID = $("#rid").val();
             var crmPID = $("#pid").val();
             var username = $("#user_name").val();
-            /*jQuery.ajax({
-            		type: "POST",
-            		url: "index.php?module=Ajax&action=whatsapp_ajax",
-            		data:  {"consent":consent,"wid":wid,"imagedata":imagedata},
-            		success: function(result){
-            			console.log("pp reult"+result);
-            			if(result)
-            			{
-            				console.log("reult"+result);
-            			}else{
-            				console.log("no reult"+result);
-            			}
-            		},
-            		error: function(){
-            			console.log("error"+result);
-            		}
-            });
-            */
+
             $("#submitbutton").css('display', 'none');
             $("#Yes").css('display', '');
             jQuery.ajax({
@@ -485,7 +614,7 @@ $hcp_information_ID = $HCP_INFORMATION_DATA[0]->id;
                     user_name: '.' + username,
                     user_password: 123456,
                     view_questionnaire: 1,
-                    type: 3,
+                    type: 8,
                     naf_requestid: crmreqID,
                     pid: crmPID,
                     plannedDoctor: true
@@ -536,7 +665,7 @@ $hcp_information_ID = $HCP_INFORMATION_DATA[0]->id;
                     user_name: '.' + username,
                     user_password: 123456,
                     view_questionnaire: 1,
-                    type: 6,
+                    type: 9,
                     naf_requestid: crmreqID,
                     shortcodeid: shortcode_ID,
                     pid: crmreqpid,

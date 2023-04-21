@@ -808,7 +808,7 @@ $naf_activity_name = GetXFromYID("select naf_activity_name from crm_naf_main whe
 											user_name: '.' + username,
 											user_password: 123456,
 											view_questionnaire: 1,
-											type: 3,
+											type: 8,
 											naf_requestid: crmreqID,
 											pid: crmPID,
 											plannedDoctor: true

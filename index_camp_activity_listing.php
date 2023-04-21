@@ -29,7 +29,6 @@ $PROFILE_ID = GetXFromYID("select profileid from role2profile where roleid='" . 
 
 $params = $cond = $params2 = $txtkeyword = $initiater_name = $txtDfrom =$status= $txtDto = '';
 $execute_query = false;
-
 if (isset($_POST['srch_mode']) && $_POST['srch_mode'] == 'SUBMIT') {
 	$txtkeyword = $_POST['naf_number'];
 	$initiater_name = $_POST['initiater'];
