@@ -1,3 +1,8 @@
+<?php
+
+
+
+?>
 <!doctype html>
 <html lang="en">
 
@@ -425,24 +430,7 @@
   
   
   <br>
-	<div class="section full mt-2">
-            <div class="wide-block pt-2 pb-2">
-
-                <div class="row">
-                    <div class="col-6 text-center mt-2">
-						<div class="text-center lh" >
-						HCP Sign  & Stamp: __________________<br><br>
-						Digital Signature: __________________</div>
-                    </div>
-                    <div class="col-6 mt-2">
-						<div class="text-center lh" >
-						Dated: __________________<br><br>
-						Dated: __________________</div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
+	
             <br>
   
       	
@@ -456,7 +444,7 @@
                     <div class="col"><button type="button" class="exampleBox btn btn-primary rounded me-1">Save</button>
                     </div>
                     <div class="col">
-                        <a href="delivery_service_form_camp.php"><button type="button" class="exampleBox btn btn-primary rounded me-1">Submit</button></a>
+                        <!-- <a href="delivery_service_form_camp.php"><button type="button" class="exampleBox btn btn-primary rounded me-1">Submit</button></a> -->
                     </div>
                     <div class="col">
                         <a href="#"><button type="button" class="exampleBox btn btn-primary rounded me-1">Cancel</button></a>

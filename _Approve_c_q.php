@@ -61,5 +61,6 @@ if ($mode=='A') {
 }
 
 
-echo 'success';
+header('location: index.php?userid='.$USER_ID);
+exit;
 ?>

@@ -61,10 +61,8 @@ $selectoption = '';
 	</div>
 
 
-	<div class="section full">
-		<div class="wide-block pt-2 pb-2">
-
-			<div class="row">
+	
+				<?php include '_tabscamp.php';?>
 				<!--<div class="col-2">
                         <a href="#"><div class="tabBox">NAF Form</div></a>
                     </div>
@@ -83,10 +81,7 @@ $selectoption = '';
                     <div class="col-2">
                         <a href="generate_pdf.html"><div class="tabBox">Generate PDF</div></a>
                     </div>-->
-			</div>
-
-		</div>
-	</div>
+			
 
 
 	<div id="appCapsule">

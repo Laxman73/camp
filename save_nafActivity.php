@@ -48,42 +48,6 @@ $deviation_amount = (isset($_POST['deviation_amount'])) ? db_input($_POST['devia
 $targetedSpeciality_Arr = (isset($_POST['targetedSpeciality']))? $_POST['targetedSpeciality']:array();
 
 
-
-// Array
-// (
-//     [reqDate] => 2023-04-15
-//     [productID] => 642
-//     [eventID] => 
-//     [activty_name] => camp quarter
-//     [Nature_of_activity] => 4
-//     [activity_Date] => 2023-04-15
-//     [city] => 4
-//     [venue] => goa
-//     [no_of_p] => 10
-//     [targetedSpeciality] => Array
-//         (
-//             [0] => 7823
-//             [1] => 7824
-//             [2] => 7825
-//         )
-
-//     [objective] => objective
-//     [crm_14] => 100
-//     [crm_15] => 200
-//     [crm_16] => 
-//     [crm_17] => 
-//     [crm_18] => 
-//     [crm_19] => 
-//     [crm_20] => 
-//     [crm_21] => 
-//     [crm_22] => 
-//     [crm_23] => 
-//     [crm_24] => 
-//     [crm_25] => 
-//     [total] => 300
-//     [rationale] => rationale
-// )
-
 $PARENT_ID=GetXFromYID("select naf_no from crm_naf_main where id='$R_ID' and deleted=0 ");
 
 $CrmID = NextID('id', 'crm_naf_main');
@@ -117,12 +81,6 @@ while ($row = sql_fetch_assoc($_crm_fields_r)) {
 //Product Details
 $crm_naf_product_detailsID = NextID('pid', 'crm_naf_product_details');
 $pdo->prepare("insert into crm_naf_product_details (pid,naf_request_id,product_id,naf_product_therapy_others,deleted) values (?,?,?,?,?)")->execute(array($crm_naf_product_detailsID, $CrmID, $product_id, '', 0));
-// $naf_request_id = $CrmID;
-// $product_id = $productID;
-// $naf_product_therapy_others = '';
-// $deleted = 0;
-// $stmt->execute(array($pid, $naf_request_id, $product_id, $naf_product_therapy_others, $deleted));
-
-
-
-echo 'success';
+header('location: index_camp_activity.php?userid='.$USER_ID);
+exit;
+?>

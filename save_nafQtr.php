@@ -59,5 +59,6 @@ foreach ($targetedSpeciality_Arr as $key => $value) {
 }
 
 
-echo 'success';
+header('location: index.php?userid='.$USER_ID);
+exit;
 ?>

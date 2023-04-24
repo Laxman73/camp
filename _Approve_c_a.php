@@ -60,6 +60,6 @@ if ($mode=='A') {
    $stmt->execute(array($ID,$rid,$USER_ID,0,4,$New_level,$remark,NOW,0));  
 }
 
-
-echo 'success';
+header('location: index_camp_activity.php?userid='.$USER_ID);
+exit;
 ?>

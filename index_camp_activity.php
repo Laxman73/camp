@@ -6,72 +6,72 @@ if (empty($USER_ID) || (!empty($USER_ID) && !is_numeric($USER_ID))) {
     exit;
 }
 
-$disp_url='index_camp_activity.php';
+$disp_url = 'index_camp_activity.php';
 $current_userid = $USER_ID;
 $ROLE_ID = GetXFromYID("select roleid from user2role where userid='" . $current_userid . "'");
 $PROFILE_ID = GetXFromYID("select profileid from role2profile where roleid='" . $ROLE_ID . "'");
 
-$where = $having = $fdate = $tdate = $event_id = $status_id = $pending_with = $category = $txtDfrom = $txtDto =$params = $cond = $params2 = '';
+$where = $having = $fdate = $tdate = $event_id = $status_id = $pending_with = $category = $txtDfrom = $txtDto = $params = $cond = $params2 = '';
 $execute_query = false;
 
 
 if (isset($_POST['srch_mode']) && $_POST['srch_mode'] == 'SUBMIT') {
-	$fdate = $_POST['fdate'];
-	$tdate = $_POST['tdate'];
-	$event_id = $_POST['event_id'];
-	$status_id = $_POST['status_id'];
-	$pending_with = $_POST['pending_with'];
+    $fdate = $_POST['fdate'];
+    $tdate = $_POST['tdate'];
+    $event_id = $_POST['event_id'];
+    $status_id = $_POST['status_id'];
+    $pending_with = $_POST['pending_with'];
     $category = $_POST['category'];
 
-	$params = '&event_id=' . $event_id . '&pending_with=' . $pending_with . '&txtDfrom=' . $fdate . '&txtDto=' . $tdate . '&userid=' . $USER_ID.'&status='.$status_id.'&category='.$category;
-	header('location: ' . $disp_url . '?srch_mode=QUERY' . $params);
+    $params = '&event_id=' . $event_id . '&pending_with=' . $pending_with . '&txtDfrom=' . $fdate . '&txtDto=' . $tdate . '&userid=' . $USER_ID . '&status=' . $status_id . '&category=' . $category;
+    header('location: ' . $disp_url . '?srch_mode=QUERY' . $params);
 } else if (isset($_GET['srch_mode']) && $_GET['srch_mode'] == 'QUERY') {
-	$is_query = true;
+    $is_query = true;
 
-	if (isset($_GET['event_id'])) $event_id = $_GET['event_id'];
-	if (isset($_GET['pending_with'])) $pending_with = $_GET['pending_with'];
-	if (isset($_GET['txtDfrom'])) $fdate = $_GET['txtDfrom'];
-	if (isset($_GET['txtDto'])) $tdate = $_GET['txtDto'];
-	if (isset($_GET['status'])) $status_id = $_GET['status'];
-	if (isset($_GET['category'])) $category = $_GET['category'];
+    if (isset($_GET['event_id'])) $event_id = $_GET['event_id'];
+    if (isset($_GET['pending_with'])) $pending_with = $_GET['pending_with'];
+    if (isset($_GET['txtDfrom'])) $fdate = $_GET['txtDfrom'];
+    if (isset($_GET['txtDto'])) $tdate = $_GET['txtDto'];
+    if (isset($_GET['status'])) $status_id = $_GET['status'];
+    if (isset($_GET['category'])) $category = $_GET['category'];
 
 
-	$params2 ='&event_id=' . $event_id . '&pending_with=' . $pending_with . '&txtDfrom=' . $fdate . '&txtDto=' . $tdate . '&userid=' . $USER_ID.'&status='.$status_id.'&category='.$category;
+    $params2 = '&event_id=' . $event_id . '&pending_with=' . $pending_with . '&txtDfrom=' . $fdate . '&txtDto=' . $tdate . '&userid=' . $USER_ID . '&status=' . $status_id . '&category=' . $category;
 } else if (isset($_GET['srch_mode']) && $_GET['srch_mode'] == 'MEMORY')
-	SearchFromMemory($MEMORY_TAG, $disp_url);
+    SearchFromMemory($MEMORY_TAG, $disp_url);
 
 if (!empty($event_id)) {
-	$cond .= " and (t2.naf_no LIKE '%" . $event_id . "%')";
-	$execute_query = true;
+    $cond .= " and (t2.naf_no LIKE '%" . $event_id . "%')";
+    $execute_query = true;
 }
-if($pending_with!=''){
-    $having = " HAVING pending_with LIKE '%".$pending_with."%'";
+if ($pending_with != '') {
+    $having = " HAVING pending_with LIKE '%" . $pending_with . "%'";
 }
 if (!empty($fdate)) {
-	$cond .= " and t2.eventdate>='$fdate' ";
-	$execute_query = true;
+    $cond .= " and t2.eventdate>='$fdate' ";
+    $execute_query = true;
 }
 if (!empty($tdate)) {
-	$cond .= " and t2.eventdate<='$tdate' ";
-	$execute_query = true;
+    $cond .= " and t2.eventdate<='$tdate' ";
+    $execute_query = true;
 }
 
 if (!empty($status_id)) {
-	$cond .= " and t2.authorise='$status_id' ";
-	$execute_query = true;
+    $cond .= " and t2.authorise='$status_id' ";
+    $execute_query = true;
 }
 
 if (!empty($category)) {
-	$cond .= " and t2.category_id='$category' ";
-	$execute_query = true;
+    $cond .= " and t2.category_id='$category' ";
+    $execute_query = true;
 }
 
 $STATUS_ARR = GetXArrFromYID("select pid,status_name from crm_status_master where deleted=0", '3');
 $TYPE_ARR = GetXArrFromYID("select pid,type_name from crm_naf_type_master where deleted=0", "3");
 $DIVISION_ARR = GetXArrFromYID("select divisionid,name from division ", '3');
 
-$_q="select CONCAT(t1.first_name, ' ', t1.last_name) AS pending_with,t2.id,t2.eventdate,t2.naf_no,t2.userid,t2.category_id,t2.level,t2.authorise,t2.budget_amount from users t1 inner join crm_naf_main t2 on t2.pendingwithid=t1.id where 1 and t2.deleted=0 ".$cond.$having;
-$_r=sql_query($_q,"seacrh query");
+$_q = "select CONCAT(t1.first_name, ' ', t1.last_name) AS pending_with,t2.pendingwithid,t2.id,t2.eventdate,t2.naf_no,t2.userid,t2.category_id,t2.level,t2.authorise,t2.budget_amount from users t1 left join crm_naf_main t2 on t2.pendingwithid=t1.id where 1 and t2.deleted=0 " . $cond . $having;
+$_r = sql_query($_q, "seacrh query");
 
 ?>
 
@@ -135,9 +135,9 @@ $_r=sql_query($_q,"seacrh query");
 
             <div class="card">
                 <div class="card-body">
-                    
+
                     <form action="" method="POST">
-                        
+
                         <input type="hidden" name="srch_mode" id="srch_mode" value="SUBMIT" />
 
                         <div class="wide-block pt-2 pb-2">
@@ -155,7 +155,7 @@ $_r=sql_query($_q,"seacrh query");
 
                                         <div class="block2">
                                             <div class="input-wrapper">
-                                                <input type="text" class="form-control" id="pending_with" name="pending_with" placeholder="" value="<?php echo $pending_with;?>" minlength="4">
+                                                <input type="text" class="form-control" id="pending_with" name="pending_with" placeholder="" value="<?php echo $pending_with; ?>" minlength="4">
                                             </div>
                                         </div>
 
@@ -172,7 +172,7 @@ $_r=sql_query($_q,"seacrh query");
 
                                         <div class="block2">
                                             <div class="input-wrapper">
-                                            <?php echo FillCombo($category, 'category', 'COMBO', '0', $TYPE_ARR, '', 'form-control custom-select'); ?>
+                                                <?php echo FillCombo($category, 'category', 'COMBO', '0', $TYPE_ARR, '', 'form-control custom-select'); ?>
                                             </div>
                                         </div>
 
@@ -195,7 +195,7 @@ $_r=sql_query($_q,"seacrh query");
 
                                         <div class="block2">
                                             <div class="input-wrapper">
-                                                <input type="date" class="form-control" id="fdate" name="fdate" placeholder="" value="<?php echo $fdate;?>">
+                                                <input type="date" class="form-control" id="fdate" name="fdate" placeholder="" value="<?php echo $fdate; ?>">
                                             </div>
                                         </div>
 
@@ -211,7 +211,7 @@ $_r=sql_query($_q,"seacrh query");
 
                                         <div class="block2">
                                             <div class="input-wrapper">
-                                                <input type="date" class="form-control" id="tdate" name="tdate" placeholder="" value="<?php echo $tdate;?>">
+                                                <input type="date" class="form-control" id="tdate" name="tdate" placeholder="" value="<?php echo $tdate; ?>">
                                             </div>
                                         </div>
 
@@ -237,7 +237,7 @@ $_r=sql_query($_q,"seacrh query");
 
                                         <div class="block2">
                                             <div class="input-wrapper">
-                                                <input type="text" class="form-control" id="event_id" name="event_id" placeholder="" >
+                                                <input type="text" class="form-control" id="event_id" name="event_id" placeholder="">
                                             </div>
                                         </div>
 
@@ -309,7 +309,7 @@ $_r=sql_query($_q,"seacrh query");
                                                 <div class="col col-f">
                                                     <select onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);" class="naf-btn custom-select" id="" placeholder="Need Assessment Form">
                                                         <option selected="" disabled="" value="">Need Assessment Form</option>
-                                                        <option value="naf_form_pma.php?userid=<?php echo $USER_ID; ?>">NAF</option>
+                                                        <option value="naf_quarter_approve.php?userid=<?php echo $USER_ID; ?>">NAF</option>
                                                     </select>
                                                 </div>
 
@@ -357,7 +357,7 @@ $_r=sql_query($_q,"seacrh query");
                         <thead>
 
                             <tr>
-                                <th class="bg-purple"></th>
+                                
                                 <th class="bg-purple">Event ID</th>
                                 <th class="bg-purple">Date of NAF initiation</th>
                                 <th class="bg-purple">Division</th>
@@ -380,29 +380,33 @@ $_r=sql_query($_q,"seacrh query");
                                 $event_date = $o->eventdate;
                                 $requestorID = $o->userid;
                                 $category = $o->category_id;
-                               // $status=$o->authorise;
-                                $pending_with = $o->pending_with;
+                                // $status=$o->authorise;
+                                $pending_with_name = $o->pending_with;
+                                $pendingwithID = $o->pendingwithid;
                                 // $pendingwithquestionnire = $o->pendingwithquestionnire;
                                 // $pending_with_id = $o->pendingwithid;
                                 $approved_status_id = $o->authorise;
                                 $division = GetXFromYID("SELECT division FROM users WHERE id='$requestorID' ");
-                                $budget_amt=$o->budget_amount;
-                               // $quest_auth = $o->quest_auth;
-                               // $approval_status = $o->approval_status;
-                               // $question_status = $o->question_status;
-                               $x_total=GetXFromYID("select sum(naf_expense) from crm_naf_cost_details where naf_request_id='$x_id' ");
+                                $budget_amt = $o->budget_amount;
+                                $x_total = GetXFromYID("select sum(naf_expense) from crm_naf_cost_details where naf_request_id='$x_id' ");
                                 $level = $o->level;
-                                
+                                $event_url="";
+									if (($approved_status_id == 1 || $approved_status_id==2 ) && $USER_ID==$pendingwithID) {
+										$event_url='<a href="approve_camp_a.php?rid='.$x_id.'&userid='.$USER_ID.'">'.strtoupper($naf_no).'</a>';
+									}else {
+										$event_url='<a href="javascript:void(0)">'.strtoupper($naf_no).'</a>';
+									}
+
 
                             ?>
                                 <tr>
-                                    <td></td>
-                                    <td><?php echo $naf_no; ?></td>
+                                 
+                                    <td><?php echo $event_url; ?></td>
                                     <td><?php echo $event_date; ?></td>
                                     <td><?php echo (isset($DIVISION_ARR[$division])) ? $DIVISION_ARR[$division] : ''; ?></td>
                                     <td><?php echo (isset($TYPE_ARR[$category])) ? $TYPE_ARR[$category] : ''; ?></td>
                                     <td><?php echo $x_total; ?></td>
-                                    <td><?php echo $pending_with; ?></td>
+                                    <td><?php echo $pending_with_name; ?></td>
                                     <!--td>BU Head</td-->
                                     <td><?php echo $STATUS_ARR[$approved_status_id]; ?></td>
 

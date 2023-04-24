@@ -8,7 +8,7 @@ $page_title = 'Camp Quarter Listing';
 $TITLE = SITE_NAME . ' | ' . $page_title;
 
 
-$disp_url = 'index.php';
+$disp_url = 'naf_quarter_approve.php';
 
 $USER_ID = (isset($_GET['userid'])) ? $_GET['userid'] : '';
 $display_all = (isset($_GET['display_all'])) ? $_GET['display_all'] : '0';
@@ -294,12 +294,12 @@ $_r=sql_query($_q,"");
 
 
 										<div class="row">
-											<div class="col col-f">
+											<!-- <div class="col col-f">
 												<select onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);" class="naf-btn custom-select" id="" placeholder="Need Assessment Form" >
 													<option selected="" disabled="" value="">Need Assessment Form</option>
 													<option value="index_camp.php?userid=<?php echo $USER_ID;?>">NAF</option>
 												</select>
-											</div>
+											</div> -->
 
 											<div class="col col-f">
 											<button type="submit" class="exampleBox btn btn-primary rounded me-1">SEARCH</button>
@@ -367,8 +367,8 @@ $_r=sql_query($_q,"");
 									$User_division = GetXFromYID("select division from users where id='$requestor_id' ");
 									$fname = GetXFromYID("select CONCAT(first_name, ' ', last_name) AS full_name from users where id='$pendingwithID' ");
 									$event_url="";
-									if (($approved_status_id == 1 || $approved_status_id==2 ) && $USER_ID==$pendingwithID) {
-										$event_url='<a href="approve_camp_q.php?rid='.$x_id.'&userid='.$USER_ID.'">'.strtoupper($naf_no).'</a>';
+									if ($approved_status_id==2 && $pendingwithID==0) {
+										$event_url='<a href="naf_camp.php?rid='.$x_id.'&userid='.$USER_ID.'">'.strtoupper($naf_no).'</a>';
 									}else {
 										$event_url='<a href="javascript:void(0)">'.strtoupper($naf_no).'</a>';
 									}

@@ -4,11 +4,11 @@ ini_set('display_errors', '1');
 
 include "includes/common.php";
 
-$page_title = 'Camp Quarter Listing';
+$page_title = 'Camp Activity Listing';
 $TITLE = SITE_NAME . ' | ' . $page_title;
 
 
-$disp_url = 'index.php';
+$disp_url = 'naf_quarter_approve.php';
 
 $USER_ID = (isset($_GET['userid'])) ? $_GET['userid'] : '';
 $display_all = (isset($_GET['display_all'])) ? $_GET['display_all'] : '0';
@@ -75,7 +75,7 @@ if (!empty($status)) {
 	$execute_query = true;
 }
 
-$_q="select * from crm_naf_main where 1 ".$cond ."and category_id='2' and deleted=0 ";
+$_q="select * from crm_naf_main where 1 ".$cond ."and category_id='5' and deleted=0 order by id DESC";
 $_r=sql_query($_q,"");
 
 
@@ -121,7 +121,7 @@ $_r=sql_query($_q,"");
 				<ion-icon name="chevron-back-outline"></ion-icon>
 			</a>
 		</div>
-		<div class="pageTitle">Need Assessment Form (Quarter activity)</div>
+		<div class="pageTitle">Need Assessment Form ( activity basis)</div>
 		<div class="right"></div>
 	</div>
 
@@ -294,12 +294,12 @@ $_r=sql_query($_q,"");
 
 
 										<div class="row">
-											<div class="col col-f">
+											<!-- <div class="col col-f">
 												<select onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);" class="naf-btn custom-select" id="" placeholder="Need Assessment Form" >
 													<option selected="" disabled="" value="">Need Assessment Form</option>
 													<option value="index_camp.php?userid=<?php echo $USER_ID;?>">NAF</option>
 												</select>
-											</div>
+											</div> -->
 
 											<div class="col col-f">
 											<button type="submit" class="exampleBox btn btn-primary rounded me-1">SEARCH</button>
@@ -368,10 +368,12 @@ $_r=sql_query($_q,"");
 									$fname = GetXFromYID("select CONCAT(first_name, ' ', last_name) AS full_name from users where id='$pendingwithID' ");
 									$event_url="";
 									if (($approved_status_id == 1 || $approved_status_id==2 ) && $USER_ID==$pendingwithID) {
-										$event_url='<a href="approve_camp_q.php?rid='.$x_id.'&userid='.$USER_ID.'">'.strtoupper($naf_no).'</a>';
-									}else {
-										$event_url='<a href="javascript:void(0)">'.strtoupper($naf_no).'</a>';
-									}
+										$event_url='<a href="approve_camp_a.php?rid='.$x_id.'&userid='.$USER_ID.'">'.strtoupper($naf_no).'</a>';
+									}elseif ($approved_status_id==2 && $pendingwithID==0) {
+                                        $event_url='<a href="request_letter_camp.php?rid='.$x_id.'&userid='.$USER_ID.'">'.strtoupper($naf_no).'</a>';
+                                    }else {
+                                        $event_url='<a href="javacript:void(0);">'.strtoupper($naf_no).'</a>';
+                                    } 
 									//$PMArefno = $o->request_no; //Pma reference NUmber
 									
 									$naf_date = $o->date;

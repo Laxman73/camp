@@ -25,7 +25,8 @@ if ($display_all == 1) {
 	$pdf_url  = "generate_pdf.php?rid=$rid&userid=$USER_ID&pid=$pid&display_all=1";
 	$post_comment_url  = "post_activity.php?rid=$rid&userid=$USER_ID&display_all=1";
 } else {
-	$naf_form_url = "naf_form_pma.php?rid=$rid&userid=$USER_ID&pid=$pid";
+	$naf_form_q_url = "index_camp.php?rid=$rid&userid=$USER_ID&pid=$pid";
+	$naf_form_camp_url = "naf_camp.php?rid=$rid&userid=$USER_ID&pid=$pid";
 	$hcp_form_url = "hcp_form.php?rid=$rid&userid=$USER_ID&pid=$pid";
 	$naf_agrmnt_url = "hcp_agreement.php?rid=$rid&userid=$USER_ID&pid=$pid";
 
@@ -267,48 +268,54 @@ if($PROFILE_ID == 11){
 
 
 $TABS_DATA[1] = '<div class="col-2">
-					<a href="' . $naf_form_url . '">
-					<div class="tabBox">NAF Form</div>
+					<a href="' . $naf_form_q_url . '">
+					<div class="tabBox">NAF Form Quarter</div>
 				</a>
 				</div>';
 
 $TABS_DATA[2] = '<div class="col-2">
+					<a href="' . $naf_form_camp_url . '">
+					<div class="tabBox">NAF Form Quarter</div>
+				</a>
+				</div>';
+
+$TABS_DATA[3] = '<div class="col-2">
 				<a href="' . $hcp_form_url . '">
 					<div class="tabBox">HCP Information Form</div>
 				</a>
 				</div>';
 
-$TABS_DATA[3] = '<div class="col-2">
+$TABS_DATA[4] = '<div class="col-2">
 				<a href="' . $naf_agrmnt_url . '">
 					<div class="tabBox">HCP Agreement</div>
 				</a>
 			</div>';
 
-$TABS_DATA[4] = '<div class="col-2">
+$TABS_DATA[5] = '<div class="col-2">
 				<a href="' . $qusetnr_url . '">
 					<div class="tabBox">Questionnaire</div>
 				</a>
 			</div>';
 
-$TABS_DATA[5] = '<div class="col-2">
+$TABS_DATA[6] = '<div class="col-2">
 				<a href="' . $doc_upld_url . '">
 					<div class="tabBox">Documents upload</div>
 				</a>
 			</div>';
 
-$TABS_DATA[6] = '<div class="col-2">
+$TABS_DATA[7] = '<div class="col-2">
 				<a href="' . $pdf_url . '">
 					<div class="tabBox">Acknowledgement/PDF</div>
 				</a>
 			</div>';
 
-$TABS_DATA[7] = '<div class="col-2">
+$TABS_DATA[8] = '<div class="col-2">
 				<a href="' . $delivery_url . '">
 					<div class="tabBox">Delivery of service form</div>
 				</a>
 			</div>';
 
-$TABS_DATA[8] = '<div class="col-2">
+$TABS_DATA[9] = '<div class="col-2">
 				<a href="' . $post_comment_url . '">
 					<div class="tabBox">Post Activity & Comment</div>
 				</a>
