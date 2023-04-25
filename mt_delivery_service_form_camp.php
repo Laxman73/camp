@@ -26,7 +26,7 @@ $employee_name = GetXFromYID("select concat(first_name,' ',last_name) from users
 
 
 $readonly = $disabled = '';
-$employee_id = $type_of_activity = $mode = $vendor_services = $vendor_name = $vendor_description = $actual_vendor_cost = $naf_travel_flight_cost = $naf_insurance_cost = $naf_flight_cost = $naf_travel_cab_cost = $naf_visa_cost = $naf_stay_hotel_cost = $naf_audio_visual_cost = $naf_meal_snack_cost = $naf_banners_pamphlets_cost = $naf_other_additonal_cost = $MODE = '';
+$employee_id = $type_of_activity =$comment= $mode = $vendor_services = $vendor_name = $vendor_description = $actual_vendor_cost = $naf_travel_flight_cost = $naf_insurance_cost = $naf_flight_cost = $naf_travel_cab_cost = $naf_visa_cost = $naf_stay_hotel_cost = $naf_audio_visual_cost = $naf_meal_snack_cost = $naf_banners_pamphlets_cost = $naf_other_additonal_cost = $MODE = '';
 $Delivery_form_count = GetXFromYID("select count(*) from crm_naf_delivery_form where crm_naf_main_id='$rid' and deleted=0 ");
 if ($Delivery_form_count > 0) {
 	$MODE = 'R';
@@ -61,6 +61,8 @@ if ($MODE == 'R' || $MODE == 'E') {
 	$naf_meal_snack_cost = $DELIVERY_COST_DETAILS[0]->naf_meal_snack_cost;
 	$naf_banners_pamphlets_cost = $DELIVERY_COST_DETAILS[0]->naf_banners_pamphlets_cost;
 	$naf_other_additonal_cost = $DELIVERY_COST_DETAILS[0]->naf_other_additonal_cost;
+
+	$comment=GetXFromYID("select post_comment from crm_naf_main where id=$rid and deleted=0 ");
 
 
 
@@ -144,6 +146,8 @@ $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_req
 	<div id="appCapsule">
 
 <form action="Save_MK_Dos.php" method="post" id="FORM_MKDOS">
+<input type="hidden" name="userid" value="<?php echo $USER_ID; ?>">
+			<input type="hidden" id="rid" name="rid" value="<?php echo $rid; ?>">
 		<div class="tab-content mt-1">
 
 
@@ -467,7 +471,7 @@ $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_req
 									<div class="form-group basic">
 										<div class="input-wrapper">
 											<label class="label" for="">Overall Outcome</label>
-											<textarea id="" rows="3" name="comment" class="form-control"></textarea>
+											<textarea id="" rows="3" name="comment"  class="form-control"><?php echo $comment;?></textarea>
 										</div>
 									</div>
 								</form>

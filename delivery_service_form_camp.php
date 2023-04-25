@@ -61,9 +61,6 @@ if ($MODE == 'R' || $MODE == 'E') {
 	$naf_banners_pamphlets_cost = $DELIVERY_COST_DETAILS[0]->naf_banners_pamphlets_cost;
 	$naf_other_additonal_cost = $DELIVERY_COST_DETAILS[0]->naf_other_additonal_cost;
 
-	
-
-
 
 	$NAF_COST_ARRAY = GetXArrFromYID("select naf_field_id,naf_expense from crm_naf_cost_details where naf_request_id='$rid'  ", '3');
 }
@@ -76,6 +73,8 @@ if ($MODE == 'E') {
 }
 $naf_no = GetXFromYID("select naf_no from crm_naf_main where id='$rid'");
 $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_request_main t1 inner join crm_request_details t2 on t1.id=t2.crm_request_main_id where t1.naf_no='$naf_no' and t1.deleted=0 and t2.deleted=0  and t1.authorise=3 and t1.level=5 ");
+
+
 ?>
 <!doctype html>
 <html lang="en">

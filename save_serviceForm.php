@@ -14,6 +14,9 @@ $USER_ID = (isset($_POST['userid'])) ? $_POST['userid'] : '';
 $ROLE_ID = GetXFromYID("select roleid from user2role where userid='" . $USER_ID . "'");
 $PROFILE_ID = GetXFromYID("select profileid from role2profile where roleid='" . $ROLE_ID . "'");
 $User_division = GetXFromYID("select division from users where id='$USER_ID' "); //Getting division
+
+
+
 $empcode=GetXFromYID("select user_name from users where id='$USER_ID' and deleted=0 ");
 
 $PENDING_WITH_ID = $STATUS = '';
@@ -40,6 +43,7 @@ $nature_of_activity = db_input2($_POST['Nature_of_activity']);
 $vendor_service = db_input2($_POST['vendor_service']);
 $v_payee_name = db_input2($_POST['v_payee_name']);
 $descr = db_input2($_POST['descr']);
+
 $nature_of_actual_cost = db_input2($_POST['nature_of_actual_cost']);
 $travel_flights = db_input2($_POST['travel_flights']);
 $insurance = db_input2($_POST['insurance']);
