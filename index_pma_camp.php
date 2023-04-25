@@ -353,7 +353,7 @@ if (sql_num_rows($_R)) {
 							$_r = sql_query($_q, "");
 							if (sql_num_rows($_r)) {
 								for ($i = 1; $o = sql_fetch_object($_r); $i++) {
-									//$crm_request_main_ID=$o->id;
+									$crm_naf_ID=$o->id;
 									$subitted_on = $o->submitted_on;
 									$pendingwithID = $o->pendingwithid;
 									$naf_no = $o->naf_no;
@@ -367,7 +367,7 @@ if (sql_num_rows($_R)) {
 									$rid = $o->id; //ID of crm_naf_main table
 									$naf_activity_name= $o->naf_activity_name;
 
-									$hcpid = GetXFromYID("select hcp_id from  crm_request_details where crm_request_main_id='$PMAID' ");
+									$hcpid = GetXFromYID("select hcp_id from  crm_request_camp_letter where crm_request_main_id='$PMAID' ");
 									// $PENDING_WITH_ID=GetXFromYID("select pendingwithid from crm_request_main where naf_no='$naf_no' ");
 									// $REQ_ID=GetXFromYID("select requestor_id from crm_request_main where naf_no='$naf_no' ");
 
@@ -375,31 +375,31 @@ if (sql_num_rows($_R)) {
 
 									$division = GetXFromYID("SELECT division FROM users WHERE id='$requestor_id' ");
 									$x_total = GetXFromYID("select sum(naf_expense) from crm_naf_cost_details where naf_request_id='$rid' ");
-									$url = '';
+									$url = 'request_letter_camp.php?rid='.$crm_naf_ID.'&userid='.$USER_ID;
 
 									//state head	24676
-									if ($PROFILE_ID == '15') {
-										if (($PMA_level == 1 && $USER_ID==$pendingwithID && $PMauthorise == 1)) {
-											//PMA Approval
-											$url = 'pma_approve.php?rid=' . $rid . '&userid=' . $USER_ID . '&pid=' . $PMAID; 
-										} elseif ($PMA_level == 2) {
-											//Approved/Rejected
-											$url = 'pma_details.php?rid=' . $rid . '&userid=' . $USER_ID . '&pid=' . $PMAID; 
-										} elseif ($PMA_level == 3 && $PMauthorise == 1 && $USER_ID==$pendingwithID) {
-											// HCP Approval
-											$url = 'naf_form_pma.php?rid=' . $rid . '&userid=' . $USER_ID . '&pid=' . $PMAID;
-										} elseif ($PMA_level >= 4) {
-											$url = 'naf_form_pma.php?rid=' . $rid . '&userid=' . $USER_ID . '&pid=' . $PMAID;
-										} 
-									} elseif ($PROFILE_ID == '6' || $PROFILE_ID == '7') { 
-										//AM user										
-										if (($PMA_level == 1) || ($PMA_level == 2 && $PMauthorise == 4) ) { 
-											// Rejected
-											$url = 'pma_details.php?rid=' . $rid . '&userid=' . $USER_ID . '&pid=' . $PMAID;
-										} elseif (($PMA_level == 2 && $PMauthorise == 2) || ($PMA_level >= 3)) {
-											$url = 'hcp_form.php?rid=' . $rid . '&userid=' . $USER_ID . '&pid=' . $PMAID;
-										} 
-									}
+									// if ($PROFILE_ID == '15') {
+									// 	if (($PMA_level == 1 && $USER_ID==$pendingwithID && $PMauthorise == 1)) {
+									// 		//PMA Approval
+									// 		$url = 'pma_approve.php?rid=' . $rid . '&userid=' . $USER_ID . '&pid=' . $PMAID; 
+									// 	} elseif ($PMA_level == 2) {
+									// 		//Approved/Rejected
+									// 		$url = 'pma_details.php?rid=' . $rid . '&userid=' . $USER_ID . '&pid=' . $PMAID; 
+									// 	} elseif ($PMA_level == 3 && $PMauthorise == 1 && $USER_ID==$pendingwithID) {
+									// 		// HCP Approval
+									// 		$url = 'naf_form_pma.php?rid=' . $rid . '&userid=' . $USER_ID . '&pid=' . $PMAID;
+									// 	} elseif ($PMA_level >= 4) {
+									// 		$url = 'naf_form_pma.php?rid=' . $rid . '&userid=' . $USER_ID . '&pid=' . $PMAID;
+									// 	} 
+									// } elseif ($PROFILE_ID == '6' || $PROFILE_ID == '7') { 
+									// 	//AM user										
+									// 	if (($PMA_level == 1) || ($PMA_level == 2 && $PMauthorise == 4) ) { 
+									// 		// Rejected
+									// 		$url = 'pma_details.php?rid=' . $rid . '&userid=' . $USER_ID . '&pid=' . $PMAID;
+									// 	} elseif (($PMA_level == 2 && $PMauthorise == 2) || ($PMA_level >= 3)) {
+									// 		$url = 'hcp_form.php?rid=' . $rid . '&userid=' . $USER_ID . '&pid=' . $PMAID;
+									// 	} 
+									// }
 							?>
 									<tr>
 										<td><?php echo $naf_no; ?></td>
