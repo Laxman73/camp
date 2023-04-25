@@ -172,3 +172,43 @@ CREATE TABLE `crm_naf_camp_report` (
   `remarks` text,
   PRIMARY KEY (`pid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+CREATE TABLE `crm_naf_delivery_form` (
+  `id` int(15) NOT NULL AUTO_INCREMENT,
+  `crm_naf_main_id` int(15) NOT NULL,
+  `employee_id` int(15) NOT NULL,
+  `type_of_activity` int(15) NOT NULL,
+  `name_of_activity` varchar(255) NOT NULL,
+  `details_of_activity` varchar(255) DEFAULT NULL,
+  `mode` varchar(255) NOT NULL,
+  `vendor_services` int(2) NOT NULL,
+  `vendor_name` varchar(255) NOT NULL,
+  `vendor_description` varchar(255) NOT NULL,
+  `submitted_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted` int(1) NOT NULL DEFAULT '0',
+  `deleted_on` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `crm_naf_main_id` (`crm_naf_main_id`),
+  KEY `deleted` (`deleted`)
+) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=latin1;
+
+
+CREATE TABLE `crm_naf_delivery_form_cost_details` (
+  `pid` int(15) NOT NULL AUTO_INCREMENT,
+  `naf_delivery_form_id` int(15) NOT NULL,
+  `actual_vendor_cost` int(20) NOT NULL,
+  `naf_travel_flight_cost` int(20) NOT NULL,
+  `naf_insurance_cost` int(20) NOT NULL,
+  `naf_flight_cost` int(20) NOT NULL,
+  `naf_travel_cab_cost` int(20) NOT NULL,
+  `naf_visa_cost` int(20) NOT NULL,
+  `naf_stay_hotel_cost` int(20) NOT NULL,
+  `naf_audio_visual_cost` int(20) NOT NULL,
+  `naf_meal_snack_cost` int(20) NOT NULL,
+  `naf_banners_pamphlets_cost` int(20) NOT NULL,
+  `naf_other_additonal_cost` int(20) NOT NULL,
+  `deleted` int(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`pid`),
+  KEY `naf_delivery_form_id` (`naf_delivery_form_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=latin1;

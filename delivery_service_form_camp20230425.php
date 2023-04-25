@@ -44,8 +44,6 @@ if ($MODE == 'R' || $MODE == 'E') {
 	$vendor_name = $DELIVERY_FORM_DATA[0]->vendor_name;
 	$vendor_services = $DELIVERY_FORM_DATA[0]->vendor_services;
 	$vendor_description = $DELIVERY_FORM_DATA[0]->vendor_description;
-	$activity_name = $DELIVERY_FORM_DATA[0]->name_of_activity;
-	$details_of_activity = $DELIVERY_FORM_DATA[0]->details_of_activity;
 
 
 	$DELIVERY_COST_DETAILS = GetDataFromID('crm_naf_delivery_form_cost_details', 'naf_delivery_form_id', $naf_delivery_form_id, "and deleted=0 ");
@@ -74,11 +72,7 @@ if ($MODE == 'E') {
 	$type_of_activity = $ACTIVITY_ARR[$activity_ID];
 }
 
-$naf_no = GetXFromYID("select naf_no from crm_naf_main where id='$rid'");
-$TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_request_main t1 inner join crm_request_details t2 on t1.id=t2.crm_request_main_id where t1.naf_no='$naf_no' and t1.deleted=0 and t2.deleted=0  and t1.authorise=3 and t1.level=5 ");
 ?>
-
-
 <!doctype html>
 <html lang="en">
 
@@ -117,7 +111,7 @@ $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_req
 				<ion-icon name="chevron-back-outline"></ion-icon>
 			</a>
 		</div>
-		<div class="pageTitle camp">DELIVERY OF SERVICE FORM (Marketing team)</div>
+		<div class="pageTitle">DELIVERY OF SERVICE FORM</div>
 		<div class="right"></div>
 	</div>
 
@@ -143,7 +137,7 @@ $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_req
 
 	<div id="appCapsule">
 
-<form action="Save_MK_Dos.php" method="post" id="FORM_MKDOS">
+
 		<div class="tab-content mt-1">
 
 
@@ -166,7 +160,7 @@ $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_req
 
 								<div class="col-9">
 									<div class="input-wrapper">
-										<input type="text" class="form-control" id="emp_name" value="<?php echo $employee_name; ?>" placeholder="">
+										<input type="text" class="form-control" id="emp_name" name="emp_name" value="<?php echo $employee_name; ?>" placeholder="" required>
 									</div>
 								</div>
 							</div>
@@ -179,6 +173,68 @@ $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_req
 
 								<div class="col-3">
 									<b>Type of the Activity<span style="color:#ff0000">*</span></b>
+								</div>
+
+								<div class="col-9">
+									<div class="input-wrapper">
+										<input type="text" class="form-control" id="" value="<?php echo $type_of_activity; ?>" required="" <?php echo $readonly; ?>>
+									</div>
+								</div>
+							</div>
+
+							<br>
+
+
+							<div class="row">
+
+								<div class="col-3">
+									<b>Virtual/ Offline<span style="color:#ff0000">*</span></b>
+								</div>
+
+								<div class="col-9">
+									<div class="input-wrapper">
+										<select class="form-control custom-select" name="VO" id="VO" required="" <?php echo $disabled; ?>>
+											<option selected="" disabled="" value="">Choose...</option>
+											<?php
+											foreach ($VO_ARR as $key => $value) {
+												$selected = ($key == $mode) ? 'selected' : '';
+											?>
+												<option value="<?php echo $key; ?>" <?php echo $selected; ?>><?php echo $value; ?></option>
+
+											<?php	}
+
+
+											?>
+
+										</select>
+									</div>
+								</div>
+
+							</div>
+
+							<br>
+
+							<div class="row">
+
+								<div class="col-3">
+									<b>Details of the Activity:<span style="color:#ff0000">*</span></b>
+								</div>
+
+								<div class="col-9">
+									<div class="input-wrapper">
+										<input type="text" class="form-control" id="details_of_activity" value="" name="details_of_activity" required="" <?php echo $readonly; ?>>
+									</div>
+								</div>
+							</div>
+
+
+
+							<br>
+
+							<div class="row">
+
+								<div class="col-3">
+									<b>Nature of the Activity:<span style="color:#ff0000">*</span></b>
 								</div>
 
 								<div class="col-9">
@@ -196,23 +252,167 @@ $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_req
 								</div>
 							</div>
 
+
+							<br>
+
+
+							<div class="row">
+
+
+
+								<div class="col-3">
+									<b>Vendor Services used</b>
+								</div>
+
+								<div class="col-9">
+									<div class="input-wrapper">
+										<select class="form-control custom-select" name="vendor_service" id="vendor_service" onchange="DisableFields();" required="" <?php echo $disabled; ?>>
+											<option selected="" disabled="" value="">Choose...</option>
+											<?php
+											foreach ($VENDOR_SERVICES as $key => $value) {
+												$selected = ($key == $vendor_services) ? 'selected' : '';
+											?>
+												<option value="<?php echo $key; ?>" <?php echo $selected; ?>><?php echo $value; ?></option>
+
+											<?php	}
+
+
+											?>
+											<!-- <option value="1">Yes</option>
+												<option value="2">No</option> -->
+										</select>
+									</div>
+								</div>
+
+							</div>
+
+
+							<br>
+
+
+							<div class="row">
+
+								<div class="col-3">
+									<b>Vendor Payee Name:</b>
+								</div>
+
+								<div class="col-9">
+									<div class="input-wrapper">
+										<input type="text" class="form-control" value="<?php echo $vendor_name; ?>" name="v_payee_name" id="v_payee_name" placeholder="" required="" <?php echo $readonly; ?>>
+									</div>
+								</div>
+							</div>
+
 							<br>
 
 							<div class="row">
 
 								<div class="col-3">
-									<b>Name of the Activity:<span style="color:#ff0000">*</span></b>
+									<b>Description of the Vendor:</b>
 								</div>
 
 								<div class="col-9">
 									<div class="input-wrapper">
-										<input type="text" class="form-control" id="activity_name" name="activity_name" value="<?php echo (isset($activity_name)) ? $activity_name : ''; ?>" required="" <?php echo $readonly; ?>>
+										<input type="text" value="<?php echo $vendor_description; ?>" class="form-control" id="descr" name="descr" placeholder="" required="" <?php echo $readonly; ?>>
 									</div>
 								</div>
 							</div>
 
 
+							<br>
 
+							<div class="row">
+
+								<div class="col-3">
+									<b>Nature of Actual Cost Vendor:</b>
+									<input type="text" class="form-control" value="<?php echo $actual_vendor_cost; ?>" name="nature_of_actual_cost" id="nature_of_actual_cost" placeholder="" <?php echo $readonly; ?>>
+								</div>
+
+								<div class="col-9">
+								</div>
+							</div>
+
+							<br>
+
+							<div class="row">
+
+								<div class="col-3">
+									<b>Travel-Flights:</b>
+									<input type="text" class="form-control" value="<?php echo $naf_travel_flight_cost; ?>" name="travel_flights" id="travel_flights" placeholder="" <?php echo $readonly; ?>>
+								</div>
+
+								<div class="col-9">
+									<b>Insurance:</b>
+									<input type="text" class="form-control" value="<?php echo $naf_insurance_cost; ?>" id="insurance" name="insurance" placeholder="" <?php echo $readonly; ?>>
+								</div>
+							</div>
+
+							<br>
+
+							<div class="row">
+
+								<div class="col-3">
+									<b>Travel-Cab:</b>
+									<input type="text" class="form-control" value="<?php echo $naf_travel_cab_cost; ?>" id="travel_cab" name="travel_cab" placeholder="" <?php echo $readonly; ?>>
+								</div>
+
+								<div class="col-9">
+									<b>Visa:</b>
+									<input type="text" class="form-control" value="<?php echo $naf_visa_cost; ?>" id="visa" name="visa" placeholder="" <?php echo $readonly; ?>>
+								</div>
+							</div>
+
+							<br>
+
+							<div class="row">
+
+								<div class="col-3">
+									<b>Stay/Hotel:</b>
+									<input type="text" class="form-control" value="<?php echo $naf_stay_hotel_cost; ?>" id="stay_hotel" name="stay_hotel" placeholder="" <?php echo $readonly; ?>>
+								</div>
+
+								<div class="col-9">
+									<b>Audio/Visual:</b>
+									<input type="text" class="form-control" value="<?php echo $naf_audio_visual_cost; ?>" name="audio_v" id="audio_v" placeholder="" <?php echo $readonly; ?>>
+								</div>
+							</div>
+
+							<br>
+
+							<div class="row">
+
+								<div class="col-3">
+									<b>Meal/Snacks:</b>
+									<input type="text" class="form-control" value="<?php echo $naf_meal_snack_cost; ?>" id="meal" name="meal" placeholder="" <?php echo $readonly; ?>>
+								</div>
+
+								<div class="col-9">
+									<b>Banners/Pamphelts:</b>
+									<input type="text" class="form-control" value="<?php echo $naf_banners_pamphlets_cost; ?>" id="banners" name="banners" placeholder="" <?php echo $readonly; ?>>
+								</div>
+							</div>
+
+							<br>
+
+							<div class="row">
+
+								<div class="col-3">
+									<b>Others(Please Specify):</b>
+									<input type="text" class="form-control" value="<?php echo $naf_other_additonal_cost; ?>" id="other" name="other" placeholder="" <?php echo $readonly; ?>>
+								</div>
+
+								<div class="col-9">
+								</div>
+							</div>
+
+							<br>
+
+							<div class="row">
+
+								<div class="col-9">
+									<b>Actual Activity Cost Details (Kindly complete all the relevant cost elements to be incurred)
+								</div>
+							</div>
 
 							<br>
 
@@ -454,65 +654,93 @@ $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_req
 			</div>
 
 
-
-
 			<div class="section mt-7">
 				<div class="card">
 					<div class="card-body">
 
 						<div class="wide-block pt-2 pb-2">
 
-							<div class="wide-block pt-2 pb-2">
-								<form>
-									<div class="form-group basic">
-										<div class="input-wrapper">
-											<label class="label" for="">Overall Outcome</label>
-											<textarea id="" rows="3" name="comment" class="form-control"></textarea>
-										</div>
-									</div>
-								</form>
-							</div>
+							<table id="example" class="display mt-2" style="width:100%">
 
+								<thead>
+
+									<tr>
+										<th></th>
+										<th>Sr. No</th>
+										<th>Name of the HCP</th>
+										<th>Address(city)</th>
+										<th>PAN #</th>
+										<th>Qualification</th>
+										<th>Associated Hospital</th>
+										<th>Govt.(Yes/No)</th>
+										<th>Years of experience</th>
+										<th>Honorarium</th>
+										<th>Role of the HCP</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<th></th>
+										<td>1</td>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+									</tr>
+
+
+
+
+								</tbody>
+							</table>
 
 						</div>
 					</div>
 				</div>
 			</div>
+
+
+
+
+
+
+
+
+
 
 
 			<div class="section full mt-2">
 				<div class="wide-block pt-2 pb-2">
-	
+
 					<div class="row">
-						<!-- <div class="col"><button type="button" class="exampleBox btn btn-primary rounded me-1">Save</button>
-						</div> -->
-						<div class="col">
-							<button type="submit" class="exampleBox btn btn-primary rounded me-1">Submit</button>
+						<div class="col"><button type="button" class="exampleBox btn btn-primary rounded me-1">Save</button>
 						</div>
-						<!-- <div class="col">
+						<div class="col">
+							<a href="mt_delivery_service_form_camp.php"><button type="button" class="exampleBox btn btn-primary rounded me-1">Submit</button></a>
+						</div>
+						<div class="col">
 							<a href="#"><button type="button" class="exampleBox btn btn-primary rounded me-1">Cancel</button></a>
-						</div> -->
+						</div>
 					</div>
-	
+
 				</div>
 			</div>
 
 
+
+
+
+
+
+
+
+
 		</div>
-
-		</form>
-
-
-
-
-
-
-
-
-
-
-
-	</div>
 
 
 
@@ -535,6 +763,70 @@ $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_req
 	<script src="assets/js/base.js"></script>
 
 	<script>
+			function DisableFields() {
+			var serviceused = $('#vendor_service').val();
+			//alert(serviceused);
+			console.log(serviceused);
+			if (serviceused == '2') {
+				$("#nature_of_actual_cost").prop('disabled', true);
+				$("#travel_flights").prop('disabled', true);
+				$("#insurance").prop('disabled', true);
+				$("#travel_cab").prop('disabled', true);
+				$("#visa").prop('disabled', true);
+				$("#stay_hotel").prop('disabled', true);
+				$("#audio_v").prop('disabled', true);
+				$("#meal").prop('disabled', true);
+				$("#banners").prop('disabled', true);
+				$("#other").prop('disabled', true);
+				$("#v_payee_name").prop('disabled', true);
+				$("#descr").prop('disabled', true);
+
+				//making fields required 
+				$("#nature_of_actual_cost").prop('required', false);
+				$("#travel_flights").prop('required', false);
+				$("#insurance").prop('required', false);
+				$("#travel_cab").prop('required', false);
+				$("#visa").prop('required', false);
+				$("#stay_hotel").prop('required', false);
+				$("#audio_v").prop('required', false);
+				$("#meal").prop('required', false);
+				$("#banners").prop('required', false);
+				$("#other").prop('required', false);
+				$("#v_payee_name").prop('required', false);
+				$("#descr").prop('required', false);
+
+			} else {
+				$("#nature_of_actual_cost").prop('disabled', false);
+				$("#travel_flights").prop('disabled', false);
+				$("#insurance").prop('disabled', false);
+				$("#travel_cab").prop('disabled', false);
+				$("#visa").prop('disabled', false);
+				$("#stay_hotel").prop('disabled', false);
+				$("#audio_v").prop('disabled', false);
+				$("#meal").prop('disabled', false);
+				$("#banners").prop('disabled', false);
+				$("#other").prop('disabled', false);
+				$("#v_payee_name").prop('disabled', false);
+				$("#descr").prop('disabled', false);
+
+				//making fields required
+
+				$("#nature_of_actual_cost").prop('required', true);
+				$("#travel_flights").prop('required', true);
+				$("#insurance").prop('required', true);
+				$("#travel_cab").prop('required', true);
+				$("#visa").prop('required', true);
+				$("#stay_hotel").prop('required', true);
+				$("#audio_v").prop('required', true);
+				$("#meal").prop('required', true);
+				$("#banners").prop('required', true);
+				$("#other").prop('required', true);
+				$("#v_payee_name").prop('required', true);
+				$("#descr").prop('required', true);
+
+			}
+		}
+
 		$(document).ready(function() {
 			var table = $('#example').DataTable({
 				rowReorder: {

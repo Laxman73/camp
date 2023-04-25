@@ -16,12 +16,11 @@ if (empty($USER_ID) || (!empty($USER_ID) && !is_numeric($USER_ID))) {
 	echo 'Invalid Access Detected!!!';
 	exit;
 }
-
-
-
 // getting role and profile id of user
 $ROLE_ID = GetXFromYID("select roleid from user2role where userid='" . $USER_ID . "'");
 $PROFILE_ID = GetXFromYID("select profileid from role2profile where roleid='" . $ROLE_ID . "'");
+
+
 //$User_division = GetXFromYID("select division from users where id='$USER_ID' "); //Getting division
 $SPECILITY_ARR = array();
 

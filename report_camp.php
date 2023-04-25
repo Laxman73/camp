@@ -491,20 +491,20 @@ $_r = sql_query($_q, "");
 								<p><b>1) Was the camp well organized/arranged?<span style="color:#ff0000">*</span></b></p>
 
 								<div class="custom-control custom-radio mb-1">
-									<input type="radio" id="customRadio-1" value="1" name="camp_organised" class="custom-control-input">
-									<label class="custom-control-label" for="customRadio-1">Excellent</label>
+									<input type="radio" id="excellent" value="1" name="camp_organised" class="custom-control-input">
+									<label class="custom-control-label" for="excellent">Excellent</label>
 								</div>
 								<div class="custom-control custom-radio mb-1">
-									<input type="radio" id="customRadio-2" value="2" name="camp_organised" class="custom-control-input">
-									<label class="custom-control-label" for="customRadio-2">Good</label>
+									<input type="radio" id="good" value="2" name="camp_organised" class="custom-control-input">
+									<label class="custom-control-label" for="good">Good</label>
 								</div>
 								<div class="custom-control custom-radio mb-1">
-									<input type="radio" id="customRadio-3" value="3" name="camp_organised" class="custom-control-input">
-									<label class="custom-control-label" for="customRadio-3">Average</label>
+									<input type="radio" id="average" value="3" name="camp_organised" class="custom-control-input">
+									<label class="custom-control-label" for="average">Average</label>
 								</div>
 								<div class="custom-control custom-radio mb-1">
-									<input type="radio" id="customRadio-4" value="4" name="camp_organised" class="custom-control-input">
-									<label class="custom-control-label" for="customRadio-4">Poor</label>
+									<input type="radio" id="poor" value="4" name="camp_organised" class="custom-control-input">
+									<label class="custom-control-label" for="poor">Poor</label>
 								</div>
 
 							</div>
