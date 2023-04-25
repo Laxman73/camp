@@ -4,6 +4,8 @@ ini_set('display_errors', '1');
 
 include "includes/common.php";
 
+$disp_url = 'index_camp.php';
+
 $page_title = 'Camp Quarter';
 $TITLE = SITE_NAME . ' | ' . $page_title;
 
@@ -20,23 +22,148 @@ if (empty($USER_ID) || (!empty($USER_ID) && !is_numeric($USER_ID))) {
 $ROLE_ID = GetXFromYID("select roleid from user2role where userid='" . $USER_ID . "'");
 $PROFILE_ID = GetXFromYID("select profileid from role2profile where roleid='" . $ROLE_ID . "'");
 
+$mode = 'A';
 
 //$User_division = GetXFromYID("select division from users where id='$USER_ID' "); //Getting division
-$SPECILITY_ARR = array();
+$SPECILITY_ARR =$SELECTED_SPECIALITIES =$S_ARRA= array();
 
 $ACTIVITY_ARR = GetXArrFromYID('SELECT id as id,`activityname`  as name FROM `crm_naf_activitymaster` where deleted=0', '3');
 
 $division = GetXFromYID("select division from users where id='$USER_ID' ");
 $curr_dt = date('Y-m-d');
-// $financial_qry = "SELECT financial_year FROM financialyear where '".$curr_dt."' between from_date and to_date";
-// $financial_qry_res = sql_query($financial_qry);
+
 $curr_fyear = GetXFromYID("SELECT financial_year FROM financialyear where '" . $curr_dt . "' between from_date and to_date ");
 
 $SPECILITY_ARR = GetXArrFromYID("select specialityid as id,specialityname as name from speciality where  in_use=0 AND fyear='$curr_fyear' and division='$division' ", '3');
-$QUARTER_ARR=GetXArrFromYID("select quarterid,quarter_name from crm_naf_quarter_master ",'3');
+$QUARTER_ARR = GetXArrFromYID("select quarterid,quarter_name from crm_naf_quarter_master ", '3');
 
 
-$selectoption = '';
+
+if (isset($_GET['rid'])) $mode = 'E';
+
+if ($mode == 'A') {
+	$readonly = $selectoption = '';
+	$initiator = '';
+	$userid = '';
+	$emp_code = '';
+	$date = '';
+	$post_comment = '';
+	$category_id = '';
+	$submitted_on = '';
+	$submitted = '';
+	$pendingwithid = '';
+	$authorise = '';
+	$approved_date = '';
+	$deleted = '';
+	$deleted_on = '';
+	$eventdate = TODAY;
+	$level = '';
+	$naf_no = '';
+	$naf_activity_name = '';
+	$naf_city = '';
+	$naf_proposed_venue = '';
+	$naf_estimate_no_participents = '';
+	$naf_start_date = '';
+	$naf_end_date = '';
+	$naf_objective_rational = '';
+	$remarks = '';
+	$quarter = '';
+	$nafmode = '';
+	$proposed_activity_count = '';
+	$proposed_hcp_no = '';
+	$proposed_activity = '';
+	$proposed_objective = '';
+	$rationale_remark = '';
+	$lead_event = '';
+	$medical_equipments = '';
+	$deviation_amount = '';
+	$budget_amount = '';
+	$event_benefit_society='';
+} elseif ($mode == 'E') {
+	$DATA = GetDataFromID('crm_naf_main', 'id', $rid, "and deleted=0 ");
+	if (empty($DATA)) {
+		header('location: ' . $disp_url . '?userid=' . $USER_ID);
+		exit;
+	}
+	$readonly = 'readonly';
+	$selectoption = '';
+	$initiator = db_output2($DATA[0]->initiator);
+	$requestorID = db_output2($DATA[0]->userid);
+	$emp_code = db_output2($DATA[0]->emp_code);
+	$date = db_output2($DATA[0]->date);
+	$post_comment = db_output2($DATA[0]->post_comment);
+	$category_id = db_output2($DATA[0]->category_id);
+	$submitted_on = db_output2($DATA[0]->submitted_on);
+	$submitted = db_output2($DATA[0]->submitted);
+	$pendingwithid = db_output2($DATA[0]->pendingwithid);
+	$authorise = db_output2($DATA[0]->authorise);
+	$approved_date = db_output2($DATA[0]->approved_date);
+	$deleted = db_output2($DATA[0]->deleted);
+	$deleted_on = db_output2($DATA[0]->deleted_on);
+	$eventdate = db_output2($DATA[0]->eventdate);
+	$level = db_output2($DATA[0]->level);
+	$naf_no = db_output2($DATA[0]->naf_no);
+	$naf_activity_name = db_output2($DATA[0]->naf_activity_name);
+	$naf_city = db_output2($DATA[0]->naf_city);
+	$naf_proposed_venue = db_output2($DATA[0]->naf_proposed_venue);
+	$naf_estimate_no_participents = db_output2($DATA[0]->naf_estimate_no_participents);
+	$naf_start_date = db_output2($DATA[0]->naf_start_date);
+	$naf_end_date = db_output2($DATA[0]->naf_end_date);
+	$naf_objective_rational = db_output2($DATA[0]->naf_objective_rational);
+	$remarks = db_output2($DATA[0]->remarks);
+	$quarter = db_output2($DATA[0]->quarter);
+	$nafmode = db_output2($DATA[0]->mode);
+	$proposed_activity_count = db_output2($DATA[0]->proposed_activity_count);
+	$proposed_hcp_no = db_output2($DATA[0]->proposed_hcp_no);
+	$proposed_activity = db_output2($DATA[0]->proposed_activity);
+	$proposed_objective = db_output2($DATA[0]->proposed_objective);
+	$rationale_remark = db_output2($DATA[0]->rationale_remark);
+	$lead_event = db_output2($DATA[0]->lead_event);
+	$medical_equipments = db_output2($DATA[0]->medical_equipments);
+	$deviation_amount = db_output2($DATA[0]->deviation_amount);
+	$budget_amount = db_output2($DATA[0]->budget_amount);
+	$event_benefit_society = db_output2($DATA[0]->event_benefit_society);
+
+
+	$curr_dt = date('Y-m-d', strtotime($submitted_on));
+	$division = GetXFromYID("select division from users where id='$requestorID' ");
+
+	$curr_fyear = GetXFromYID("SELECT financial_year FROM financialyear where '" . $curr_dt . "' between from_date and to_date ");
+
+$SPECILITY_ARR = GetXArrFromYID("select specialityid as id,specialityname as name from speciality where  in_use=0 AND fyear='$curr_fyear' and division='$division' ", '3');
+$QUARTER_ARR = GetXArrFromYID("select quarterid,quarter_name from crm_naf_quarter_master ", '3');
+
+
+	$_sp_q = "select speciality_id from crm_naf_speciality_details where naf_request_id='$rid' ";
+	//$SELECTED_SPECIALITIES = array();
+	$_sq_q_r = sql_query($_sp_q, '');
+	while (list($specialityid) = sql_fetch_row($_sq_q_r)) {
+		if (!isset($SELECTED_SPECIALITIES[$specialityid]))
+			$SELECTED_SPECIALITIES[$specialityid] =  $specialityid;
+	}
+
+
+	//$S_ARRA = array();
+	//DFA($SELECTED_SPECIALITIES);
+	foreach ($SPECILITY_ARR as $key => $value) {
+		if (isset($SELECTED_SPECIALITIES[$key])) {
+			# code...
+			if ($SELECTED_SPECIALITIES[$key] == $key) {
+				array_push($S_ARRA, $value);
+			}
+		}
+	}
+
+	//DFA($S_ARRA);
+	
+
+}
+
+// $financial_qry = "SELECT financial_year FROM financialyear where '".$curr_dt."' between from_date and to_date";
+// $financial_qry_res = sql_query($financial_qry);
+
+
+
 
 ?>
 <!doctype html>
@@ -60,9 +187,9 @@ $selectoption = '';
 	</div>
 
 
-	
-				<?php include '_tabscamp.php';?>
-				<!--<div class="col-2">
+
+	<?php include '_tabscamp.php'; ?>
+	<!--<div class="col-2">
                         <a href="#"><div class="tabBox">NAF Form</div></a>
                     </div>
                     <div class="col-2">
@@ -80,7 +207,7 @@ $selectoption = '';
                     <div class="col-2">
                         <a href="generate_pdf.html"><div class="tabBox">Generate PDF</div></a>
                     </div>-->
-			
+
 
 
 	<div id="appCapsule">
@@ -106,7 +233,7 @@ $selectoption = '';
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="text" class="form-control" name="reqDate" id="reqDate" value="<?php echo TODAY; ?>" readonly>
+											<input type="text" class="form-control" name="reqDate" id="reqDate" value="<?php echo $eventdate; ?>" readonly>
 										</div>
 
 									</div>
@@ -123,14 +250,14 @@ $selectoption = '';
 									<div class="col-9">
 										<div class="input-wrapper">
 											<select class="form-control custom-select" name="Quarter" id="Quarter">
-											<?php
+												<?php
 												foreach ($QUARTER_ARR as $key => $value) {
 													//echo $value[$key]['iModID'];
-													$selected = '';
+													$selected = ($quarter == $key) ? 'selected' : '';
 													echo '<option value="' . $key . '" ' . $selected . ' >' . $value . '</option>';
 												}
 												?>
-												
+
 											</select>
 										</div>
 									</div>
@@ -169,7 +296,7 @@ $selectoption = '';
 											<b>Name of activity</b>
 
 											<div class="custom-control custom-radio mb-1">
-												<input type="text" class="form-control" name="activty_name" id="activty_name" required>
+												<input type="text" class="form-control" value="<?php echo $naf_activity_name; ?>" name="activty_name" id="activty_name" required>
 											</div>
 
 
@@ -228,7 +355,7 @@ $selectoption = '';
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="number" name="proposed_count" class="form-control" id="proposed_count" placeholder="" required="">
+											<input type="number" name="proposed_count" class="form-control" id="proposed_count" value="<?php echo $proposed_activity_count; ?>" placeholder="" required="">
 										</div>
 									</div>
 								</div>
@@ -245,7 +372,7 @@ $selectoption = '';
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="number" class="form-control" name="number_of_HCP" id="number_of_HCP" placeholder="" required="">
+											<input type="number" class="form-control" name="number_of_HCP" id="number_of_HCP" value="<?php echo $proposed_hcp_no; ?>" placeholder="" required="">
 										</div>
 									</div>
 								</div>
@@ -265,7 +392,7 @@ $selectoption = '';
 												<?php
 												foreach ($ACTIVITY_ARR as $key => $value) {
 													//echo $value[$key]['iModID'];
-													$selected = '';
+													$selected = ($proposed_activity == $key) ? 'selected' : '';
 													echo '<option value="' . $key . '" ' . $selected . ' >' . $value . '</option>';
 												}
 												?>
@@ -311,7 +438,7 @@ $selectoption = '';
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="number" class="form-control" id="number_of_participants" name="number_of_participants" placeholder="" required="">
+											<input type="number" class="form-control" id="number_of_participants" value="<?php echo $naf_estimate_no_participents; ?>" name="number_of_participants" placeholder="" required="">
 										</div>
 									</div>
 								</div>
@@ -326,7 +453,7 @@ $selectoption = '';
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="number" class="form-control" id="budget_amt" name="budget_amt" placeholder="" required="">
+											<input type="number" class="form-control" id="budget_amt" value="<?php echo $budget_amount; ?>" name="budget_amt" placeholder="" required="">
 										</div>
 									</div>
 								</div>
@@ -343,15 +470,22 @@ $selectoption = '';
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<select class="form-control custom-select" name="targetedSpeciality[]" multiple id="targetedSpeciality">
-												<?php
-												foreach ($SPECILITY_ARR as $key => $value) {
-													//echo $value[$key]['iModID'];
-													$selected = '';
-													echo '<option value="' . $key . '" ' . $selected . '>' . $value . '</option>';
-												}
-												?>
-											</select>
+											
+												
+													<?php
+													
+													if ($mode=='A') {
+														echo '<select class="form-control custom-select" name="targetedSpeciality[]" multiple id="targetedSpeciality">';
+														foreach ($SPECILITY_ARR as $key => $value) {
+															echo '<option value="' . $key . '" >' . $value . '</option>';
+														}
+														echo '</select>';
+													}elseif ($mode=='E') { ?>
+														 <input type="text" class="form-control" value="<?php echo implode(",", $S_ARRA); ?>"  placeholder="" required="" <?php echo $readonly; ?>>
+													<?php }
+													?>
+												
+											
 										</div>
 									</div>
 
@@ -366,7 +500,7 @@ $selectoption = '';
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="text" class="form-control" name="proposed_obj" id="proposed_obj" placeholder="" required="">
+											<input type="text" class="form-control" name="proposed_obj" value="<?php echo $proposed_objective;?>" id="proposed_obj" placeholder="" required="">
 										</div>
 									</div>
 								</div>
@@ -381,7 +515,7 @@ $selectoption = '';
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="text" class="form-control" id="rationale" name="rationale" placeholder="" required="">
+											<input type="text" class="form-control" value="<?php echo $naf_objective_rational;?>" id="rationale" name="rationale" placeholder="" required="">
 										</div>
 									</div>
 								</div>
@@ -396,7 +530,7 @@ $selectoption = '';
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="text" class="form-control" id="activity_benefit" name="activity_benefit" placeholder="" required="">
+											<input type="text" class="form-control" id="activity_benefit" name="activity_benefit" value="<?php echo $event_benefit_society;?>" placeholder="" required="">
 										</div>
 									</div>
 								</div>
@@ -412,7 +546,7 @@ $selectoption = '';
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="text" class="form-control" id="event_lead" name="event_lead" placeholder="" required="">
+											<input type="text" class="form-control" value="<?php echo $lead_event;?>" id="event_lead" name="event_lead" placeholder="" required="">
 										</div>
 									</div>
 								</div>
@@ -427,7 +561,7 @@ $selectoption = '';
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="text" class="form-control" id="medical_equipment_needed" name="medical_equipment_needed" placeholder="" required="">
+											<input type="text" class="form-control" value="<?php echo $medical_equipments;?>" id="medical_equipment_needed" name="medical_equipment_needed" placeholder="" required="">
 										</div>
 									</div>
 								</div>
@@ -442,7 +576,7 @@ $selectoption = '';
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="number" class="form-control" name="deviation_amount" id="deviation_amount" placeholder="" required="">
+											<input type="number" class="form-control" value="<?php echo $deviation_amount;?>" name="deviation_amount" id="deviation_amount" placeholder="" required="">
 										</div>
 									</div>
 								</div>

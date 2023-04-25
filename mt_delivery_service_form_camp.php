@@ -26,7 +26,7 @@ $employee_name = GetXFromYID("select concat(first_name,' ',last_name) from users
 
 
 $readonly = $disabled = '';
-$employee_id = $type_of_activity =$comment= $mode = $vendor_services = $vendor_name = $vendor_description = $actual_vendor_cost = $naf_travel_flight_cost = $naf_insurance_cost = $naf_flight_cost = $naf_travel_cab_cost = $naf_visa_cost = $naf_stay_hotel_cost = $naf_audio_visual_cost = $naf_meal_snack_cost = $naf_banners_pamphlets_cost = $naf_other_additonal_cost = $MODE = '';
+$employee_id = $type_of_activity = $comment = $mode = $vendor_services = $vendor_name = $vendor_description = $actual_vendor_cost = $naf_travel_flight_cost = $naf_insurance_cost = $naf_flight_cost = $naf_travel_cab_cost = $naf_visa_cost = $naf_stay_hotel_cost = $naf_audio_visual_cost = $naf_meal_snack_cost = $naf_banners_pamphlets_cost = $naf_other_additonal_cost = $MODE = '';
 $Delivery_form_count = GetXFromYID("select count(*) from crm_naf_delivery_form where crm_naf_main_id='$rid' and deleted=0 ");
 if ($Delivery_form_count > 0) {
 	$MODE = 'R';
@@ -62,7 +62,7 @@ if ($MODE == 'R' || $MODE == 'E') {
 	$naf_banners_pamphlets_cost = $DELIVERY_COST_DETAILS[0]->naf_banners_pamphlets_cost;
 	$naf_other_additonal_cost = $DELIVERY_COST_DETAILS[0]->naf_other_additonal_cost;
 
-	$comment=GetXFromYID("select post_comment from crm_naf_main where id=$rid and deleted=0 ");
+	$comment = GetXFromYID("select post_comment from crm_naf_main where id=$rid and deleted=0 ");
 
 
 
@@ -141,112 +141,61 @@ $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_req
         </div>-->
 
 
-
+<?php include '_tabscamp.php';?>
 
 	<div id="appCapsule">
 
-<form action="Save_MK_Dos.php" method="post" id="FORM_MKDOS">
-<input type="hidden" name="userid" value="<?php echo $USER_ID; ?>">
+		<form action="Save_MK_Dos.php" method="post" id="FORM_MKDOS">
+			<input type="hidden" name="userid" value="<?php echo $USER_ID; ?>">
 			<input type="hidden" id="rid" name="rid" value="<?php echo $rid; ?>">
-		<div class="tab-content mt-1">
+			<div class="tab-content mt-1">
 
 
 
-			<div class="section mt-7">
-				<div class="card">
-					<div class="card-body">
-
-						<div class="wide-block pt-2 pb-2">
-
-
-
-							<div class="row">
-
-
-
-								<div class="col-3">
-									<b>Name of the Employee<span style="color:#ff0000">*</span></b>
-								</div>
-
-								<div class="col-9">
-									<div class="input-wrapper">
-										<input type="text" class="form-control" id="emp_name" value="<?php echo $employee_name; ?>" placeholder="">
-									</div>
-								</div>
-							</div>
-
-							<br>
-
-							<div class="row">
-
-
-
-								<div class="col-3">
-									<b>Type of the Activity<span style="color:#ff0000">*</span></b>
-								</div>
-
-								<div class="col-9">
-									<div class="input-wrapper">
-										<select class="form-control custom-select" id="Nature_of_activity" name="Nature_of_activity" required="" <?php echo $readonly; ?>>
-											<?php
-											foreach ($ACTIVITY_ARR as $key => $value) {
-												//echo $value[$key]['iModID'];
-												$selected =    ($type_of_activity == $key) ? 'selected' : '';
-												echo '<option value="' . $key . '" >' . $value . '</option>';
-											}
-											?>
-										</select>
-									</div>
-								</div>
-							</div>
-
-							<br>
-
-							<div class="row">
-
-								<div class="col-3">
-									<b>Name of the Activity:<span style="color:#ff0000">*</span></b>
-								</div>
-
-								<div class="col-9">
-									<div class="input-wrapper">
-										<input type="text" class="form-control" id="activity_name" name="activity_name" value="<?php echo (isset($activity_name)) ? $activity_name : ''; ?>" required="" <?php echo $readonly; ?>>
-									</div>
-								</div>
-							</div>
-
-
-
-
-							<br>
-
-							<div class="wide-block" style="border-top: 1px solid black;border-bottom: 1px solid black;">
-
-								<div class="row">
-
-									<div class="col-3">
-										<div class="form-title">Particulars</div>
-									</div>
-
-									<div class="col-9">
-										<div class="form-title">Amount(INR)</div>
-									</div>
-								</div>
-
-
-							</div>
+				<div class="section mt-7">
+					<div class="card">
+						<div class="card-body">
 
 							<div class="wide-block pt-2 pb-2">
 
+
+
 								<div class="row">
 
+
+
 									<div class="col-3">
-										<b>HCP Honorrium (fill 'Appendix-1' with HCP details):<span style="color:#ff0000">*</span></b>
+										<b>Name of the Employee<span style="color:#ff0000">*</span></b>
 									</div>
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="text" class="form-control" value="<?php echo $TOTAL_HONORIUM_AMT; ?>" id="total_honorium" placeholder="" readonly>
+											<input type="text" class="form-control" id="emp_name" value="<?php echo $employee_name; ?>" placeholder="">
+										</div>
+									</div>
+								</div>
+
+								<br>
+
+								<div class="row">
+
+
+
+									<div class="col-3">
+										<b>Type of the Activity<span style="color:#ff0000">*</span></b>
+									</div>
+
+									<div class="col-9">
+										<div class="input-wrapper">
+											<select class="form-control custom-select" id="Nature_of_activity" name="Nature_of_activity" required="" <?php echo $readonly; ?>>
+												<?php
+												foreach ($ACTIVITY_ARR as $key => $value) {
+													//echo $value[$key]['iModID'];
+													$selected =    ($type_of_activity == $key) ? 'selected' : '';
+													echo '<option value="' . $key . '" >' . $value . '</option>';
+												}
+												?>
+											</select>
 										</div>
 									</div>
 								</div>
@@ -256,253 +205,304 @@ $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_req
 								<div class="row">
 
 									<div class="col-3">
-										<b>Local Travel:</b>
+										<b>Name of the Activity:<span style="color:#ff0000">*</span></b>
 									</div>
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="number" class="form-control" value="<?php echo isset($NAF_COST_ARRAY[2]) ? $NAF_COST_ARRAY[2] : ''; ?>" id="total_local_travel" placeholder="" readonly>
+											<input type="text" class="form-control" id="activity_name" name="activity_name" value="<?php echo (isset($activity_name)) ? $activity_name : ''; ?>" required="" <?php echo $readonly; ?>>
 										</div>
 									</div>
 								</div>
 
-
-								<br>
-
-								<div class="row">
-
-									<div class="col-3">
-										<b>Accommodation / Stay:</b>
-									</div>
-
-									<div class="col-9">
-										<div class="input-wrapper">
-											<input type="text" class="form-control" value="<?php echo isset($NAF_COST_ARRAY[3]) ? $NAF_COST_ARRAY[3] : ''; ?>" id="total_accom" placeholder="" readonly>
-										</div>
-									</div>
-								</div>
-
-								<br>
-
-								<div class="row">
-
-									<div class="col-3">
-										<b>Flight:</b>
-									</div>
-
-									<div class="col-9">
-										<div class="input-wrapper">
-											<input type="text" class="form-control" value="<?php echo isset($NAF_COST_ARRAY[4]) ? $NAF_COST_ARRAY[4] : ''; ?>" id="total_flight" placeholder="" readonly>
-										</div>
-									</div>
-								</div>
-
-								<br>
-
-								<div class="row">
-
-									<div class="col-3">
-										<b>Meals / Snack:</b>
-									</div>
-
-									<div class="col-9">
-										<div class="input-wrapper">
-											<input type="text" class="form-control" id="total_meal" value="<?php echo isset($NAF_COST_ARRAY[5]) ? $NAF_COST_ARRAY[5] : ''; ?>" placeholder="" readonly>
-										</div>
-									</div>
-								</div>
-
-
-								<br>
-
-								<div class="row">
-
-									<div class="col-3">
-										<b>Venue charges</b>
-									</div>
-
-									<div class="col-9">
-										<div class="input-wrapper">
-											<input type="text" class="form-control" value="<?php echo isset($NAF_COST_ARRAY[6]) ? $NAF_COST_ARRAY[6] : ''; ?>" id="total_venue_charges" placeholder="" readonly>
-										</div>
-									</div>
-								</div>
-
-								<br>
-
-								<div class="row">
-
-									<div class="col-3">
-										<b>Audio Visual / Webex:</b>
-									</div>
-
-									<div class="col-9">
-										<div class="input-wrapper">
-											<input type="text" class="form-control" value="<?php echo isset($NAF_COST_ARRAY[7]) ? $NAF_COST_ARRAY[7] : ''; ?>" id="total_AV" placeholder="" readonly>
-										</div>
-									</div>
-								</div>
-
-								<br>
-
-								<div class="row">
-
-									<div class="col-3">
-										<b>Banners / Pamphlets:</b>
-									</div>
-
-									<div class="col-9">
-										<div class="input-wrapper">
-											<input type="text" class="form-control" value="<?php echo isset($NAF_COST_ARRAY[8]) ? $NAF_COST_ARRAY[8] : ''; ?>" id="totalBP" placeholder="" readonly>
-										</div>
-									</div>
-								</div>
-
-
-								<br>
-
-								<div class="row">
-
-									<div class="col-3">
-										<b>Sponsorship/Participations:</b>
-									</div>
-
-									<div class="col-9">
-										<div class="input-wrapper">
-											<input type="text" class="form-control" id="total_SP" value="<?php echo isset($NAF_COST_ARRAY[9]) ? $NAF_COST_ARRAY[9] : ''; ?>" placeholder="" readonly>
-										</div>
-									</div>
-								</div>
 
 
 
 								<br>
 
+								<div class="wide-block" style="border-top: 1px solid black;border-bottom: 1px solid black;">
 
+									<div class="row">
 
+										<div class="col-3">
+											<div class="form-title">Particulars</div>
+										</div>
 
-								<div class="row">
-
-									<div class="col-3">
-										<b>Diagnostic cost:</b>
-									</div>
-
-									<div class="col-9">
-										<div class="input-wrapper">
-											<input type="number" class="form-control" value="<?php echo isset($NAF_COST_ARRAY[10]) ? $NAF_COST_ARRAY[10] : ''; ?>" id="total_DG" placeholder="" readonly>
+										<div class="col-9">
+											<div class="form-title">Amount(INR)</div>
 										</div>
 									</div>
-								</div>
 
-								<br>
-
-								<div class="row">
-
-									<div class="col-3">
-										<b>Medical equipment cost:</b>
-									</div>
-
-									<div class="col-9">
-										<div class="input-wrapper">
-											<input type="text" value="<?php echo isset($NAF_COST_ARRAY[11]) ? $NAF_COST_ARRAY[11] : ''; ?>" class="form-control" id="total_MD" placeholder="" readonly>
-										</div>
-									</div>
-								</div>
-
-								<br>
-
-								<div class="row">
-
-									<div class="col-3">
-										<b>Other additional cost, if any:</b>
-									</div>
-
-									<div class="col-9">
-										<div class="input-wrapper">
-											<input type="text" value="<?php echo isset($NAF_COST_ARRAY[12]) ? $NAF_COST_ARRAY[12] : ''; ?>" class="form-control" id="total_other" placeholder="" readonly>
-										</div>
-									</div>
-								</div>
-
-								<br>
-
-								<div class="row">
-
-									<div class="col-3">
-										<b>TOTAL AMOUNT:</b>
-									</div>
-
-									<div class="col-9">
-										<div class="input-wrapper">
-											<input type="number" class="form-control" id="total_AMT" readonly>
-										</div>
-									</div>
 
 								</div>
 
+								<div class="wide-block pt-2 pb-2">
 
+									<div class="row">
 
+										<div class="col-3">
+											<b>HCP Honorrium (fill 'Appendix-1' with HCP details):<span style="color:#ff0000">*</span></b>
+										</div>
 
-
-
-
-							</div>
-
-
-
-						</div>
-
-
-					</div>
-				</div>
-			</div>
-
-
-
-
-			<div class="section mt-7">
-				<div class="card">
-					<div class="card-body">
-
-						<div class="wide-block pt-2 pb-2">
-
-							<div class="wide-block pt-2 pb-2">
-								<form>
-									<div class="form-group basic">
-										<div class="input-wrapper">
-											<label class="label" for="">Overall Outcome</label>
-											<textarea id="" rows="3" name="comment"  class="form-control"><?php echo $comment;?></textarea>
+										<div class="col-9">
+											<div class="input-wrapper">
+												<input type="text" class="form-control" value="<?php echo $TOTAL_HONORIUM_AMT; ?>" id="total_honorium" placeholder="" readonly>
+											</div>
 										</div>
 									</div>
-								</form>
+
+									<br>
+
+									<div class="row">
+
+										<div class="col-3">
+											<b>Local Travel:</b>
+										</div>
+
+										<div class="col-9">
+											<div class="input-wrapper">
+												<input type="number" class="form-control" value="<?php echo isset($NAF_COST_ARRAY[2]) ? $NAF_COST_ARRAY[2] : ''; ?>" id="total_local_travel" placeholder="" readonly>
+											</div>
+										</div>
+									</div>
+
+
+									<br>
+
+									<div class="row">
+
+										<div class="col-3">
+											<b>Accommodation / Stay:</b>
+										</div>
+
+										<div class="col-9">
+											<div class="input-wrapper">
+												<input type="text" class="form-control" value="<?php echo isset($NAF_COST_ARRAY[3]) ? $NAF_COST_ARRAY[3] : ''; ?>" id="total_accom" placeholder="" readonly>
+											</div>
+										</div>
+									</div>
+
+									<br>
+
+									<div class="row">
+
+										<div class="col-3">
+											<b>Flight:</b>
+										</div>
+
+										<div class="col-9">
+											<div class="input-wrapper">
+												<input type="text" class="form-control" value="<?php echo isset($NAF_COST_ARRAY[4]) ? $NAF_COST_ARRAY[4] : ''; ?>" id="total_flight" placeholder="" readonly>
+											</div>
+										</div>
+									</div>
+
+									<br>
+
+									<div class="row">
+
+										<div class="col-3">
+											<b>Meals / Snack:</b>
+										</div>
+
+										<div class="col-9">
+											<div class="input-wrapper">
+												<input type="text" class="form-control" id="total_meal" value="<?php echo isset($NAF_COST_ARRAY[5]) ? $NAF_COST_ARRAY[5] : ''; ?>" placeholder="" readonly>
+											</div>
+										</div>
+									</div>
+
+
+									<br>
+
+									<div class="row">
+
+										<div class="col-3">
+											<b>Venue charges</b>
+										</div>
+
+										<div class="col-9">
+											<div class="input-wrapper">
+												<input type="text" class="form-control" value="<?php echo isset($NAF_COST_ARRAY[6]) ? $NAF_COST_ARRAY[6] : ''; ?>" id="total_venue_charges" placeholder="" readonly>
+											</div>
+										</div>
+									</div>
+
+									<br>
+
+									<div class="row">
+
+										<div class="col-3">
+											<b>Audio Visual / Webex:</b>
+										</div>
+
+										<div class="col-9">
+											<div class="input-wrapper">
+												<input type="text" class="form-control" value="<?php echo isset($NAF_COST_ARRAY[7]) ? $NAF_COST_ARRAY[7] : ''; ?>" id="total_AV" placeholder="" readonly>
+											</div>
+										</div>
+									</div>
+
+									<br>
+
+									<div class="row">
+
+										<div class="col-3">
+											<b>Banners / Pamphlets:</b>
+										</div>
+
+										<div class="col-9">
+											<div class="input-wrapper">
+												<input type="text" class="form-control" value="<?php echo isset($NAF_COST_ARRAY[8]) ? $NAF_COST_ARRAY[8] : ''; ?>" id="totalBP" placeholder="" readonly>
+											</div>
+										</div>
+									</div>
+
+
+									<br>
+
+									<div class="row">
+
+										<div class="col-3">
+											<b>Sponsorship/Participations:</b>
+										</div>
+
+										<div class="col-9">
+											<div class="input-wrapper">
+												<input type="text" class="form-control" id="total_SP" value="<?php echo isset($NAF_COST_ARRAY[9]) ? $NAF_COST_ARRAY[9] : ''; ?>" placeholder="" readonly>
+											</div>
+										</div>
+									</div>
+
+
+
+									<br>
+
+
+
+
+									<div class="row">
+
+										<div class="col-3">
+											<b>Diagnostic cost:</b>
+										</div>
+
+										<div class="col-9">
+											<div class="input-wrapper">
+												<input type="number" class="form-control" value="<?php echo isset($NAF_COST_ARRAY[10]) ? $NAF_COST_ARRAY[10] : ''; ?>" id="total_DG" placeholder="" readonly>
+											</div>
+										</div>
+									</div>
+
+									<br>
+
+									<div class="row">
+
+										<div class="col-3">
+											<b>Medical equipment cost:</b>
+										</div>
+
+										<div class="col-9">
+											<div class="input-wrapper">
+												<input type="text" value="<?php echo isset($NAF_COST_ARRAY[11]) ? $NAF_COST_ARRAY[11] : ''; ?>" class="form-control" id="total_MD" placeholder="" readonly>
+											</div>
+										</div>
+									</div>
+
+									<br>
+
+									<div class="row">
+
+										<div class="col-3">
+											<b>Other additional cost, if any:</b>
+										</div>
+
+										<div class="col-9">
+											<div class="input-wrapper">
+												<input type="text" value="<?php echo isset($NAF_COST_ARRAY[12]) ? $NAF_COST_ARRAY[12] : ''; ?>" class="form-control" id="total_other" placeholder="" readonly>
+											</div>
+										</div>
+									</div>
+
+									<br>
+
+									<div class="row">
+
+										<div class="col-3">
+											<b>TOTAL AMOUNT:</b>
+										</div>
+
+										<div class="col-9">
+											<div class="input-wrapper">
+												<input type="number" class="form-control" id="total_AMT" readonly>
+											</div>
+										</div>
+
+									</div>
+
+
+
+
+
+
+
+								</div>
+
+
+
 							</div>
 
 
 						</div>
 					</div>
 				</div>
-			</div>
 
 
-			<div class="section full mt-2">
-				<div class="wide-block pt-2 pb-2">
-	
-					<div class="row">
-						<!-- <div class="col"><button type="button" class="exampleBox btn btn-primary rounded me-1">Save</button>
+
+
+				<div class="section mt-7">
+					<div class="card">
+						<div class="card-body">
+
+							<div class="wide-block pt-2 pb-2">
+
+								<div class="wide-block pt-2 pb-2">
+									<form>
+										<div class="form-group basic">
+											<div class="input-wrapper">
+												<label class="label" for="">Overall Outcome</label>
+												<textarea id="" rows="3" name="comment" class="form-control"><?php echo $comment; ?></textarea>
+											</div>
+										</div>
+									</form>
+								</div>
+
+
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="section full mt-2">
+					<div class="wide-block pt-2 pb-2">
+
+						<div class="row">
+							<!-- <div class="col"><button type="button" class="exampleBox btn btn-primary rounded me-1">Save</button>
 						</div> -->
-						<div class="col">
-							<button type="submit" class="exampleBox btn btn-primary rounded me-1">Submit</button>
-						</div>
-						<!-- <div class="col">
+							<div class="col">
+								<button type="submit" class="exampleBox btn btn-primary rounded me-1">Submit</button>
+							</div>
+							<!-- <div class="col">
 							<a href="#"><button type="button" class="exampleBox btn btn-primary rounded me-1">Cancel</button></a>
 						</div> -->
+						</div>
+
 					</div>
-	
 				</div>
+
+
 			</div>
-
-
-		</div>
 
 		</form>
 

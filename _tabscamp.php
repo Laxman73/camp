@@ -7,7 +7,7 @@ $qusetnr_url=(isset($qusetnr_url))?$qusetnr_url:'';
 $NUm_of_PMAraised=(isset($NUm_of_PMAraised))?$NUm_of_PMAraised:0;
 if ($display_all == 1) {
 	$naf_form_url = "naf_form_pma.php?rid=$rid&userid=$USER_ID&pid=$pid&display_all=1";
-	$hcp_form_url = "hcp_form.php?rid=$rid&userid=$USER_ID&pid=$pid&display_all=1";
+	$hcp_form_url = "hcp_form_camp.php?rid=$rid&userid=$USER_ID&pid=$pid&display_all=1";
 	$naf_agrmnt_url = "hcp_agreement.php?rid=$rid&userid=$USER_ID&pid=$pid&display_all=1";
 
 	if (!empty($pid)) {
@@ -21,13 +21,14 @@ if ($display_all == 1) {
 	}
 
 	$doc_upld_url = "document_upload.php?rid=$rid&userid=$USER_ID&pid=$pid&display_all=1";
-	$delivery_url = "service_form.php?rid=$rid&userid=$USER_ID&pid=$pid&display_all=1";
+	$delivery_form_url = "delivery_service_form_camp.php?rid=$rid&userid=$USER_ID";
+	$delivery_form_ho_url = "mt_delivery_service_form_camp.php?rid=$rid&userid=$USER_ID";
 	$pdf_url  = "generate_pdf.php?rid=$rid&userid=$USER_ID&pid=$pid&display_all=1";
 	$post_comment_url  = "post_activity.php?rid=$rid&userid=$USER_ID&display_all=1";
 } else {
 	$naf_form_q_url = "index_camp.php?rid=$rid&userid=$USER_ID&pid=$pid";
 	$naf_form_camp_url = "naf_camp.php?rid=$rid&userid=$USER_ID&pid=$pid";
-	$hcp_form_url = "hcp_form.php?rid=$rid&userid=$USER_ID&pid=$pid";
+	$hcp_form_url = "hcp_form_camp.php?rid=$rid&userid=$USER_ID&pid=$pid";
 	$naf_agrmnt_url = "hcp_agreement.php?rid=$rid&userid=$USER_ID&pid=$pid";
 
 	if (!empty($pid)) {
@@ -41,7 +42,8 @@ if ($display_all == 1) {
 	}
 
 	$doc_upld_url = "document_upload.php?rid=$rid&userid=$USER_ID&pid=$pid";
-	$delivery_url = "service_form.php?rid=$rid&userid=$USER_ID";
+	$delivery_form_url = "delivery_service_form_camp.php?rid=$rid&userid=$USER_ID";
+	$delivery_form_ho_url = "mt_delivery_service_form_camp.php?rid=$rid&userid=$USER_ID";
 	$pdf_url  = "generate_pdf.php?rid=$rid&userid=$USER_ID&pid=$pid";
 	$post_comment_url  = "post_activity.php?rid=$rid&userid=$USER_ID";
 }
@@ -203,7 +205,7 @@ if ($PROFILE_ID == 22) {
 
 
 		
-		$user_tabs = array(1);
+		$user_tabs = array(1,2,3,4,5,6,7,8);
 		
 		//echo "$no_of_participants /  $NUm_of_PMAraised"; 
 		//exit;
@@ -275,7 +277,7 @@ $TABS_DATA[1] = '<div class="col-2">
 
 $TABS_DATA[2] = '<div class="col-2">
 					<a href="' . $naf_form_camp_url . '">
-					<div class="tabBox">NAF Form Quarter</div>
+					<div class="tabBox">NAF Form Activity</div>
 				</a>
 				</div>';
 
@@ -291,35 +293,37 @@ $TABS_DATA[4] = '<div class="col-2">
 				</a>
 			</div>';
 
-$TABS_DATA[5] = '<div class="col-2">
-				<a href="' . $qusetnr_url . '">
-					<div class="tabBox">Questionnaire</div>
-				</a>
-			</div>';
+// $TABS_DATA[5] = '<div class="col-2">
+// 				<a href="' . $qusetnr_url . '">
+// 					<div class="tabBox">Questionnaire</div>
+// 				</a>
+// 			</div>';
 
-$TABS_DATA[6] = '<div class="col-2">
+$TABS_DATA[5] = '<div class="col-2">
 				<a href="' . $doc_upld_url . '">
 					<div class="tabBox">Documents upload</div>
 				</a>
 			</div>';
 
-$TABS_DATA[7] = '<div class="col-2">
+$TABS_DATA[6] = '<div class="col-2">
 				<a href="' . $pdf_url . '">
 					<div class="tabBox">Acknowledgement/PDF</div>
 				</a>
 			</div>';
 
-$TABS_DATA[8] = '<div class="col-2">
-				<a href="' . $delivery_url . '">
+$TABS_DATA[7] = '<div class="col-2">
+				<a href="' . $delivery_form_url . '">
 					<div class="tabBox">Delivery of service form</div>
 				</a>
 			</div>';
 
-$TABS_DATA[9] = '<div class="col-2">
-				<a href="' . $post_comment_url . '">
-					<div class="tabBox">Post Activity & Comment</div>
+$TABS_DATA[8] = '<div class="col-2">
+				<a href="' . $delivery_form_ho_url . '">
+					<div class="tabBox">Delivery of service form (HO)</div>
 				</a>
 			</div>';
+
+
 
 
 
@@ -330,7 +334,8 @@ $TABS_DATA[9] = '<div class="col-2">
 
 		<div class="row">
 			<?php
-			// echo DFA($user_tabs);
+			// echo $PROFILE_ID;
+			//  DFA($user_tabs);
 			// exit;
 			foreach ($TABS_DATA as $tab_id => $tab_value) {
 

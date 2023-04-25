@@ -82,32 +82,7 @@ $_r = sql_query($_q, "");
 	</div>
 
 
-	<div class="section full ">
-		<div class="wide-block pt-2 pb-2">
-
-			<div class="row">
-				<!--<div class="col-2">
-                        <a href="#"><div class="tabBox">NAF Form</div></a>
-                    </div>
-                    <div class="col-2">
-						<a href="hcp_form.html"><div class="tabBox">HCP Information Form</div></a>
-                    </div>
-                    <div class="col-2">
-                        <a href="hcp_agreement.html"><div class="tabBox">HCP Agreement</div></a>
-                    </div>
-                    <div class="col-2">
-                        <a href="questionnaire.html"><div class="tabBox">Questionnaire</div></a>
-                    </div>
-                    <div class="col-2">
-                        <a href="document_upload.html"><div class="tabBox">Documents upload</div></a>
-                    </div>
-                    <div class="col-2">
-                        <a href="generate_pdf.html"><div class="tabBox">Generate PDF</div></a>
-                    </div>-->
-			</div>
-
-		</div>
-	</div>
+	<?php include '_tabscamp.php';?>
 
 
 	<div id="appCapsule">

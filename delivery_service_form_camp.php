@@ -157,7 +157,7 @@ $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_req
 
 		</div>
 	</div> */
-	include '_tabs.php';
+	include '_tabscamp.php';
 	?>
 
 

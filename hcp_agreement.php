@@ -238,7 +238,7 @@ $naf_activity_name = GetXFromYID("select naf_activity_name from crm_naf_main whe
 
 	<?php
 	if ($shortcodemode == '') {
-		include '_tabs.php';
+		include '_tabscamp.php';
 	} ?>
 
 

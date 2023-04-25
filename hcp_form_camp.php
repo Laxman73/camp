@@ -109,7 +109,7 @@ $hospital_name = (isset($HOSPITAL_ARR[$hostcontactid])) ? $HOSPITAL_ARR[$hostcon
             </div>
         </div>-->
 
-
+		<?php include '_tabscamp.php';?>
 
 
 	<div id="appCapsule">

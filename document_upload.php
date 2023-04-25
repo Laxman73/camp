@@ -62,6 +62,8 @@ if ($MODE == 'R' || $MODE == 'E') {
 		$chaque_image = isset($ATTACHMENT_ARR[2]) && !empty($ATTACHMENT_ARR[2]) ? $ATTACHMENT_ARR[2] : '';
 		$visiting_image = isset($ATTACHMENT_ARR[3]) && !empty($ATTACHMENT_ARR[3]) ? $ATTACHMENT_ARR[3] : '';
 	}
+	// DFA($ATTACHMENT_ARR);
+	// exit;
 }
 
 ?>
@@ -101,7 +103,7 @@ if ($MODE == 'R' || $MODE == 'E') {
 	</div>
 
 
-	<?php include '_tabs.php'; ?>
+	<?php include '_tabscamp.php'; ?>
 
 
 	<div id="appCapsule">
