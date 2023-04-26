@@ -3,6 +3,8 @@ error_reporting(E_ALL);
 ini_set('display_errors', '1');
 include "includes/common.php";
 
+$disp_url='naf_camp.php';
+
 
 $page_title = 'Camp Activity';
 $TITLE = SITE_NAME . ' | ' . $page_title;
@@ -20,6 +22,9 @@ if (empty($USER_ID) || (!empty($USER_ID) && !is_numeric($USER_ID))) {
 // getting role and profile id of user
 $ROLE_ID = GetXFromYID("select roleid from user2role where userid='" . $USER_ID . "'");
 $PROFILE_ID = GetXFromYID("select profileid from role2profile where roleid='" . $ROLE_ID . "'");
+
+
+
 $User_division = GetXFromYID("select division from users where id='$USER_ID' "); //Getting division
 $SPECILITY_ARR = $CRM_FILEDS = array();
 
@@ -45,6 +50,124 @@ if (!empty($User_division) && (isset($User_division))) {
 $SPECILITY_ARR = GetXArrFromYID("select specialityid as id,specialityname as name from speciality where  in_use=0 AND fyear='$curr_fyear'   ".$cond, '3');
 
 $PRODUCTS_ARR = GetXArrFromYID("select productbrandtypeid as id ,productbrandtype as name from productbrandtype where presence=1 " . $cond . " order by productbrandtype ASC", '3');
+
+
+$mode='A';
+
+if (isset($_GET['rid'])) $mode = 'E';
+
+if ($mode=='A') {
+  $initiator='';
+  $REQid='';
+  $emp_code='';
+  $date='';
+  $post_comment='';
+  $category_id='';
+  $submitted_on='';
+  $submitted='';
+  $pendingwithid='';
+  $authorise='';
+  $approved_date='';
+  $deleted='';
+  $deleted_on='';
+  $eventdate=TODAY;
+  $level='';
+  $naf_no='';
+  $naf_activity_name='';
+  $naf_city='';
+  $naf_proposed_venue='';
+  $naf_estimate_no_participents='';
+  $naf_start_date='';
+  $naf_end_date='';
+  $naf_objective_rational='';
+  $remarks='';
+  $quarter='';
+  $nafmode='';
+  $proposed_activity_count='';
+  $proposed_hcp_no='';
+  $proposed_activity='';
+  $proposed_objective='';
+  $rationale_remark='';
+  $lead_event='';
+  $medical_equipments='';
+  $deviation_amount='';
+  $parent_id='';
+  $event_benefit_society='';
+  $budget_amount='';
+  $role_of_advisory='';
+  $doc_upload_path='';
+  $status='';
+  $advance_payment='';
+
+}elseif ($mode=='E') {
+	$DATA = GetDataFromID('crm_naf_main', 'id', $rid, "and deleted=0 and category_id=5 ");
+	if (empty($DATA)) {
+		header('location: ' . $disp_url . '?userid=' . $USER_ID);
+		exit;
+	}
+	$initiator =db_output2($DATA[0]->initiator);
+	$REQid=db_output2($DATA[0]->userid);
+	$emp_code= db_output2($DATA[0]->emp_code);
+	$date =db_output2($DATA[0]->date);
+	$post_comment =db_output2($DATA[0]->post_comment);
+	$category_id =db_output2($DATA[0]->category_id);
+	$submitted_on =db_output2($DATA[0]->submitted_on);
+	$submitted =db_output2($DATA[0]->submitted);
+	$pendingwithid =db_output2($DATA[0]->pendingwithid);
+	$authorise =db_output2($DATA[0]->authorise);
+	$approved_date =db_output2($DATA[0]->approved_date);
+	$deleted =db_output2($DATA[0]->deleted);
+	$deleted_on =db_output2($DATA[0]->deleted_on);
+	$eventdate =db_output2($DATA[0]->eventdate);
+	$level =db_output2($DATA[0]->level);
+	$naf_no =db_output2($DATA[0]->naf_no);
+	$naf_activity_name =db_output2($DATA[0]->naf_activity_name);
+	$naf_city =db_output2($DATA[0]->naf_city);
+	$naf_proposed_venue =db_output2($DATA[0]->naf_proposed_venue);
+	$naf_estimate_no_participents =db_output2($DATA[0]->naf_estimate_no_participents);
+	$naf_start_date =db_output2($DATA[0]->naf_start_date);
+	$naf_end_date = db_output2($DATA[0]->naf_end_date);
+	$naf_objective_rational = db_output2($DATA[0]->naf_objective_rational);
+	$remarks = db_output2($DATA[0]->remarks);
+	$quarter = db_output2($DATA[0]->quarter);
+	$nafmode = db_output2($DATA[0]->nafmode);
+	$proposed_activity_count = db_output2($DATA[0]->proposed_activity_count);
+	$proposed_hcp_no = db_output2($DATA[0]->proposed_hcp_no);
+	$proposed_activity = db_output2($DATA[0]->proposed_activity);
+	$proposed_objective = db_output2($DATA[0]->proposed_objective);
+	$rationale_remark = db_output2($DATA[0]->rationale_remark);
+	$lead_event = db_output2($DATA[0]->lead_event);
+	$medical_equipments = db_output2($DATA[0]->medical_equipments);
+	$deviation_amount = db_output2($DATA[0]->deviation_amount);
+	$parent_id = db_output2($DATA[0]->parent_id);
+	$event_benefit_society = db_output2($DATA[0]->event_benefit_society);
+	$budget_amount = db_output2($DATA[0]->budget_amount);
+	$role_of_advisory = db_output2($DATA[0]->role_of_advisory);
+	$doc_upload_path = db_output2($DATA[0]->doc_upload_path);
+	$status = db_output2($DATA[0]->status);
+	$advance_payment = db_output2($DATA[0]->advance_payment);
+
+	$curr_dt = date('Y-m-d',strtotime($submitted_on));
+	// $financial_qry = "SELECT financial_year FROM financialyear where '".$curr_dt."' between from_date and to_date";
+	// $financial_qry_res = sql_query($financial_qry);
+	$curr_fyear = GetXFromYID("SELECT financial_year FROM financialyear where '" . $curr_dt . "' between from_date and to_date ");
+
+	$User_division = GetXFromYID("select division from users where id='$REQid' "); //Getting division
+
+
+	$selectoption = $readonly = 'readonly';
+
+	$cond = '';
+	if (!empty($User_division) && (isset($User_division))) {
+		$cond .= " and division=$User_division ";
+	}
+
+
+	$SPECILITY_ARR = GetXArrFromYID("select specialityid as id,specialityname as name from speciality where  in_use=0 AND fyear='$curr_fyear'   " . $cond, '3');
+
+	$PRODUCTS_ARR = GetXArrFromYID("select productbrandtypeid as id ,productbrandtype as name from productbrandtype where presence=1 " . $cond . " order by productbrandtype ASC", '3');
+
+}
 
 // $_crm_field_q = "select naf_field_id,naf_expense from crm_naf_cost_details where naf_request_id='$id' ";
 // $_crm_field_r = sql_query($_crm_field_q, '');
@@ -110,7 +233,7 @@ $_r = sql_query($_q, "");
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="text" class="form-control" name="reqDate" id="reqDate" value="<?php echo TODAY; ?>" readonly>
+											<input type="text" class="form-control" name="reqDate" id="reqDate" value="<?php echo $eventdate; ?>" readonly>
 										</div>
 
 									</div>

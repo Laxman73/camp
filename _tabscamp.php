@@ -6,8 +6,9 @@ $pid=(isset($pid))?$pid:'';
 $qusetnr_url=(isset($qusetnr_url))?$qusetnr_url:'';
 $NUm_of_PMAraised=(isset($NUm_of_PMAraised))?$NUm_of_PMAraised:0;
 if ($display_all == 1) {
-	$naf_form_url = "naf_form_pma.php?rid=$rid&userid=$USER_ID&pid=$pid&display_all=1";
-	$hcp_form_url = "hcp_form_camp.php?rid=$rid&userid=$USER_ID&pid=$pid&display_all=1";
+	$naf_form_q_url = "index_camp.php?rid=$rid&userid=$USER_ID&pid=$pid";
+	$naf_form_camp_url = "naf_camp.php?rid=$rid&userid=$USER_ID&pid=$pid";
+	$naf_request_letter_url = "request_letter_camp.php?rid=$rid&userid=$USER_ID&pid=$pid";
 	$naf_agrmnt_url = "hcp_agreement.php?rid=$rid&userid=$USER_ID&pid=$pid&display_all=1";
 
 	if (!empty($pid)) {
