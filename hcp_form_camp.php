@@ -8,6 +8,7 @@ $page_title = 'HCP Form';
 $TITLE = SITE_NAME . ' | ' . $page_title;
 
 $rid = (isset($_GET['rid'])) ? $_GET['rid'] : '';
+$prid = (isset($_GET['prid'])) ? $_GET['prid'] : '';
 $pid = (isset($_GET['pid'])) ? $_GET['pid'] : '';
 $USER_ID = (isset($_GET['userid'])) ? $_GET['userid'] : '';
 $display_all = (isset($_GET['display_all'])) ? $_GET['display_all'] : '0';
@@ -23,8 +24,9 @@ if (empty($rid) || (!empty($rid) && !is_numeric($rid))) {
 }
 
 if (empty($pid) || (!empty($pid) && !is_numeric($pid))) {
-	echo 'Invalid Access Detected!!!';
-	exit;
+	$mode='A';
+}else {
+	$mode='E';
 }
 
 // getting role and profile id of user
@@ -69,6 +71,24 @@ $_q2 = "select hoscontactid from approval_doctor_hospital_association where cont
 $_r2 = sql_query($_q2);
 list($hostcontactid) = sql_fetch_row($_r2);
 $hospital_name = (isset($HOSPITAL_ARR[$hostcontactid])) ? $HOSPITAL_ARR[$hostcontactid] : '';
+
+if ($mode=='A') {
+	$yr_of_registration='';
+  $no_of_yr_experience_doctor='';
+  $speciality_id='';
+  $no_of_publication='';
+  $part_of='';
+  $speaker='';
+  $part_of_peer='';
+  $position='';
+  $no_of_yr_experience_clinic='';
+  $hcp_sign='';
+  $hcp_sign_date='';
+  $emp_sign='';
+  `emp_sign_date` datetime NOT NULL,
+  `submitted_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `submitted` int(1) NOT NULL,
+}
 
 
 ?>

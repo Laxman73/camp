@@ -10,6 +10,7 @@ $page_title = 'Camp Quarter';
 $TITLE = SITE_NAME . ' | ' . $page_title;
 
 $rid = (isset($_GET['rid'])) ? $_GET['rid'] : '';
+$prid = (isset($_GET['prid'])) ? $_GET['prid'] : '';
 $pid = (isset($_GET['pid'])) ? $_GET['pid'] : '';
 $USER_ID = (isset($_GET['userid'])) ? $_GET['userid'] : '';
 $display_all = (isset($_GET['display_all'])) ? $_GET['display_all'] : '0';
@@ -22,10 +23,9 @@ if (empty($USER_ID) || (!empty($USER_ID) && !is_numeric($USER_ID))) {
 $ROLE_ID = GetXFromYID("select roleid from user2role where userid='" . $USER_ID . "'");
 $PROFILE_ID = GetXFromYID("select profileid from role2profile where roleid='" . $ROLE_ID . "'");
 
-$mode = 'A';
 
 //$User_division = GetXFromYID("select division from users where id='$USER_ID' "); //Getting division
-$SPECILITY_ARR =$SELECTED_SPECIALITIES =$S_ARRA= array();
+$SPECILITY_ARR = $SELECTED_SPECIALITIES = $S_ARRA = array();
 
 $ACTIVITY_ARR = GetXArrFromYID('SELECT id as id,`activityname`  as name FROM `crm_naf_activitymaster` where deleted=0', '3');
 
@@ -38,8 +38,16 @@ $SPECILITY_ARR = GetXArrFromYID("select specialityid as id,specialityname as nam
 $QUARTER_ARR = GetXArrFromYID("select quarterid,quarter_name from crm_naf_quarter_master ", '3');
 
 
+// $mode = 'A';
 
-if (isset($_GET['rid'])) $mode = 'E';
+if (empty($prid) || (!empty($prid) && !is_numeric($prid))) {
+	$mode = 'A';
+}else{
+	$mode='E';
+}
+
+
+// if (isset($_GET['rid'])) $mode = 'E';
 
 if ($mode == 'A') {
 	$readonly = $selectoption = '';
@@ -78,9 +86,9 @@ if ($mode == 'A') {
 	$medical_equipments = '';
 	$deviation_amount = '';
 	$budget_amount = '';
-	$event_benefit_society='';
+	$event_benefit_society = '';
 } elseif ($mode == 'E') {
-	$DATA = GetDataFromID('crm_naf_main', 'id', $rid, "and deleted=0 ");
+	$DATA = GetDataFromID('crm_naf_main', 'id', $prid, "and deleted=0 ");
 	if (empty($DATA)) {
 		header('location: ' . $disp_url . '?userid=' . $USER_ID);
 		exit;
@@ -130,8 +138,8 @@ if ($mode == 'A') {
 
 	$curr_fyear = GetXFromYID("SELECT financial_year FROM financialyear where '" . $curr_dt . "' between from_date and to_date ");
 
-$SPECILITY_ARR = GetXArrFromYID("select specialityid as id,specialityname as name from speciality where  in_use=0 AND fyear='$curr_fyear' and division='$division' ", '3');
-$QUARTER_ARR = GetXArrFromYID("select quarterid,quarter_name from crm_naf_quarter_master ", '3');
+	$SPECILITY_ARR = GetXArrFromYID("select specialityid as id,specialityname as name from speciality where  in_use=0 AND fyear='$curr_fyear' and division='$division' ", '3');
+	$QUARTER_ARR = GetXArrFromYID("select quarterid,quarter_name from crm_naf_quarter_master ", '3');
 
 
 	$_sp_q = "select speciality_id from crm_naf_speciality_details where naf_request_id='$rid' ";
@@ -155,7 +163,7 @@ $QUARTER_ARR = GetXArrFromYID("select quarterid,quarter_name from crm_naf_quarte
 	}
 
 	//DFA($S_ARRA);
-	
+
 
 }
 
@@ -470,22 +478,22 @@ $QUARTER_ARR = GetXArrFromYID("select quarterid,quarter_name from crm_naf_quarte
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											
-												
-													<?php
-													
-													if ($mode=='A') {
-														echo '<select class="form-control custom-select" name="targetedSpeciality[]" multiple id="targetedSpeciality">';
-														foreach ($SPECILITY_ARR as $key => $value) {
-															echo '<option value="' . $key . '" >' . $value . '</option>';
-														}
-														echo '</select>';
-													}elseif ($mode=='E') { ?>
-														 <input type="text" class="form-control" value="<?php echo implode(",", $S_ARRA); ?>"  placeholder="" required="" <?php echo $readonly; ?>>
-													<?php }
-													?>
-												
-											
+
+
+											<?php
+
+											if ($mode == 'A') {
+												echo '<select class="form-control custom-select" name="targetedSpeciality[]" multiple id="targetedSpeciality">';
+												foreach ($SPECILITY_ARR as $key => $value) {
+													echo '<option value="' . $key . '" >' . $value . '</option>';
+												}
+												echo '</select>';
+											} elseif ($mode == 'E') { ?>
+												<input type="text" class="form-control" value="<?php echo implode(",", $S_ARRA); ?>" placeholder="" required="" <?php echo $readonly; ?>>
+											<?php }
+											?>
+
+
 										</div>
 									</div>
 
@@ -500,7 +508,7 @@ $QUARTER_ARR = GetXArrFromYID("select quarterid,quarter_name from crm_naf_quarte
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="text" class="form-control" name="proposed_obj" value="<?php echo $proposed_objective;?>" id="proposed_obj" placeholder="" required="">
+											<input type="text" class="form-control" name="proposed_obj" value="<?php echo $proposed_objective; ?>" id="proposed_obj" placeholder="" required="">
 										</div>
 									</div>
 								</div>
@@ -515,7 +523,7 @@ $QUARTER_ARR = GetXArrFromYID("select quarterid,quarter_name from crm_naf_quarte
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="text" class="form-control" value="<?php echo $naf_objective_rational;?>" id="rationale" name="rationale" placeholder="" required="">
+											<input type="text" class="form-control" value="<?php echo $naf_objective_rational; ?>" id="rationale" name="rationale" placeholder="" required="">
 										</div>
 									</div>
 								</div>
@@ -530,7 +538,7 @@ $QUARTER_ARR = GetXArrFromYID("select quarterid,quarter_name from crm_naf_quarte
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="text" class="form-control" id="activity_benefit" name="activity_benefit" value="<?php echo $event_benefit_society;?>" placeholder="" required="">
+											<input type="text" class="form-control" id="activity_benefit" name="activity_benefit" value="<?php echo $event_benefit_society; ?>" placeholder="" required="">
 										</div>
 									</div>
 								</div>
@@ -546,7 +554,7 @@ $QUARTER_ARR = GetXArrFromYID("select quarterid,quarter_name from crm_naf_quarte
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="text" class="form-control" value="<?php echo $lead_event;?>" id="event_lead" name="event_lead" placeholder="" required="">
+											<input type="text" class="form-control" value="<?php echo $lead_event; ?>" id="event_lead" name="event_lead" placeholder="" required="">
 										</div>
 									</div>
 								</div>
@@ -561,7 +569,7 @@ $QUARTER_ARR = GetXArrFromYID("select quarterid,quarter_name from crm_naf_quarte
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="text" class="form-control" value="<?php echo $medical_equipments;?>" id="medical_equipment_needed" name="medical_equipment_needed" placeholder="" required="">
+											<input type="text" class="form-control" value="<?php echo $medical_equipments; ?>" id="medical_equipment_needed" name="medical_equipment_needed" placeholder="" required="">
 										</div>
 									</div>
 								</div>
@@ -576,7 +584,7 @@ $QUARTER_ARR = GetXArrFromYID("select quarterid,quarter_name from crm_naf_quarte
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="number" class="form-control" value="<?php echo $deviation_amount;?>" name="deviation_amount" id="deviation_amount" placeholder="" required="">
+											<input type="number" class="form-control" value="<?php echo $deviation_amount; ?>" name="deviation_amount" id="deviation_amount" placeholder="" required="">
 										</div>
 									</div>
 								</div>

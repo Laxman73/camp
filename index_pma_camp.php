@@ -338,7 +338,6 @@ if (sql_num_rows($_R)) {
 								<th>Division</th>
 								<th>Requestor Name</th>
 								<th>Pending with</th>
-
 								<!-- <th>Approved by</th> -->
 								<th>Status</th>
 
@@ -346,10 +345,7 @@ if (sql_num_rows($_R)) {
 						</thead>
 						<tbody>
 							<?php
-
-							$_q = "select t1.id ,t2.level,t1.initiator,t1.date,t1.naf_no,t2.request_no,t2.authorise,t2.submitted_on,t2.requestor_id,t2.pendingwithid,t2.id as pmaID,t1.naf_activity_name from  crm_naf_main t1 inner join crm_request_main t2 on t1.naf_no=t2.naf_no  where 1 and  t2.deleted=0 and t2.category_id=12 " . $cond . "   order by t2.id DESC";
-
-
+							$_q = "select t1.id ,t2.level,t1.parent_id as Parent_ID,t1.initiator,t1.date,t1.naf_no,t2.request_no,t2.authorise,t2.submitted_on,t2.requestor_id,t2.pendingwithid,t2.id as pmaID,t1.naf_activity_name from  crm_naf_main t1 inner join crm_request_main t2 on t1.naf_no=t2.naf_no  where 1 and  t2.deleted=0 and t2.category_id=12 " . $cond . "   order by t2.id DESC";
 							$_r = sql_query($_q, "");
 							if (sql_num_rows($_r)) {
 								for ($i = 1; $o = sql_fetch_object($_r); $i++) {
@@ -358,6 +354,8 @@ if (sql_num_rows($_R)) {
 									$pendingwithID = $o->pendingwithid;
 									$naf_no = $o->naf_no;
 									$PMA_level = $o->level;
+									$PMA_PARENTID = $o->Parent_ID;
+									$PRID=GetXFromYID("select id from crm_naf_main where naf_no='$PMA_PARENTID' and deleted=0 ");//Parent ID
 									$requestor_id = $o->requestor_id;
 									$PMArefno = $o->request_no; //Pma reference NUmber
 									$PMAID = $o->pmaID; //id of crm_request_main
@@ -375,7 +373,7 @@ if (sql_num_rows($_R)) {
 
 									$division = GetXFromYID("SELECT division FROM users WHERE id='$requestor_id' ");
 									$x_total = GetXFromYID("select sum(naf_expense) from crm_naf_cost_details where naf_request_id='$rid' ");
-									$url = 'request_letter_camp.php?rid='.$crm_naf_ID.'&userid='.$USER_ID;
+									$url = 'request_letter_camp.php?rid='.$crm_naf_ID.'&userid='.$USER_ID.'&pid='.$PMAID.'&prid='.$PRID;
 
 									//state head	24676
 									// if ($PROFILE_ID == '15') {

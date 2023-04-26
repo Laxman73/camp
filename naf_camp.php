@@ -3,21 +3,41 @@ error_reporting(E_ALL);
 ini_set('display_errors', '1');
 include "includes/common.php";
 
-$disp_url='naf_camp.php';
+$disp_url = 'index.php';
 
 
 $page_title = 'Camp Activity';
 $TITLE = SITE_NAME . ' | ' . $page_title;
 
 $rid = (isset($_GET['rid'])) ? $_GET['rid'] : '';
+$prid = (isset($_GET['prid'])) ? $_GET['prid'] : '';
 $pid = (isset($_GET['pid'])) ? $_GET['pid'] : '';
+
 $USER_ID = (isset($_GET['userid'])) ? $_GET['userid'] : '';
 $display_all = (isset($_GET['display_all'])) ? $_GET['display_all'] : '0';
+
+$ADVANCE_PAYMENT_ARRAY = array('Yes' => 'Yes', 'No' => 'NO');
 
 if (empty($USER_ID) || (!empty($USER_ID) && !is_numeric($USER_ID))) {
 	echo 'Invalid Access Detected!!!';
 	exit;
 }
+
+if (empty($prid) || (!empty($prid) && !is_numeric($prid))) {
+	echo 'Invalid Access Detected!!!';
+	exit;
+}
+
+if (empty($rid) || (!empty($rid) && !is_numeric($rid))) {
+	$mode = 'A';
+}else{
+	$mode='E';
+}
+
+//if (isset($_GET['prid'])) $mode = 'A';
+
+
+
 
 // getting role and profile id of user
 $ROLE_ID = GetXFromYID("select roleid from user2role where userid='" . $USER_ID . "'");
@@ -26,7 +46,7 @@ $PROFILE_ID = GetXFromYID("select profileid from role2profile where roleid='" . 
 
 
 $User_division = GetXFromYID("select division from users where id='$USER_ID' "); //Getting division
-$SPECILITY_ARR = $CRM_FILEDS = array();
+$SPECILITY_ARR = $CRM_FILEDS = $SELECTED_SPECIALITIES = $S_ARRA = array();
 
 $ACTIVITY_ARR = GetXArrFromYID('SELECT id as id,`activityname`  as name FROM `crm_naf_activitymaster` where deleted=0', '3');
 
@@ -47,90 +67,88 @@ if (!empty($User_division) && (isset($User_division))) {
 }
 
 
-$SPECILITY_ARR = GetXArrFromYID("select specialityid as id,specialityname as name from speciality where  in_use=0 AND fyear='$curr_fyear'   ".$cond, '3');
+$SPECILITY_ARR = GetXArrFromYID("select specialityid as id,specialityname as name from speciality where  in_use=0 AND fyear='$curr_fyear'   " . $cond, '3');
 
 $PRODUCTS_ARR = GetXArrFromYID("select productbrandtypeid as id ,productbrandtype as name from productbrandtype where presence=1 " . $cond . " order by productbrandtype ASC", '3');
 
 
-$mode='A';
 
-if (isset($_GET['rid'])) $mode = 'E';
-
-if ($mode=='A') {
-  $initiator='';
-  $REQid='';
-  $emp_code='';
-  $date='';
-  $post_comment='';
-  $category_id='';
-  $submitted_on='';
-  $submitted='';
-  $pendingwithid='';
-  $authorise='';
-  $approved_date='';
-  $deleted='';
-  $deleted_on='';
-  $eventdate=TODAY;
-  $level='';
-  $naf_no='';
-  $naf_activity_name='';
-  $naf_city='';
-  $naf_proposed_venue='';
-  $naf_estimate_no_participents='';
-  $naf_start_date='';
-  $naf_end_date='';
-  $naf_objective_rational='';
-  $remarks='';
-  $quarter='';
-  $nafmode='';
-  $proposed_activity_count='';
-  $proposed_hcp_no='';
-  $proposed_activity='';
-  $proposed_objective='';
-  $rationale_remark='';
-  $lead_event='';
-  $medical_equipments='';
-  $deviation_amount='';
-  $parent_id='';
-  $event_benefit_society='';
-  $budget_amount='';
-  $role_of_advisory='';
-  $doc_upload_path='';
-  $status='';
-  $advance_payment='';
-
-}elseif ($mode=='E') {
+if ($mode == 'A') {
+	$initiator = '';
+	$REQid = '';
+	$emp_code = '';
+	$date = '';
+	$post_comment = '';
+	$category_id = '';
+	$submitted_on = '';
+	$submitted = '';
+	$pendingwithid = '';
+	$authorise = '';
+	$approved_date = '';
+	$deleted = '';
+	$deleted_on = '';
+	$eventdate = TODAY;
+	$level = '';
+	$naf_no = '';
+	$naf_activity_name = '';
+	$naf_city = '';
+	$naf_proposed_venue = '';
+	$naf_estimate_no_participents = '';
+	$naf_start_date = '';
+	$naf_end_date = '';
+	$naf_objective_rational = '';
+	$remarks = '';
+	$quarter = '';
+	$nafmode = '';
+	$proposed_activity_count = '';
+	$proposed_hcp_no = '';
+	$proposed_activity = '';
+	$proposed_objective = '';
+	$rationale_remark = '';
+	$lead_event = '';
+	$medical_equipments = '';
+	$deviation_amount = '';
+	$parent_id = '';
+	$event_benefit_society = '';
+	$budget_amount = '';
+	$role_of_advisory = '';
+	$doc_upload_path = '';
+	$status = '';
+	$advance_payment = '';
+	$productID = '';
+	$x_total = '';
+} elseif ($mode == 'E') {
 	$DATA = GetDataFromID('crm_naf_main', 'id', $rid, "and deleted=0 and category_id=5 ");
 	if (empty($DATA)) {
 		header('location: ' . $disp_url . '?userid=' . $USER_ID);
 		exit;
 	}
-	$initiator =db_output2($DATA[0]->initiator);
-	$REQid=db_output2($DATA[0]->userid);
-	$emp_code= db_output2($DATA[0]->emp_code);
-	$date =db_output2($DATA[0]->date);
-	$post_comment =db_output2($DATA[0]->post_comment);
-	$category_id =db_output2($DATA[0]->category_id);
-	$submitted_on =db_output2($DATA[0]->submitted_on);
-	$submitted =db_output2($DATA[0]->submitted);
-	$pendingwithid =db_output2($DATA[0]->pendingwithid);
-	$authorise =db_output2($DATA[0]->authorise);
-	$approved_date =db_output2($DATA[0]->approved_date);
-	$deleted =db_output2($DATA[0]->deleted);
-	$deleted_on =db_output2($DATA[0]->deleted_on);
-	$eventdate =db_output2($DATA[0]->eventdate);
-	$level =db_output2($DATA[0]->level);
-	$naf_no =db_output2($DATA[0]->naf_no);
-	$naf_activity_name =db_output2($DATA[0]->naf_activity_name);
-	$naf_city =db_output2($DATA[0]->naf_city);
-	$naf_proposed_venue =db_output2($DATA[0]->naf_proposed_venue);
-	$naf_estimate_no_participents =db_output2($DATA[0]->naf_estimate_no_participents);
-	$naf_start_date =db_output2($DATA[0]->naf_start_date);
+	$initiator = db_output2($DATA[0]->initiator);
+	$REQid = db_output2($DATA[0]->userid);
+	$emp_code = db_output2($DATA[0]->emp_code);
+	$date = db_output2($DATA[0]->date);
+	$post_comment = db_output2($DATA[0]->post_comment);
+	$category_id = db_output2($DATA[0]->category_id);
+	$submitted_on = db_output2($DATA[0]->submitted_on);
+	$submitted = db_output2($DATA[0]->submitted);
+	$pendingwithid = db_output2($DATA[0]->pendingwithid);
+	$authorise = db_output2($DATA[0]->authorise);
+	$approved_date = db_output2($DATA[0]->approved_date);
+	$deleted = db_output2($DATA[0]->deleted);
+	$deleted_on = db_output2($DATA[0]->deleted_on);
+	$eventdate = db_output2($DATA[0]->eventdate);
+	$level = db_output2($DATA[0]->level);
+	$naf_no = db_output2($DATA[0]->naf_no);
+	$naf_activity_name = db_output2($DATA[0]->naf_activity_name);
+	$naf_city = db_output2($DATA[0]->naf_city);
+	$naf_proposed_venue = db_output2($DATA[0]->naf_proposed_venue);
+	$naf_estimate_no_participents = db_output2($DATA[0]->naf_estimate_no_participents);
+	$naf_start_date = db_output2($DATA[0]->naf_start_date);
 	$naf_end_date = db_output2($DATA[0]->naf_end_date);
 	$naf_objective_rational = db_output2($DATA[0]->naf_objective_rational);
 	$remarks = db_output2($DATA[0]->remarks);
 	$quarter = db_output2($DATA[0]->quarter);
-	$nafmode = db_output2($DATA[0]->nafmode);
+	$nafmode = db_output2($DATA[0]->mode);
 	$proposed_activity_count = db_output2($DATA[0]->proposed_activity_count);
 	$proposed_hcp_no = db_output2($DATA[0]->proposed_hcp_no);
 	$proposed_activity = db_output2($DATA[0]->proposed_activity);
@@ -146,8 +164,9 @@ if ($mode=='A') {
 	$doc_upload_path = db_output2($DATA[0]->doc_upload_path);
 	$status = db_output2($DATA[0]->status);
 	$advance_payment = db_output2($DATA[0]->advance_payment);
+	$productID = GetXFromYID("select product_id from crm_naf_product_details where naf_request_id='$rid' ");
 
-	$curr_dt = date('Y-m-d',strtotime($submitted_on));
+	$curr_dt = date('Y-m-d', strtotime($submitted_on));
 	// $financial_qry = "SELECT financial_year FROM financialyear where '".$curr_dt."' between from_date and to_date";
 	// $financial_qry_res = sql_query($financial_qry);
 	$curr_fyear = GetXFromYID("SELECT financial_year FROM financialyear where '" . $curr_dt . "' between from_date and to_date ");
@@ -167,7 +186,44 @@ if ($mode=='A') {
 
 	$PRODUCTS_ARR = GetXArrFromYID("select productbrandtypeid as id ,productbrandtype as name from productbrandtype where presence=1 " . $cond . " order by productbrandtype ASC", '3');
 
+
+	$_sp_q = "select speciality_id from crm_naf_speciality_details where naf_request_id='$rid' and deleted=0  ";
+	$SELECTED_SPECIALITIES = array(); //selected speciality ids
+	$_sq_q_r = sql_query($_sp_q, '');
+	while (list($specialityid) = sql_fetch_row($_sq_q_r)) {
+		if (!isset($SELECTED_SPECIALITIES[$specialityid]))
+			$SELECTED_SPECIALITIES[$specialityid] =   $specialityid;
+	}
+	//DFA($SELECTED_SPECIALITIES);
+
+	$S_ARRA = array();
+	//DFA($SELECTED_SPECIALITIES);
+	foreach ($SPECILITY_ARR as $key => $value) {
+		if (isset($SELECTED_SPECIALITIES[$key])) {
+			# code...
+			if ($SELECTED_SPECIALITIES[$key] == $key) {
+				array_push($S_ARRA, $value);
+			}
+		}
+	}
+
+
+	$_crm_field_q = "select naf_field_id,naf_expense from crm_naf_cost_details where naf_request_id='$rid' ";
+	$_crm_field_r = sql_query($_crm_field_q, '');
+
+	while (list($naf_field_id, $naf_expense) = sql_fetch_row($_crm_field_r)) {
+		if (!isset($CRM_FILEDS[$naf_field_id]))
+			$CRM_FILEDS[$naf_field_id] = $naf_expense;
+	}
+
+	$x_total = GetXFromYID("select sum(naf_expense) from crm_naf_cost_details where naf_request_id='$rid' "); //total amount
+
+
+	//DFA($S_ARRA);
 }
+
+
+
 
 // $_crm_field_q = "select naf_field_id,naf_expense from crm_naf_cost_details where naf_request_id='$id' ";
 // $_crm_field_r = sql_query($_crm_field_q, '');
@@ -205,14 +261,15 @@ $_r = sql_query($_q, "");
 	</div>
 
 
-	<?php include '_tabscamp.php';?>
+	<?php include '_tabscamp.php'; ?>
 
 
 	<div id="appCapsule">
 
 		<form action="save_nafActivity.php" method="post" enctype="multipart/form-data">
-			<input type="hidden" name="userid" value="<?php echo $USER_ID;?>">
-			<input type="hidden" name="rid" value="<?php echo $rid;?>">
+			<input type="hidden" name="userid" value="<?php echo $USER_ID; ?>">
+			<input type="hidden" name="prid" value="<?php echo $prid; ?>">
+			<input type="hidden" name="rid" value="<?php echo $rid; ?>">
 
 			<div class="tab-content mt-1">
 
@@ -257,7 +314,7 @@ $_r = sql_query($_q, "");
 													$selected =    ($productID == $key) ? 'selected' : '';
 													echo '<option value="' . $key . '" ' . $selected . ' >' . $value . '</option>';
 												}
-											
+
 												?>
 											</select>
 										</div>
@@ -274,7 +331,7 @@ $_r = sql_query($_q, "");
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="text" class="form-control" id="eventID" name="eventID" placeholder="" readonly>
+											<input type="text" class="form-control" value="<?php echo $naf_no; ?>" id="eventID" name="eventID" placeholder="" readonly>
 										</div>
 									</div>
 								</div>
@@ -290,7 +347,7 @@ $_r = sql_query($_q, "");
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="text" class="form-control" name="activty_name" id="activty_name" required="">
+											<input type="text" class="form-control" name="activty_name" value="<?php echo $naf_activity_name; ?>" id="activty_name" required="">
 										</div>
 									</div>
 								</div>
@@ -311,7 +368,7 @@ $_r = sql_query($_q, "");
 												<?php
 												foreach ($ACTIVITY_ARR as $key => $value) {
 													//echo $value[$key]['iModID'];
-													$selected = '';
+													$selected = ($proposed_activity == $key) ? 'selected' : '';
 													echo '<option value="' . $key . '" ' . $selected . ' >' . $value . '</option>';
 												}
 												?>
@@ -353,7 +410,7 @@ $_r = sql_query($_q, "");
 												<?php
 												foreach ($CITY_ARR as $key => $value) {
 													//echo $value[$key]['iModID'];
-													$selected = '';
+													$selected = ($naf_city == $key) ? 'selected' : '';
 													echo '<option value="' . $key . '" ' . $selected . ' >' . $value . '</option>';
 												}
 												?>
@@ -373,7 +430,7 @@ $_r = sql_query($_q, "");
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="text" class="form-control" id="venue" name="venue" placeholder="" required="">
+											<input type="text" class="form-control" id="venue" value="<?php echo $naf_proposed_venue; ?>" name="venue" placeholder="" required="">
 										</div>
 									</div>
 								</div>
@@ -389,7 +446,7 @@ $_r = sql_query($_q, "");
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="text" class="form-control" id="no_of_p" name="no_of_p" placeholder="" required="">
+											<input type="text" class="form-control" id="no_of_p" name="no_of_p" value="<?php echo $naf_estimate_no_participents; ?>" placeholder="" required="">
 										</div>
 									</div>
 								</div>
@@ -406,15 +463,18 @@ $_r = sql_query($_q, "");
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<select class="form-control custom-select" name="targetedSpeciality[]" multiple id="targetedSpeciality" required>
-												<?php
+											<?php
+
+											if ($mode == 'A') {
+												echo '<select class="form-control custom-select" name="targetedSpeciality[]" multiple id="targetedSpeciality">';
 												foreach ($SPECILITY_ARR as $key => $value) {
-													//echo $value[$key]['iModID'];
-													$selected = '';
-													echo '<option value="' . $key . '" ' . $selected . '>' . $value . '</option>';
+													echo '<option value="' . $key . '" >' . $value . '</option>';
 												}
-												?>
-											</select>
+												echo '</select>';
+											} elseif ($mode == 'E') { ?>
+												<input type="text" class="form-control" value="<?php echo implode(",", $S_ARRA); ?>" placeholder="" required="" <?php echo $readonly; ?>>
+											<?php }
+											?>
 										</div>
 									</div>
 								</div>
@@ -430,7 +490,7 @@ $_r = sql_query($_q, "");
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<textarea id="objective" name="objective" rows="3" class="form-control"></textarea>
+											<textarea id="objective" name="objective" rows="3" class="form-control"><?php echo $proposed_objective; ?></textarea>
 										</div>
 									</div>
 								</div>
@@ -464,7 +524,7 @@ $_r = sql_query($_q, "");
 									//DFA($row);
 									$compulsory = ($row['field_id'] == '1') ? 'required="" ' : '';
 									$compulsoryfield = ($row['field_id'] == '1') ? '<span style="color:#ff0000">*</span>' : '';
-									$value = (isset($CRM_FILEDS[$row['field_id']]['value'])) ? $CRM_FILEDS[$row['field_id']]['value'] : '';
+									$value = (isset($CRM_FILEDS[$row['field_id']])) ? $CRM_FILEDS[$row['field_id']] : '';
 								?>
 
 
@@ -694,7 +754,7 @@ $_r = sql_query($_q, "");
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="number" class="form-control" id="total" name="total" placeholder="" required="" readonly>
+											<input type="number" class="form-control" id="total" value="<?php echo $x_total; ?>" name="total" placeholder="" required="" readonly>
 										</div>
 									</div>
 
@@ -711,11 +771,24 @@ $_r = sql_query($_q, "");
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<select class="form-control custom-select" id="myselection" required="">
-												<option selected="" disabled="" value="">Choose...</option>
-												<option value="Yes">Yes</option>
-												<option value="No">No</option>
-											</select>
+											<?php
+
+											if ($mode == 'E') { ?>
+												<div id="advance_SRC"><img src="<?php echo $doc_upload_path; ?>" alt="PAN Image" style="width:30%;height:auto;"></div>
+
+											<?php	} elseif ($mode == 'A') { ?>
+												<select class="form-control custom-select" name="advance_payment" id="myselection" required="">
+													<option selected="" disabled="" value="">Choose...</option>
+													<?php
+													foreach ($ADVANCE_PAYMENT_ARRAY as $key => $value) {
+														echo '<option value="' . $key . '" >' . $value . '</option>';
+													}
+													?>
+												</select>
+
+											<?php	}
+
+											?>
 										</div>
 									</div>
 
@@ -725,8 +798,8 @@ $_r = sql_query($_q, "");
 								<div id="showYes" class="myDiv">
 									<form>
 										<div class="custom-file-upload">
-											<input type="file" id="fileuploadInput" accept=".png, .jpg, .jpeg">
-											<label for="fileuploadInput">
+											<input type="file" id="advance_file" name="advance_file" accept=".png, .jpg, .jpeg">
+											<label for="advance_file">
 												<span>
 													<strong>
 														<ion-icon name="cloud-upload-outline"></ion-icon>
@@ -884,7 +957,7 @@ $_r = sql_query($_q, "");
 							<div class="form-group basic">
 								<div class="input-wrapper">
 									<label class="label" for="">rationale for selection:<span style="color:#ff0000">*</span></label>
-									<textarea id="rationale" name="rationale" rows="3" class="form-control"></textarea>
+									<textarea id="rationale" name="rationale" rows="3" class="form-control"><?php echo $rationale_remark; ?></textarea>
 								</div>
 							</div>
 						</div>

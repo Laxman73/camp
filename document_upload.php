@@ -1,6 +1,7 @@
 <?php
 include 'includes/common.php';
 $rid = (isset($_GET['rid'])) ? $_GET['rid'] : '';
+$prid = (isset($_GET['prid'])) ? $_GET['prid'] : '';//Parent Id
 $pid = (isset($_GET['pid'])) ? $_GET['pid'] : '';
 $USER_ID = (isset($_GET['userid'])) ? $_GET['userid'] : '';
 $MODE = (isset($_GET['mode'])) ? $_GET['mode'] : '';

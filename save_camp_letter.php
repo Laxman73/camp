@@ -35,9 +35,6 @@ $stmt->execute(array($CRM_R_ID, $RNO, $NAF_NO, 12, $USER_ID, $empcode, NOW, 1, 2
 $CRM_REQ_LETTER_ID=NextID('id','crm_request_camp_letter');
 $pdo->prepare("insert into crm_request_camp_letter values(?,?,?,?,?,?,?)")->execute(array($CRM_REQ_LETTER_ID,$CRM_R_ID,$DoctorID,$nature_of_camp,$camp_date,$camp_location,$camp_duration));
 
-
-
-
-
-echo 'success';
+header('location: index_pma_camp.php?userid='.$USER_ID);
+exit;
 ?>

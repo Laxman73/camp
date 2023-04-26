@@ -360,6 +360,7 @@ $_r=sql_query($_q,"");
 									$pendingwithID = $o->pendingwithid;
 									$approved_status_id=$o->authorise;
 									$naf_no = $o->naf_no;
+									$x_rid=GetXFromYID("select id from crm_naf_main where parent_id='$naf_no' ");
 									$NAF_level = $o->level;
 									$categroy_id=$o->category_id;
 									$budget_amount=$o->budget_amount;
@@ -368,8 +369,10 @@ $_r=sql_query($_q,"");
 									$fname = GetXFromYID("select CONCAT(first_name, ' ', last_name) AS full_name from users where id='$pendingwithID' ");
 									$event_url="";
 									if (($approved_status_id == 1 || $approved_status_id==2 ) && $USER_ID==$pendingwithID) {
-										$event_url='<a href="approve_camp_q.php?rid='.$x_id.'&userid='.$USER_ID.'">'.strtoupper($naf_no).'</a>';
-									}else {
+										$event_url='<a href="approve_camp_q.php?prid='.$x_id.'&userid='.$USER_ID.'">'.strtoupper($naf_no).'</a>';
+									}elseif ($approved_status_id==2 && $pendingwithID==0 && $NAF_level==4) {
+										$event_url='<a href="naf_camp.php?prid='.$x_id.'&userid='.$USER_ID.'&rid='.$x_rid.'">'.strtoupper($naf_no).'</a>';
+									} else{
 										$event_url='<a href="javascript:void(0)">'.strtoupper($naf_no).'</a>';
 									}
 									//$PMArefno = $o->request_no; //Pma reference NUmber

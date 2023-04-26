@@ -4,10 +4,12 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 include 'includes/common.php';
 // DFA($_POST);
+// DFA($_FILES);
 // exit;
 $pdo = connectToDatabase();
 
 $USER_ID = (isset($_POST['userid'])) ? $_POST['userid'] : '';
+$PR_ID = (isset($_POST['prid'])) ? $_POST['prid'] : '';
 $R_ID = (isset($_POST['rid'])) ? $_POST['rid'] : '';
 $ROLE_ID = GetXFromYID("select roleid from user2role where userid='" . $USER_ID . "'");
 $PROFILE_ID = GetXFromYID("select profileid from role2profile where roleid='" . $ROLE_ID . "'");
@@ -46,15 +48,40 @@ $venue = (isset($_POST['venue'])) ? db_input($_POST['venue']):'';
 $medical_equipment_needed = (isset($_POST['medical_equipment_needed'])) ? db_input($_POST['medical_equipment_needed']):'';
 $deviation_amount = (isset($_POST['deviation_amount'])) ? db_input($_POST['deviation_amount']):'';
 $targetedSpeciality_Arr = (isset($_POST['targetedSpeciality']))? $_POST['targetedSpeciality']:array();
+$advance_payment = (isset($_POST['advance_payment']))? $_POST['advance_payment']:'';
+$upload_path='';
 
+if (is_uploaded_file($_FILES['advance_file']["tmp_name"])) {
+    
+    $uploaded_pic = $_FILES['advance_file']["name"];
+    $name = basename($_FILES['advance_file']['name']);
+    $file_type = $_FILES['advance_file']['type'];
+    $size = $_FILES['advance_file']['size'];
+    $extension = substr($name, strrpos($name, '.') + 1);
 
-$PARENT_ID=GetXFromYID("select naf_no from crm_naf_main where id='$R_ID' and deleted=0 ");
+    if (IsValidFile($file_type, $extension, 'P') && $size <= 3000000) {
+        $newname = NormalizeFilename($uploaded_pic); // normalize the file name
+        $pic_name =  $rid . "_CRM_Attahment_advance_file" . NOW3 . '.' . $newname;
+        $fileName =  $rid . '_CRM_Attahment_advance_file' . NOW3 . '.' . $extension;
+
+        $dir = opendir(CRM_ADVANCE_ATTACH_UPLOAD);
+        move_uploaded_file($_FILES['advance_file']["tmp_name"],  CRM_ADVANCE_ATTACH_UPLOAD . $fileName);
+        //copy($_FILES['file_attach_'.$j]["tmp_name"], CRM_ATTACHMENT_UPLOAD.$fileName);
+        closedir($dir);   // close the directory
+
+        $upload_path = CRM_ADVANCE_ATTACH_PATH . $fileName;
+    } else {
+        $error['advance_file'] = 'Cancel check file should be less than  2 MB';
+    }
+}
+
+$PARENT_ID=GetXFromYID("select naf_no from crm_naf_main where id='$PR_ID' and deleted=0 ");
 
 $CrmID = NextID('id', 'crm_naf_main');
-$EVENT_ID = 'Q' . 'CAM' . substr($DIVISION_ARR[$User_division], 0, 3) . str_pad($R_ID, 4, '0', STR_PAD_LEFT). str_pad($CrmID, 4, '0', STR_PAD_LEFT);//Generating event ID 
+$EVENT_ID = 'Q' . 'CAM' . substr($DIVISION_ARR[$User_division], 0, 3) . str_pad($PR_ID, 4, '0', STR_PAD_LEFT). str_pad($CrmID, 4, '0', STR_PAD_LEFT);//Generating event ID 
 
 $Name = GetXFromYID("select first_name from users where id='$USER_ID' ");
-$pdo->prepare("insert into crm_naf_main (id,initiator,userid,emp_code,date,post_comment,category_id,submitted_on,submitted,pendingwithid,authorise,approved_date,deleted,deleted_on,eventdate,level,naf_no,naf_activity_name,naf_city,naf_proposed_venue,naf_estimate_no_participents,naf_start_date,naf_end_date,naf_objective_rational,remarks,quarter,mode,proposed_activity_count,proposed_hcp_no,proposed_activity,proposed_objective,rationale_remark,lead_event,medical_equipments,deviation_amount,parent_id) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")->execute(array($CrmID,$initiater,$USER_ID,$empcode,$reqDate,'',5,NOW,1,$PENDING_WITH_ID,$STATUS,NOW,0,NULL,$activity_Date,1,$EVENT_ID,$activty_name,$city,$venue,$number_of_participants,NOW,NOW,$rationale,'',$Quarter,0,$proposed_count,$number_of_HCP,$Nature_of_activity,$proposed_obj,'',$event_lead,$medical_equipment_needed,$deviation_amount,$PARENT_ID));
+$pdo->prepare("insert into crm_naf_main (id,initiator,userid,emp_code,date,post_comment,category_id,submitted_on,submitted,pendingwithid,authorise,approved_date,deleted,deleted_on,eventdate,level,naf_no,naf_activity_name,naf_city,naf_proposed_venue,naf_estimate_no_participents,naf_start_date,naf_end_date,naf_objective_rational,remarks,quarter,mode,proposed_activity_count,proposed_hcp_no,proposed_activity,proposed_objective,rationale_remark,lead_event,medical_equipments,deviation_amount,parent_id,advance_payment,doc_upload_path) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")->execute(array($CrmID,$initiater,$USER_ID,$empcode,$reqDate,'',5,NOW,1,$PENDING_WITH_ID,$STATUS,NOW,0,NULL,$activity_Date,1,$EVENT_ID,$activty_name,$city,$venue,$number_of_participants,NOW,NOW,$rationale,'',$Quarter,0,$proposed_count,$number_of_HCP,$Nature_of_activity,$proposed_obj,'',$event_lead,$medical_equipment_needed,$deviation_amount,$PARENT_ID,$advance_payment,$upload_path));
 
 $stmt = $pdo->prepare("insert into crm_naf_speciality_details(pid,naf_request_id,speciality_id,deleted) values(?,?,?,?) ");
 //$stmt->bind_param("iiii",$pid,$naf_request_id,$speciality_id,$deleted);

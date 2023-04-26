@@ -9,8 +9,10 @@ $TITLE = SITE_NAME . ' | ' . $page_title;
 
 $rid = (isset($_GET['rid'])) ? $_GET['rid'] : '';
 $pid = (isset($_GET['pid'])) ? $_GET['pid'] : '';
+$prid = (isset($_GET['prid'])) ? $_GET['prid'] : '';
 $USER_ID = (isset($_GET['userid'])) ? $_GET['userid'] : '';
 $display_all = (isset($_GET['display_all'])) ? $_GET['display_all'] : '0';
+
 
 if (empty($USER_ID) || (!empty($USER_ID) && !is_numeric($USER_ID))) {
 	echo 'Invalid Access Detected!!!';
@@ -21,6 +23,49 @@ if (empty($rid) || (!empty($rid) && !is_numeric($rid))) {
 	echo 'Invalid Access Detected!!!';
 	exit;
 }
+
+if (empty($pid) || (!empty($pid) && !is_numeric($pid))) {
+	$mode='A';
+}else {
+	$mode='E';
+}
+
+if ($mode=='A') {
+
+	//crm_request_main
+  $request_no='';
+  $naf_no='';
+  $category_id='';
+  $requestor_id='';
+  $requestor_empcode='';
+  $submitted_on='';
+  $submitted='';
+  $pendingwithid='';
+  $authorise='';
+  $approved_date='';
+  $e_sign_doctor='';
+  $cheque_path='';
+  $e_sign_cheque_date='';
+  $remarks='';
+
+  //crm_request_camp_letter
+ 
+  $hcp_id='';
+  $nature_of_camp='';
+  $proposed_camp_date=TODAY;
+  $proposed_camp_location='';
+  $proposed_camp_duration='';
+
+}elseif ($mode=='E') {
+	$CRM_CAMP_LETTER=GetDataFromID('crm_request_camp_letter','crm_request_main_id',$pid,"");
+	$hcp_id=db_output2($CRM_CAMP_LETTER[0]->hcp_id);
+	$nature_of_camp=db_output2($CRM_CAMP_LETTER[0]->nature_of_camp);
+	$proposed_camp_date=db_output2($CRM_CAMP_LETTER[0]->proposed_camp_date);
+	$proposed_camp_location=db_output2($CRM_CAMP_LETTER[0]->proposed_camp_location);
+	$proposed_camp_duration=db_output2($CRM_CAMP_LETTER[0]->proposed_camp_duration);
+}
+
+
 
 // getting role and profile id of user
 $ROLE_ID = GetXFromYID("select roleid from user2role where userid='" . $USER_ID . "'");
@@ -68,13 +113,14 @@ $HCP_UNIVERSAL_ID = GetXArrFromYID("select contactid,masterid from contactdetail
         </div>-->
 
 
-
+		<?php include '_tabscamp.php'; ?>
 
 	<div id="appCapsule">
 
 <form action="save_camp_letter.php" method="post">
 	<input type="hidden" name="userid" value="<?php echo $USER_ID;?>">
 	<input type="hidden" name="rid" value="<?php echo $rid;?>">
+	<input type="hidden" name="pid" value="<?php echo $pid;?>">
 		<div class="tab-content mt-1">
 
 
@@ -102,8 +148,8 @@ $HCP_UNIVERSAL_ID = GetXArrFromYID("select contactid,masterid from contactdetail
 											<?php
 											foreach ($HCP_UNIVERSAL_ID as $key => $value) {
 												//echo $value[$key]['iModID'];
-												//$selected =    ($SELECTED_AMENITIES[$key]['iVAID'] == $key) ? 'selected' : '';
-												echo '<option value="' . $key . '" >' . $value . '</option>';
+												$selected =    ($hcp_id == $key) ? 'selected' : '';
+												echo '<option value="' . $key . '"'.$selected.' >' . $value . '</option>';
 											}
 											?>
 										</select>
@@ -123,7 +169,7 @@ $HCP_UNIVERSAL_ID = GetXArrFromYID("select contactid,masterid from contactdetail
 
 								<div class="col-9">
 									<div class="input-wrapper">
-										<input type="text" class="form-control" id="nature_of_camp" name="nature_of_camp" placeholder="" required>
+										<input type="text" class="form-control" id="nature_of_camp" value="<?php echo $nature_of_camp;?>" name="nature_of_camp" placeholder="" required>
 									</div>
 								</div>
 							</div>
@@ -141,7 +187,7 @@ $HCP_UNIVERSAL_ID = GetXArrFromYID("select contactid,masterid from contactdetail
 
 								<div class="col-9">
 									<div class="input-wrapper">
-										<input type="date" class="form-control" name="camp_date" id="" min="<?php echo TODAY;?>" required>
+										<input type="date" class="form-control" value="<?php echo $proposed_camp_date;?>" name="camp_date" id="" min="<?php echo TODAY;?>" required>
 									</div>
 								</div>
 
@@ -160,7 +206,7 @@ $HCP_UNIVERSAL_ID = GetXArrFromYID("select contactid,masterid from contactdetail
 								</div>
 
 								<div class="col-9">
-									<div class="input-wrapper"><input type="text" class="form-control" id="camp_location" name="camp_location" required></div>
+									<div class="input-wrapper"><input type="text" value="<?php echo $proposed_camp_location;?>" class="form-control" id="camp_location" name="camp_location" required></div>
 								</div>
 
 							</div>
@@ -177,7 +223,7 @@ $HCP_UNIVERSAL_ID = GetXArrFromYID("select contactid,masterid from contactdetail
 
 								<div class="col-9">
 									<div class="input-wrapper">
-										<input type="number" class="form-control" id="camp_duration" name="camp_duration" placeholder="" required>
+										<input type="number" class="form-control" value="<?php echo $proposed_camp_duration;?>" id="camp_duration" name="camp_duration" placeholder="" required>
 									</div>
 								</div>
 

@@ -2,6 +2,7 @@
 include 'includes/common.php';
 $rid = (isset($_GET['rid'])) ? $_GET['rid'] : '';
 $pid = (isset($_GET['pid'])) ? $_GET['pid'] : '';
+$prid = (isset($_GET['prid'])) ? $_GET['prid'] : '';//parent id
 $USER_ID = (isset($_GET['userid']))?$_GET['userid']:'';
 $MODE = (isset($_GET['mode']))?$_GET['mode']:'';
 $display_all = (isset($_GET['display_all']))?$_GET['display_all']:'0';
