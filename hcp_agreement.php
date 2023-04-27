@@ -2,6 +2,7 @@
 include 'includes/common.php';
 $rid = (isset($_GET['rid'])) ? $_GET['rid'] : '';
 $pid = (isset($_GET['pid'])) ? $_GET['pid'] : '';
+$prid = (isset($_GET['prid'])) ? $_GET['prid'] : '';
 $USER_ID = (isset($_GET['userid'])) ? $_GET['userid'] : '';
 $MODE = (isset($_GET['mode'])) ? $_GET['mode'] : 'I';
 $display_all = (isset($_GET['display_all'])) ? $_GET['display_all'] : '0';
@@ -31,7 +32,7 @@ if ($PROFILE_ID == 6 || $PROFILE_ID == 7) {
 	$sign_display = "display:none";
 	$sign_edit = "display:";
 	$issubmitted = GetXFromYID("select count(*) from crm_hcp_agreement where deleted=0 and crm_hcp_information_id = $info_id");
-	if (!empty($issubmitted)) {
+	if ($issubmitted>0) {
 		$MODE = 'R';
 		$sign_display = "display:";
 		$sign_edit = "display:none";
@@ -111,10 +112,12 @@ $submithide = "style='display:none';";
 $questhide = "";
 
 
-if ($check_quest_upload != "" && $shortcodemode == 1) {
+if ($shortcodemode == 1) {
 	$hide = "style='display:none';";
 	$submithide = "style='display:';";
 }
+
+
 // $submithide="style='display:';";
 $hidequest = "";
 $hidemsg = "";
@@ -129,6 +132,8 @@ if ($check_quest_upload != "" && $shortcodemode == '' && $check_quest_sub == "")
 $naf_activity_name = GetXFromYID("select naf_activity_name from crm_naf_main where id=" . $rid . " and deleted=0 ");
 // $sql_res=$adb->query($sql);
 // $naf_activity_name=$adb->query_result($sql_res,0,'naf_activity_name');
+// DFA($MODE);
+// exit;
 ?>
 <!doctype html>
 <html lang="en">

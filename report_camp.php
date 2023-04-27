@@ -9,6 +9,7 @@ $TITLE = SITE_NAME . ' | ' . $page_title;
 
 $rid = (isset($_GET['rid'])) ? $_GET['rid'] : ''; //naf id
 $pid = (isset($_GET['pid'])) ? $_GET['pid'] : ''; //pma id
+$prid = (isset($_GET['prid'])) ? $_GET['prid'] : ''; //pma id
 $USER_ID = (isset($_GET['userid'])) ? $_GET['userid'] : '';
 $display_all = (isset($_GET['display_all'])) ? $_GET['display_all'] : '0';
 
@@ -107,21 +108,47 @@ while (list($naf_field_id, $naf_expense) = sql_fetch_row($_crm_field_r)) {
 $CRM_REQUEST_LETTER_DATA = GetDataFromCOND('crm_request_camp_letter', " and crm_request_main_id=$pid ");
 $doctors_ID = $CRM_REQUEST_LETTER_DATA[0]->hcp_id;
 $doctors_name = GetXFromYID("select CONCAT(firstname, ' ', lastname) AS full_name  from contactmaster where id=$doctors_ID limit 500");
-//[id] => 2
-// [crm_request_main_id] => 102
-// [hcp_id] => 6																			
-// [nature_of_camp] => camp activity
-// [proposed_camp_date] => 2023-04-26
-// [proposed_camp_location] => Goa
-// [proposed_camp_duration] => 121
-// DFA($CRM_REQUEST_LETTER_DATA);
-// exit;
+
 
 $x_total = GetXFromYID("select sum(naf_expense) from crm_naf_cost_details where naf_request_id='$rid' "); //total amount
 
 $_q = "select field_id,field_name from crm_naf_fields_master where deleted=0 AND typeid=6 "; //fetch typeid from the category id passed in url
 $_r = sql_query($_q, "");
 
+$mode = $readonly = '';
+
+$is_report_submitted = GetXFromYID("select count(*) from crm_naf_camp_report where crm_request_id='$pid' ");
+if ($is_report_submitted > 0) {
+	$mode = 'E';
+} else {
+	$mode = 'A';
+}
+
+
+if ($mode == 'A') {
+	$readonly = '';
+	$objective = '';
+	$camp_duration = '';
+	$type_of_diagnostic = '';
+	$diagnostic_charges = '';
+	$total_no_ind = '';
+	$camp_organised = '';
+	$camp_received = '';
+	$remarks = '';
+} elseif ($mode == 'E') {
+	$DATA = GetDataFromID('crm_naf_camp_report', 'crm_request_id', $pid);
+	$readonly = 'readonly';
+	$objective = db_output2($DATA[0]->objective);
+	$camp_duration = db_output2($DATA[0]->camp_duration);
+	$type_of_diagnostic = db_output2($DATA[0]->type_of_diagnostic);
+	$diagnostic_charges = db_output2($DATA[0]->diagnostic_charges);
+	$total_no_ind = db_output2($DATA[0]->total_no_ind);
+	$camp_organised = db_output2($DATA[0]->camp_organised);
+	$camp_received = db_output2($DATA[0]->camp_received);
+	$remarks = db_output2($DATA[0]->remarks);
+}
+
+$CHECKBOXES = array('1' => 'Excellent', '2' => 'Good', '3' => 'Average', '4' => 'Poor');
 
 ?>
 <!doctype html>
@@ -155,7 +182,7 @@ $_r = sql_query($_q, "");
 		<div class="pageTitle">CAMP REPORT</div>
 		<div class="right"></div>
 	</div>
-
+	<?php include '_tabscamp.php'; ?>
 
 	<!--<div class="section full mt-7">
             <div class="wide-block pt-2 pb-2">
@@ -242,7 +269,7 @@ $_r = sql_query($_q, "");
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="text" class="form-control" name="camp_objective" id="camp_objective" placeholder="" required>
+											<input type="text" class="form-control" name="camp_objective" id="camp_objective" value="<?php echo $objective; ?>" placeholder="" required <?php echo $readonly; ?>>
 										</div>
 									</div>
 
@@ -259,7 +286,7 @@ $_r = sql_query($_q, "");
 									</div>
 
 									<div class="col-9">
-										<div class="input-wrapper"><input type="date" name="camp_date" value="<?php echo $event_date; ?>" class="form-control" id="camp_date" required></div>
+										<div class="input-wrapper"><input type="date" name="camp_date" value="<?php echo $event_date; ?>" class="form-control" id="camp_date" required <?php echo $readonly; ?>></div>
 									</div>
 
 								</div>
@@ -298,7 +325,7 @@ $_r = sql_query($_q, "");
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="date" class="form-control" name="camp_duration" id="camp_duration" placeholder="" required>
+											<input type="date" class="form-control" name="camp_duration" value="<?php echo $camp_duration; ?>" id="camp_duration" placeholder="" required>
 										</div>
 									</div>
 
@@ -396,7 +423,7 @@ $_r = sql_query($_q, "");
 									</div>
 
 									<div class="col-9">
-										<div class="input-wrapper"><input type="text" class="form-control" id="type_of_diagnostic" name="type_of_diagnostic" required></div>
+										<div class="input-wrapper"><input type="text" class="form-control" id="type_of_diagnostic" name="type_of_diagnostic" value="<?php echo $type_of_diagnostic; ?>" required></div>
 									</div>
 
 								</div>
@@ -410,7 +437,7 @@ $_r = sql_query($_q, "");
 									</div>
 
 									<div class="col-9">
-										<div class="input-wrapper"><input type="text" class="form-control" id="collab" name="collab" required></div>
+										<div class="input-wrapper"><input type="text" class="form-control" id="collab" value="" name="collab" required></div>
 									</div>
 
 								</div>
@@ -426,7 +453,7 @@ $_r = sql_query($_q, "");
 									</div>
 
 									<div class="col-9">
-										<div class="input-wrapper"><input type="number" class="form-control" id="diagnostic_charges" name="diagnostic_charges" required></div>
+										<div class="input-wrapper"><input type="number" value="<?php echo $diagnostic_charges; ?>" class="form-control" id="diagnostic_charges" name="diagnostic_charges" required></div>
 									</div>
 
 								</div>
@@ -490,7 +517,19 @@ $_r = sql_query($_q, "");
 
 								<p><b>1) Was the camp well organized/arranged?<span style="color:#ff0000">*</span></b></p>
 
-								<div class="custom-control custom-radio mb-1">
+								<?php
+
+								foreach ($CHECKBOXES as $key => $value) {
+									# code...
+									//echo '<div class="custom-control custom-radio mb-1">';
+									$checked=($camp_organised==$key)?'checked':'';
+									echo '<input type="radio" class="" name="camp_organised" value="' . $key . '" '.$checked.'> ' . $value . '<br>';
+								}
+
+
+								?>
+
+								<!-- <div class="custom-control custom-radio mb-1">
 									<input type="radio" id="excellent" value="1" name="camp_organised" class="custom-control-input">
 									<label class="custom-control-label" for="excellent">Excellent</label>
 								</div>
@@ -505,7 +544,7 @@ $_r = sql_query($_q, "");
 								<div class="custom-control custom-radio mb-1">
 									<input type="radio" id="poor" value="4" name="camp_organised" class="custom-control-input">
 									<label class="custom-control-label" for="poor">Poor</label>
-								</div>
+								</div> -->
 
 							</div>
 
@@ -514,8 +553,18 @@ $_r = sql_query($_q, "");
 							<div class="wide-block pt-2 pb-2">
 
 								<p><b>2) Was this camp well received i.e., attended by good audience?<span style="color:#ff0000">*</span></b></p>
+								<?php
+								foreach ($CHECKBOXES as $key => $value) {
+									$checked=($camp_received==$key)?'checked':'';
+									
+									# code...
+									//echo '<div class="custom-control custom-radio mb-1">';
+									echo '<input type="radio" class="" name="camp_received" value="' . $key . '" '.$checked.'> ' . $value . '<br>';
+								}
+								?>
 
-								<div class="custom-control custom-radio mb-1">
+
+								<!-- <div class="custom-control custom-radio mb-1">
 									<input type="radio" id="customRadio1" value="1" name="camp_received" class="custom-control-input">
 									<label class="custom-control-label" for="customRadio1">Excellent</label>
 								</div>
@@ -530,7 +579,7 @@ $_r = sql_query($_q, "");
 								<div class="custom-control custom-radio mb-1">
 									<input type="radio" id="customRadio4" value="4" name="camp_received" class="custom-control-input">
 									<label class="custom-control-label" for="customRadio4">Poor</label>
-								</div>
+								</div> -->
 
 							</div>
 
@@ -541,7 +590,7 @@ $_r = sql_query($_q, "");
 									<div class="form-group basic">
 										<div class="input-wrapper">
 											<label class="label" for="">HCP Comments/Suggestions (to be completed by HCP)</label>
-											<textarea id="remarks" name="remarks" rows="3" class="form-control"></textarea>
+											<textarea id="remarks" name="remarks" rows="3" class="form-control"><?php echo $remarks;?></textarea>
 										</div>
 									</div>
 								</form>

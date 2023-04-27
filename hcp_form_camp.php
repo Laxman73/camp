@@ -24,9 +24,14 @@ if (empty($rid) || (!empty($rid) && !is_numeric($rid))) {
 }
 
 if (empty($pid) || (!empty($pid) && !is_numeric($pid))) {
-	$mode='A';
-}else {
-	$mode='E';
+	$mode = 'A';
+} else {
+	$is_hcp = GetXFromYID("select count(*) from crm_hcp_information where crm_request_main_id=$pid and deleted=0  ");
+	if ($is_hcp > 0) {
+		$mode = 'E';
+	} else {
+		$mode = 'A';
+	}
 }
 
 // getting role and profile id of user
@@ -38,16 +43,16 @@ $HCP_UNIVERSAL_ID = GetXArrFromYID("select contactid,masterid from contactdetail
 $years = range(1900, strftime("%Y", time()));
 
 
-$requestorID=GetXFromYID("select userid from crm_naf_main where id='$rid' and deleted=0");
-$submited_date =GetXFromYID("select submitted_on from crm_naf_main where id='$rid' and deleted=0 ");
+$requestorID = GetXFromYID("select userid from crm_naf_main where id='$rid' and deleted=0");
+$submited_date = GetXFromYID("select submitted_on from crm_naf_main where id='$rid' and deleted=0 ");
 
-$User_division = GetXFromYID("select division from users where id='$requestorID' ");//Getting user division 
-$curr_dt = date('Y-m-d', strtotime($submited_date));//current date from the date of sub,ission of NAF
+$User_division = GetXFromYID("select division from users where id='$requestorID' "); //Getting user division 
+$curr_dt = date('Y-m-d', strtotime($submited_date)); //current date from the date of sub,ission of NAF
 $curr_fyear = GetXFromYID("SELECT financial_year FROM financialyear where '" . $curr_dt . "' between from_date and to_date ");
 
 $cond = '';
 if (!empty($User_division) && (isset($User_division))) {
-    $cond .= " and division=$User_division ";
+	$cond .= " and division=$User_division ";
 }
 
 $SPECILITY_ARR = GetXArrFromYID("select specialityid as id,specialityname as name from speciality where  in_use=0 AND fyear='$curr_fyear'  " . $cond, '3');
@@ -66,28 +71,46 @@ $_c_q = "select cityname,pincode from city where cityid='$othercity' ";
 $_c_r = sql_query($_c_q, '');
 list($city, $pincode) = sql_fetch_row($_c_r);
 
-$qualification_name=GetXFromYID("select qualificationname from qualification where qualificationid='$qualificationid'");
+$qualification_name = GetXFromYID("select qualificationname from qualification where qualificationid='$qualificationid'");
 $_q2 = "select hoscontactid from approval_doctor_hospital_association where contactid='$DoctorID' ";
 $_r2 = sql_query($_q2);
 list($hostcontactid) = sql_fetch_row($_r2);
 $hospital_name = (isset($HOSPITAL_ARR[$hostcontactid])) ? $HOSPITAL_ARR[$hostcontactid] : '';
 
-if ($mode=='A') {
-	$yr_of_registration='';
-  $no_of_yr_experience_doctor='';
-  $speciality_id='';
-  $no_of_publication='';
-  $part_of='';
-  $speaker='';
-  $part_of_peer='';
-  $position='';
-  $no_of_yr_experience_clinic='';
-  $hcp_sign='';
-  $hcp_sign_date='';
-  $emp_sign='';
-  `emp_sign_date` datetime NOT NULL,
-  `submitted_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `submitted` int(1) NOT NULL,
+if ($mode == 'A') {
+	$readonly = '';
+	$yr_of_registration = '';
+	$no_of_yr_experience_doctor = '';
+	$speciality_id = '';
+	$no_of_publication = '';
+	$part_of = '';
+	$speaker = '';
+	$part_of_peer = '';
+	$position = '';
+	$no_of_yr_experience_clinic = '';
+	$hcp_sign = '';
+	$hcp_sign_date = '';
+	$emp_sign = '';
+	$emp_sign_date = '';
+	$submitted_on = '';
+} elseif ($mode == 'E') {
+	$HCP_DATA = GetDataFromID('crm_hcp_information', 'crm_request_main_id', $pid, "and deleted=0 ");
+	//DFA($HCP_DATA);
+	$readonly = 'readonly';
+	$yr_of_registration = db_output2($HCP_DATA[0]->yr_of_registration);
+	$no_of_yr_experience_doctor = db_output2($HCP_DATA[0]->no_of_yr_experience_doctor);
+	$speciality_id = db_output2($HCP_DATA[0]->speciality_id);
+	$no_of_publication = db_output2($HCP_DATA[0]->no_of_publication);
+	$part_of = db_output2($HCP_DATA[0]->part_of);
+	$speaker = db_output2($HCP_DATA[0]->speaker);
+	$part_of_peer = db_output2($HCP_DATA[0]->part_of_peer);
+	$position = db_output2($HCP_DATA[0]->position);
+	$no_of_yr_experience_clinic = db_output2($HCP_DATA[0]->no_of_yr_experience_clinic);
+	$hcp_sign = db_output2($HCP_DATA[0]->hcp_sign);
+	$hcp_sign_date = db_output2($HCP_DATA[0]->hcp_sign_date);
+	$emp_sign = db_output2($HCP_DATA[0]->emp_sign);
+	$emp_sign_date = db_output2($HCP_DATA[0]->emp_sign_date);
+	$submitted_on = db_output2($HCP_DATA[0]->submitted_on);
 }
 
 
@@ -129,7 +152,7 @@ if ($mode=='A') {
             </div>
         </div>-->
 
-		<?php include '_tabscamp.php';?>
+	<?php include '_tabscamp.php'; ?>
 
 
 	<div id="appCapsule">
@@ -138,6 +161,7 @@ if ($mode=='A') {
 			<input type="hidden" name="userid" value="<?php echo $USER_ID; ?>">
 			<input type="hidden" name="rid" value="<?php echo $rid; ?>">
 			<input type="hidden" name="pid" value="<?php echo $pid; ?>">
+			<input type="hidden" name="prid" value="<?php echo $prid; ?>">
 			<div class="tab-content mt-1">
 
 
@@ -216,7 +240,7 @@ if ($mode=='A') {
 											<select name="yr_of_registration" class="form-control" required>
 												<option>Select Year</option>
 												<?php foreach ($years as $year) {
-													$selected =  '';
+													$selected =  ($year==$yr_of_registration)?'selected':'';
 												?>
 													<option value="<?php echo $year; ?>" <?php echo $selected; ?>><?php echo $year; ?></option>
 												<?php } ?>
@@ -244,7 +268,7 @@ if ($mode=='A') {
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="number" class="form-control" id="NUm_of_yr_exp" name="NUm_of_yr_exp" required>
+											<input type="number" class="form-control" id="NUm_of_yr_exp" name="NUm_of_yr_exp" value="<?php echo $no_of_yr_experience_doctor;?>" required>
 										</div>
 									</div>
 
@@ -262,12 +286,12 @@ if ($mode=='A') {
 
 									<div class="col-9">
 										<div class="input-wrapper">
-										<select class="form-control custom-select" name="speciality_id" id="speciality_id" required="">
+											<select class="form-control custom-select" name="speciality_id" id="speciality_id" required="">
 												<option value="">Choose...</option>
 												<?php
 												foreach ($SPECILITY_ARR as $key => $value) {
 													//echo $value[$key]['iModID'];
-													$selected =  '';
+													$selected =  ($speciality_id==$key)?'selected':'';
 													echo '<option value="' . $key . '" ' . $selected . ' >' . $value . '</option>';
 												}
 												?>
@@ -294,7 +318,7 @@ if ($mode=='A') {
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="number" class="form-control" id="NUM_of_publications" name="NUM_of_publications" required="">
+											<input type="number" class="form-control" id="NUM_of_publications" value="<?php echo $no_of_publication;?>" name="NUM_of_publications" required="">
 										</div>
 									</div>
 
@@ -312,7 +336,7 @@ if ($mode=='A') {
 									</div>
 
 									<div class="col-9">
-										<div class="input-wrapper"><input type="text" name="part_of_national" class="form-control" id="part_of_national" required></div>
+										<div class="input-wrapper"><input type="text" value="<?php echo $part_of;?>" name="part_of_national" class="form-control" id="part_of_national" required></div>
 									</div>
 
 								</div>
@@ -327,7 +351,7 @@ if ($mode=='A') {
 									</div>
 
 									<div class="col-9">
-										<div class="input-wrapper"><input type="text" class="form-control" name="speaker" id="speaker" required></div>
+										<div class="input-wrapper"><input type="text" value="<?php echo $speaker;?>" class="form-control" name="speaker" id="speaker" required></div>
 									</div>
 
 								</div>
@@ -342,7 +366,7 @@ if ($mode=='A') {
 									</div>
 
 									<div class="col-9">
-										<div class="input-wrapper"><input type="text" name="part_of_peer" class="form-control" id="part_of_peer" required></div>
+										<div class="input-wrapper"><input type="text" value="<?php echo $part_of_peer;?>" name="part_of_peer" class="form-control" id="part_of_peer" required></div>
 									</div>
 
 								</div>
@@ -357,7 +381,7 @@ if ($mode=='A') {
 									</div>
 
 									<div class="col-9">
-										<div class="input-wrapper"><input type="text" class="form-control" name="position" id="position" ></div>
+										<div class="input-wrapper"><input type="text" value="<?php echo $position;?>" class="form-control" name="position" id="position"></div>
 									</div>
 
 								</div>
@@ -372,7 +396,7 @@ if ($mode=='A') {
 									</div>
 
 									<div class="col-9">
-										<div class="input-wrapper"><input type="number" name="num_of_years_of_clinical_expr" class="form-control" id="num_of_years_of_clinical_expr" required></div>
+										<div class="input-wrapper"><input type="number" value="<?php echo $no_of_yr_experience_clinic;?>" name="num_of_years_of_clinical_expr" class="form-control" id="num_of_years_of_clinical_expr" required></div>
 									</div>
 
 								</div>

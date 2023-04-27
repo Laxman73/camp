@@ -295,16 +295,13 @@ if ($mode == 'A') {
 								<div class="row">
 
 									<div class="col-3">
-										<b>Activity Details (for Blanket Approval):</b>
+										<b>Name of activity:</b>
 									</div>
 
 									<div class="col-9">
 										<div class="input-wrapper">
-
-											<b>Name of activity</b>
-
-											<div class="custom-control custom-radio mb-1">
-												<input type="text" class="form-control" value="<?php echo $naf_activity_name; ?>" name="activty_name" id="activty_name" required>
+											<div class="custom-control " style="padding-left: 0px;">
+												<input type="text" class="form-control pd-0" value="<?php echo $naf_activity_name; ?>"  name="activty_name" id="activty_name"  required>
 											</div>
 
 

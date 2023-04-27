@@ -28,6 +28,7 @@ $employee_name = GetXFromYID("select concat(first_name,' ',last_name) from users
 $readonly = $disabled = '';
 $employee_id =$activity_name=$details_of_activity= $type_of_activity = $mode = $vendor_services = $vendor_name = $vendor_description = $actual_vendor_cost = $naf_travel_flight_cost = $naf_insurance_cost = $naf_flight_cost = $naf_travel_cab_cost = $naf_visa_cost = $naf_stay_hotel_cost = $naf_audio_visual_cost = $naf_meal_snack_cost = $naf_banners_pamphlets_cost = $naf_other_additonal_cost = $MODE = '';
 $Delivery_form_count = GetXFromYID("select count(*) from crm_naf_delivery_form where crm_naf_main_id='$rid' and deleted=0 ");
+
 if ($Delivery_form_count > 0) {
 	$MODE = 'R';
 	$readonly = 'readonly';
@@ -93,12 +94,16 @@ $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_req
 	<link rel="stylesheet" href="assets/css/style.css">
 	<link rel="manifest" href="__manifest.json">
 
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<!--<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">-->
+	<script src="https://phpcoder.tech/multiselect/js/jquery.multiselect.js"></script>
+	<link rel="stylesheet" href="https://phpcoder.tech/multiselect/css/jquery.multiselect.css">
+	
+	
 	<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
 	<link rel="stylesheet" href="https://cdn.datatables.net/rowreorder/1.2.8/css/rowReorder.dataTables.min.css">
 	<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.3.0/css/responsive.dataTables.min.css">
-
-
-	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+	<!--<script src="https://code.jquery.com/jquery-3.5.1.js"></script>-->
 	<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 	<script src="https://cdn.datatables.net/rowreorder/1.2.8/js/dataTables.rowReorder.min.js"></script>
 	<script src="https://cdn.datatables.net/responsive/2.3.0/js/dataTables.responsive.min.js"></script>
@@ -681,77 +686,67 @@ $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_req
 				</div>
 
 
-				<table id="example" class="display mt-2 table table-responsive table-striped table-bordered" style="width:100%; display:none">
-
-					<thead>
-
-						<tr>
-							<th class="bg-purple"></th>
-							<th class="bg-purple">Request ID</th>
-							<th class="bg-purple">Name of HCP</th>
-							<th class="bg-purple">Address(City)</th>
-							<th class="bg-purple">Pan Card Number</th>
-							<th class="bg-purple">Qualification</th>
-							<th class="bg-purple">Associated Hospital</th>
-							<th class="bg-purple">Govt(Yes/No)</th>
-							<th class="bg-purple">Years of Experience</th>
-							<th class="bg-purple">honorarium (INR)</th>
-							<th class="bg-purple">Role of the HCP</th>
-						</tr>
-					</thead>
-
-					<tbody>
-						<?php
-						if (!empty($table_data) && count($table_data)) {
-							foreach ($table_data as $data) {
-								$id = $data->id;
-								$PMA_ID = $data->crm_request_main_id;
-								$hcp_id = $data->hcp_id;
-								$REQUEST_NUM = $data->request_Num;
-								//$PMA_ID=$data->PMA_ID;
-								$hcp_address = $data->hcp_address;
-								$hcp_pan = $data->hcp_pan;
-								$hcp_qualification = $data->hcp_qualification;
-								$govt_type = $data->govt_type;
-								$yr_of_experience = $data->yr_of_experience;
-								$honorarium_amount = $data->honorarium_amount;
-								$role_of_hcp = $data->role_of_hcp;
-								$hospital_name = $data->hcp_associated_hospital_id;
-
-								$req_id = 'MG-' . str_pad($id, 6, '0', STR_PAD_LEFT);
-
-								$hcp_name = GetXFromYID("select concat(firstname,' ',lastname) from contactmaster where id='$hcp_id' ");
-								// $hospital_name = GetXFromYID("select hosname from hospitalcontactdetails where contactid = $hospital_id");
-
-								//$url = $hcp_tabs."?userid=$USER_ID&rid=$rid&display_all=1&pid=$PMA_ID";
-								$url = $hcp_tabs . "?rid=$rid&userid=$USER_ID&pid=$PMA_ID&display_all=1";
-						?>
-								<tr>
-									<td></td>
-									<td><a href="<?php echo $url; ?>" target="_blank"><?php echo $REQUEST_NUM; ?></a></td>
-									<td><?php echo $hcp_name; ?></td>
-									<td><?php echo $hcp_address; ?></td>
-									<td><?php echo $hcp_pan; ?></td>
-									<td><?php echo $hcp_qualification; ?></td>
-									<td><?php echo $hospital_name; ?></td>
-									<td><?php echo $govt_type; ?></td>
-									<td><?php echo $yr_of_experience; ?></td>
-									<td><?php echo $honorarium_amount; ?></td>
-									<td><?php echo $role_of_hcp; ?></td>
-								</tr>
-						<?php
-							}
-						}
-						?>
-					</tbody>
-
-				</table>
+				
 
 			</div>
 
 		</form>
 
+
+
+		<div class="section mt-7">
+        <div class="card">
+        <div class="card-body">
+
+            <div class="wide-block pt-2 pb-2">
+			
+	   		<table id="example" class="display mt-2" style="width:100%">
+				
+				<thead>
+
+					<tr >
+						<th></th>
+						<th>Sr. No</th>
+						<th>Name of the HCP</th>
+						<th>Address(city)</th>
+						<th>PAN #</th>
+						<th>Qualification</th>
+						<th>Associated Hospital</th>
+						<th>Govt.(Yes/No)</th>
+						<th>Years of experience</th>
+						<th>Honorarium</th>
+						<th>Role of the HCP</th>
+					</tr>
+				</thead>
+				<tbody>
+                    <tr>
+						<th></th>
+						<td>1</td>
+						<td>&nbsp;</td>			  
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+                        <td>&nbsp;</td>
+						<td>&nbsp;</td>			  
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr> 
+					
+			
+	
+				
+				</tbody>
+				</table>	
+				
+			</div>
+        </div>
+		</div>
+		</div>	
+
 	</div>
+
+
 
 
 
@@ -760,7 +755,7 @@ $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_req
 	<!-- Jquery -->
 
 
-	<script src="assets/js/lib/jquery-3.4.1.min.js"></script>
+	<!-- <script src="assets/js/lib/jquery-3.4.1.min.js"></script> -->
 	<!-- Bootstrap-->
 	<script src="assets/js/lib/popper.min.js"></script>
 	<script src="assets/js/lib/bootstrap.min.js"></script>
@@ -774,9 +769,7 @@ $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_req
 		$(document).ready(function() {
 			
 			var table = $('#example').DataTable({
-				rowReorder: {
-					selector: 'td:nth-child(2)'
-				},
+				
 				responsive: true
 			});
 		
@@ -885,9 +878,7 @@ $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_req
 			}
 		}
 
-		function showAllHCP() {
-			document.getElementById("example").style.display = "block";
-		}
+		
 	</script>
 
 

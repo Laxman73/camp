@@ -67,5 +67,5 @@ $stmt->execute(array(NULL, $id, $nature_of_actual_cost, $travel_flights, $insura
 $pdo->prepare("update crm_naf_main set level=?,authorise=?,remarks=?,pendingwithid=? where id=? ")->execute(array($New_level,$STATUS,'pending',$PENDING_WITH_ID,$rid));
 
 
-header('location:post_activity.php?rid=' . $rid . '&userid=' . $userid);
+header('location:mt_delivery_service_form_camp.php?rid=' . $rid . '&userid=' . $userid);
 ?>

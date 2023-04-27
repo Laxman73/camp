@@ -212,3 +212,39 @@ CREATE TABLE `crm_naf_delivery_form_cost_details` (
   PRIMARY KEY (`pid`),
   KEY `naf_delivery_form_id` (`naf_delivery_form_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=latin1;
+
+
+
+CREATE TABLE `crm_naf_hcp_details` (
+  `id` int(15) NOT NULL AUTO_INCREMENT,
+  `naf_main_id` int(11) NOT NULL,
+  `hcp_id` int(11) NOT NULL,
+  `hcp_address` varchar(255) NOT NULL,
+  `hcp_pan` varchar(255) NOT NULL,
+  `hcp_qualification` varchar(255) NOT NULL,
+  `hcp_associated_hospital_id` varchar(100) NOT NULL,
+  `govt_type` varchar(25) NOT NULL,
+  `yr_of_experience` int(11) NOT NULL DEFAULT '0',
+  `role_of_hcp` varchar(20) NOT NULL,
+  `honorarium_amount` int(25) NOT NULL,
+  `mobile` varchar(20) NOT NULL,
+  `submitted_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted` int(1) NOT NULL DEFAULT '0',
+  `deleted_on` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `naf_main_id` (`naf_main_id`),
+  KEY `hcp_id` (`hcp_id`),
+  KEY `deleted` (`deleted`)
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=latin1;
+
+
+CREATE TABLE `crm_naf_camp_letter` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `crm_naf_hcp_details_id` int(11) DEFAULT NULL,
+  `nature_of_camp` varchar(100) DEFAULT NULL,
+  `proposed_camp_date` date DEFAULT NULL,
+  `proposed_camp_location` text,
+  `estimated_cost` int(11) DEFAULT NULL,
+  `diagnostic_lab` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

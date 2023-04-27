@@ -21,25 +21,7 @@ if (empty($USER_ID) || (!empty($USER_ID) && !is_numeric($USER_ID))) {
 $ROLE_ID = GetXFromYID("select roleid from user2role where userid='" . $USER_ID . "'");
 $PROFILE_ID = GetXFromYID("select profileid from role2profile where roleid='" . $ROLE_ID . "'");
 $user_name = GetXFromYID("select user_name from users where id='" . $USER_ID . "'");
-// Array
-// (
-//     [userid] => 18431
-//     [pid] => 102
-//     [rid] => 109
-//     [camp_name] => camp activity
-//     [camp_objective] => eqw
-//     [camp_date] => 2023-04-24
-//     [camp_duration] => 2023-04-25
-//     [hospital_name] => qwrew
-//     [type_of_diagnostic] => yes
-//     [collab] => no
-//     [diagnostic_charges] => 4000
-//     [medical_equipment_cost] => 500
-//     [total_no_of_ind] => 10
-//     [customRadio1] => 1
-//     [customRadio] => 4
-//     [remarks] => ewrgdwdh
-// )
+
 $camp_objective = (isset($_POST['camp_objective'])) ? db_input($_POST['camp_objective']) : '';
 $camp_duration = (isset($_POST['camp_duration'])) ? db_input($_POST['camp_duration']) : '';
 $type_of_diagnostic = (isset($_POST['type_of_diagnostic'])) ? db_input($_POST['type_of_diagnostic']) : '';

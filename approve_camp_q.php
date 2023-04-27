@@ -6,6 +6,7 @@ include "includes/common.php";
 
 
 $rid = (isset($_GET['rid'])) ? $_GET['rid'] : '';
+$prid = (isset($_GET['prid'])) ? $_GET['prid'] : '';
 $USER_ID = (isset($_GET['userid'])) ? $_GET['userid'] : '';
 $display_all = (isset($_GET['display_all'])) ? $_GET['display_all'] : '0';
 
@@ -14,7 +15,7 @@ if (empty($USER_ID) || (!empty($USER_ID) && !is_numeric($USER_ID))) {
     exit;
 }
 
-if (empty($rid) || (!empty($rid) && !is_numeric($rid))) {
+if (empty($prid) || (!empty($prid) && !is_numeric($prid))) {
     echo 'Invalid Access Detected!!!';
     exit;
 }
@@ -34,7 +35,7 @@ $QUARTER_ARR = GetXArrFromYID("select quarterid,quarter_name from crm_naf_quarte
 $selectoption = '';
 $readonly = 'readonly';
 
-$DATA = GetDataFromID('crm_naf_main', 'id', $rid);
+$DATA = GetDataFromID('crm_naf_main', 'id', $prid);
 //DFA($DATA);
 // [id] => 65
 // [initiator] => KhajaMuzammil Ali
@@ -83,12 +84,13 @@ $proposed_objective = $DATA[0]->proposed_objective;
 $naf_objective_rational = $DATA[0]->naf_objective_rational;
 $lead_event = $DATA[0]->lead_event;
 $medical_equipments = $DATA[0]->medical_equipments;
+$submitted_on=$DATA[0]->submitted_on;
 $deviation_amount = $DATA[0]->deviation_amount;
 
 
 
 $division = GetXFromYID("select division from users where id='$requestorID' ");
-$curr_dt = date('Y-m-d');
+$curr_dt = date('Y-m-d',strtotime($submitted_on));
 // $financial_qry = "SELECT financial_year FROM financialyear where '".$curr_dt."' between from_date and to_date";
 // $financial_qry_res = sql_query($financial_qry);
 $curr_fyear = GetXFromYID("SELECT financial_year FROM financialyear where '" . $curr_dt . "' between from_date and to_date ");
@@ -171,7 +173,7 @@ foreach ($SPECILITY_ARR as $key => $value) {
     <div id="appCapsule">
 
         <form action="_Approve_c_q.php" id="CAMP_Q_Approve_FORM" method="post">
-            <input type="hidden" name="rid" value="<?php echo $rid; ?>">
+            <input type="hidden" name="rid" value="<?php echo $prid; ?>">
             <input type="hidden" name="userid" value="<?php echo $USER_ID; ?>">
             <div class="tab-content mt-1">
 
@@ -246,13 +248,13 @@ foreach ($SPECILITY_ARR as $key => $value) {
                                 <div class="row">
 
                                     <div class="col-3">
-                                        <b>Activity Details (for Blanket Approval):</b>
+                                        <b>Name of activity:</b>
                                     </div>
 
                                     <div class="col-9">
                                         <div class="input-wrapper">
 
-                                            <b>Name of activity</b>
+                                            <b></b>
 
                                             <div class="custom-control custom-radio mb-1">
                                                 <input type="text" class="form-control" name="activty_name" value="<?php echo $naf_activity_name; ?>" id="activty_name" readonly>

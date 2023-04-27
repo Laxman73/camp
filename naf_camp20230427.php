@@ -30,8 +30,8 @@ if (empty($prid) || (!empty($prid) && !is_numeric($prid))) {
 
 if (empty($rid) || (!empty($rid) && !is_numeric($rid))) {
 	$mode = 'A';
-}else{
-	$mode='E';
+} else {
+	$mode = 'E';
 }
 
 //if (isset($_GET['prid'])) $mode = 'A';
@@ -823,7 +823,9 @@ $_r = sql_query($_q, "");
 
 
 
-				<!-- <div class="section mt-2">
+
+
+				<div class="section mt-2">
 					<div class="card">
 						<div class="card-body pd-1">
 
@@ -849,41 +851,7 @@ $_r = sql_query($_q, "");
 									</tr>
 								</thead>
 								<tbody>
-									<tr>
-										<th></th>
-										<td>1</td>
-										<td>&nbsp;</td>
-										<td>&nbsp;</td>
-										<td>&nbsp;</td>
-										<td>&nbsp;</td>
-										<td>&nbsp;</td>
-										<td>&nbsp;</td>
-										<td>
-											<div class="input-wrapper">
-												<select class="form-control custom-select" id="" required="">
-													<option selected="" disabled="" value="">Choose...</option>
-													<option value="1">Yes</option>
-													<option value="2">No</option>
-												</select>
-											</div>
-										</td>
-										<td>
-											<div class="input-wrapper">
-												<input type="text" class="form-control" id="" placeholder="" required="">
-											</div>
-										</td>
-										<td>
-											<div class="input-wrapper">
-												<input type="text" class="form-control" id="" placeholder="" required="">
-											</div>
-										</td>
-										<td>
-											<div class="input-wrapper">
-												<input type="text" class="form-control" id="" placeholder="" required="">
-											</div>
-										</td>
-									</tr>
-
+									
 
 
 
@@ -947,7 +915,7 @@ $_r = sql_query($_q, "");
 
 						</div>
 					</div>
-				</div> -->
+				</div>
 
 
 
@@ -1073,9 +1041,6 @@ $_r = sql_query($_q, "");
 	<script>
 		$(document).ready(function() {
 			var table = $('#example1').DataTable({
-				rowReorder: {
-					selector: 'td:nth-child(2)'
-				},
 				responsive: true
 			});
 		});

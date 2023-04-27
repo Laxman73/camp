@@ -323,9 +323,6 @@ $_r=sql_query($_q,"");
 					</form>
 				</div>
 			</div>
-
-
-
 		</div>
 
 
