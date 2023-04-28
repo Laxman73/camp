@@ -75,7 +75,7 @@ if (!empty($status)) {
 	$execute_query = true;
 }
 
-$_q="select * from crm_naf_main where 1 ".$cond ."and category_id='2' and deleted=0 ";
+$_q="select * from crm_naf_main where 1 ".$cond ."and category_id='2' and deleted=0 order by id DESC";
 $_r=sql_query($_q,"");
 
 
@@ -297,7 +297,7 @@ $_r=sql_query($_q,"");
 											<div class="col col-f">
 												<select onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);" class="naf-btn custom-select" id="" placeholder="Need Assessment Form" >
 													<option selected="" disabled="" value="">Need Assessment Form</option>
-													<option value="index_camp.php?userid=<?php echo $USER_ID;?>">NAF</option>
+													<option value="index_naf_qtr.php?userid=<?php echo $USER_ID;?>">NAF</option>
 												</select>
 											</div>
 
@@ -368,9 +368,10 @@ $_r=sql_query($_q,"");
 									if (($approved_status_id == 1 || $approved_status_id==2 ) && $USER_ID==$pendingwithID) {
 										$event_url='<a href="approve_camp_q.php?prid='.$x_id.'&userid='.$USER_ID.'">'.strtoupper($naf_no).'</a>';
 									}elseif ($approved_status_id==2 && $pendingwithID==0 && $NAF_level==4) {
-										$event_url='<a href="naf_camp.php?prid='.$x_id.'&userid='.$USER_ID.'&rid='.$x_rid.'">'.strtoupper($naf_no).'</a>';
+										$event_url='<a href="index_naf_camp.php?prid='.$x_id.'&userid='.$USER_ID.'&rid='.$x_rid.'">'.strtoupper($naf_no).'</a>';
 									} else{
-										$event_url='<a href="javascript:void(0)">'.strtoupper($naf_no).'</a>';
+										
+										$event_url='<a href="index_naf_qtr.php?prid='.$x_id.'&userid='.$USER_ID.'&rid='.$x_rid.'">'.strtoupper($naf_no).'</a>';
 									}
 									//$PMArefno = $o->request_no; //Pma reference NUmber
 									
@@ -431,7 +432,7 @@ $_r=sql_query($_q,"");
 		}
 		$(document).ready(function() {
 			var table = $('#example').DataTable({
-				
+				ordering:false,
 				responsive: true
 			});
 		});

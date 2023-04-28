@@ -9,6 +9,7 @@ $TITLE = SITE_NAME . ' | ' . $page_title;
 
 $rid = (isset($_GET['rid'])) ? $_GET['rid'] : '';
 $pid = (isset($_GET['pid'])) ? $_GET['pid'] : '';
+$prid = (isset($_GET['prid'])) ? $_GET['prid'] : '';
 $USER_ID = (isset($_GET['userid'])) ? $_GET['userid'] : '';
 $display_all = (isset($_GET['display_all'])) ? $_GET['display_all'] : '0';
 
@@ -777,21 +778,21 @@ $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_req
 			$('#SERVICE_FORM').on('submit', function() {
 				var ret = true;
 				var rid = $('#rid').val();
-				$.ajax({
-					url: '_checkServiceForm.php',
-					method: 'POST',
-					data: {
-						rid: rid
-					},
-					async: false,
-					success: function(res) {
-						if (res == 1) {
-							ret = false;
-							alert('Number of participants is less than the NAF raised for the PMA requests');
+				// $.ajax({
+				// 	url: '_checkServiceForm.php',
+				// 	method: 'POST',
+				// 	data: {
+				// 		rid: rid
+				// 	},
+				// 	async: false,
+				// 	success: function(res) {
+				// 		if (res == 1) {
+				// 			ret = false;
+				// 			alert('Number of participants is less than the NAF raised for the PMA requests');
 
-						}
-					}
-				})
+				// 		}
+				// 	}
+				// })
 
 				return ret;
 			});

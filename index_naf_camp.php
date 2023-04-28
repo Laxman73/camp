@@ -36,7 +36,7 @@ if (empty($rid) || (!empty($rid) && !is_numeric($rid))) {
 
 //if (isset($_GET['prid'])) $mode = 'A';
 
-
+$HCP_DATA=$REQUEST_LETTER=array();
 
 
 // getting role and profile id of user
@@ -72,7 +72,7 @@ $SPECILITY_ARR = GetXArrFromYID("select specialityid as id,specialityname as nam
 $PRODUCTS_ARR = GetXArrFromYID("select productbrandtypeid as id ,productbrandtype as name from productbrandtype where presence=1 " . $cond . " order by productbrandtype ASC", '3');
 
 $HCP_UNIVERSAL_ID = GetXArrFromYID("select contactid,masterid from contactdetails order by contactid LIMIT 100 ", "3");
-
+$display_style='';
 if ($mode == 'A') {
 	$initiator = '';
 	$REQid = '';
@@ -118,6 +118,7 @@ if ($mode == 'A') {
 	$productID = '';
 	$x_total = '';
 } elseif ($mode == 'E') {
+	$display_style='display:none';
 	$DATA = GetDataFromID('crm_naf_main', 'id', $rid, "and deleted=0 and category_id=5 ");
 	if (empty($DATA)) {
 		header('location: ' . $disp_url . '?userid=' . $USER_ID);
@@ -217,6 +218,12 @@ if ($mode == 'A') {
 	}
 
 	$x_total = GetXFromYID("select sum(naf_expense) from crm_naf_cost_details where naf_request_id='$rid' "); //total amount
+
+	$HCP_DATA=GetDataFromID('crm_naf_hcp_details','naf_main_id',$rid,"and deleted=0 ");
+
+	$hcp_details_ID=GetXFromYID("select id from crm_naf_hcp_details where naf_main_id='$rid' and deleted=0 ");
+
+	$REQUEST_LETTER=GetDataFromID('crm_naf_camp_letter','crm_naf_hcp_details_id',$hcp_details_ID);
 
 
 	//DFA($S_ARRA);
@@ -831,7 +838,7 @@ $_r = sql_query($_q, "");
 					<div class="card">
 						<div class="card-body pd-1">
 
-							<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#addhcp">ADD</button>
+							<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#addhcp" style="<?php echo $display_style;?>">ADD</button>
 
 
 							<table id="example" class="display mt-2" style="width:100%">
@@ -856,6 +863,45 @@ $_r = sql_query($_q, "");
 									</tr>
 								</thead>
 								<tbody id="append_data">
+									<?php
+										if (!empty($HCP_DATA)) {
+											for ($i=0; $i <count($HCP_DATA) ; $i++) { 
+												$k=$i+1;
+												$hcp_id=$HCP_DATA[$i]->hcp_id;
+												$masterid=GetXFromYID("select masterid from contactdetails where contactid='$hcp_id' ");
+												$hcp_name=GetXFromYID("SELECT CONCAT(firstname, ' ', lastname) AS full_name FROM contactdetails where contactid='$hcp_id' ");
+												$hcp_address=$HCP_DATA[$i]->hcp_address;
+												$hcp_pan=$HCP_DATA[$i]->hcp_pan;
+												$hcp_qualification=$HCP_DATA[$i]->hcp_qualification;
+												$hcp_associated_hospital_id=$HCP_DATA[$i]->hcp_associated_hospital_id;
+												$govt_type=$HCP_DATA[$i]->govt_type;
+												$yr_of_experience=$HCP_DATA[$i]->yr_of_experience;
+												$role_of_hcp=$HCP_DATA[$i]->role_of_hcp;
+												$honorarium_amount=$HCP_DATA[$i]->honorarium_amount;
+												$mobile=$HCP_DATA[$i]->mobile;
+												?>
+												<tr>
+													<td></td>
+													<td><?php echo $k;?></td>
+													<td><?php echo $masterid;?></td>
+													<td><?php echo $hcp_name;?></td>
+													<td><?php echo $hcp_address;?></td>
+													<td><?php echo $honorarium_amount;?></td>
+													<td><?php echo $role_of_hcp;?></td>
+													<td><?php echo $mobile;?></td>
+													<td><?php echo $hcp_pan;?></td>
+													<td><?php echo $hcp_qualification;?></td>
+													<td><?php echo $hcp_associated_hospital_id;?></td>
+													<td><?php echo $govt_type;?></td>
+													<td><?php echo $yr_of_experience;?></td>
+													<td></td>
+
+												</tr>
+
+
+										<?php	}
+										}
+									?>
 
 
 
@@ -866,7 +912,7 @@ $_r = sql_query($_q, "");
 
 							<br><br><br><br>
 
-							<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#addrequestletterMODAL">ADD</button>
+							<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#addrequestletterMODAL" style="<?php echo $display_style;?>">ADD</button>
 							<table id="example1" class="display" style="width:100%">
 
 								<thead>
@@ -882,6 +928,30 @@ $_r = sql_query($_q, "");
 									</tr>
 								</thead>
 								<tbody id="addrequestletter">
+									<?php
+									if(!empty($REQUEST_LETTER)){
+										for ($i=0; $i <count($REQUEST_LETTER) ; $i++) { 
+											$k=$i+1;
+											$nature_of_camp=$REQUEST_LETTER[$i]->nature_of_camp;
+											$proposed_camp_date=$REQUEST_LETTER[$i]->proposed_camp_date;
+											$proposed_camp_location=$REQUEST_LETTER[$i]->proposed_camp_location;
+											$estimated_cost=$REQUEST_LETTER[$i]->estimated_cost;
+											$diagnostic_lab=$REQUEST_LETTER[$i]->diagnostic_lab; ?>
+											<tr>
+												<td></td>
+												<td><?php echo $k;?></td>
+												<td><?php echo $nature_of_camp;?></td>
+												<td><?php echo $proposed_camp_date;?></td>
+												<td><?php echo $proposed_camp_location;?></td>
+												<td><?php echo $estimated_cost;?></td>
+												<td><?php echo $diagnostic_lab;?></td>
+											</tr>
+
+
+									<?php	}
+									}
+
+									?>
 
 
 
@@ -903,7 +973,7 @@ $_r = sql_query($_q, "");
 							<div class="form-group basic">
 								<div class="input-wrapper">
 									<label class="label" for="">rationale for selection:<span style="color:#ff0000">*</span></label>
-									<textarea id="rationale" name="rationale" rows="3" class="form-control"><?php echo $rationale_remark; ?></textarea>
+									<textarea id="rationale" name="rationale" rows="3" class="form-control"><?php echo $naf_objective_rational; ?></textarea>
 								</div>
 							</div>
 						</div>
@@ -935,7 +1005,7 @@ $_r = sql_query($_q, "");
 							<!-- <div class="col"><button type="button" class="exampleBox btn btn-primary rounded me-1">Save</button>
 						</div> -->
 							<div class="col">
-								<button type="submit" class="exampleBox btn btn-primary rounded me-1">Submit</button>
+								<button type="submit" class="exampleBox btn btn-primary rounded me-1" style="<?php echo $display_style;?>" >Submit</button>
 							</div>
 							<!-- <div class="col">
 							<a href="#"><button type="button" class="exampleBox btn btn-primary rounded me-1">Cancel</button></a>

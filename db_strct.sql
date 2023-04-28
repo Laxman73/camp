@@ -2,7 +2,7 @@ CREATE TABLE `crm_naf_main` (
   `id` int(15) NOT NULL AUTO_INCREMENT,
   `initiator` varchar(200) DEFAULT NULL,
   `userid` int(20) NOT NULL,
-  `emp_code` int(6) NOT NULL,
+  `emp_code` varchar(20) NOT NULL,
   `date` date NOT NULL,
   `post_comment` varchar(255) NOT NULL,
   `category_id` int(11) NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE `crm_naf_main` (
   `authorise` int(1) NOT NULL,
   `approved_date` datetime NOT NULL,
   `deleted` int(1) NOT NULL,
-  `deleted_on` datetime NOT NULL,
+  `deleted_on` datetime DEFAULT NULL,
   `eventdate` date DEFAULT NULL,
   `level` int(5) NOT NULL DEFAULT '0',
   `naf_no` varchar(50) NOT NULL,
@@ -34,6 +34,13 @@ CREATE TABLE `crm_naf_main` (
   `lead_event` text,
   `medical_equipments` text,
   `deviation_amount` int(11) DEFAULT NULL,
+  `parent_id` varchar(60) DEFAULT NULL,
+  `event_benefit_society` text,
+  `budget_amount` int(11) DEFAULT NULL,
+  `role_of_advisory` text,
+  `doc_upload_path` varchar(150) DEFAULT NULL,
+  `status` int(2) NOT NULL,
+  `advance_payment` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `userid` (`userid`),
   KEY `emp_code` (`emp_code`),
@@ -41,7 +48,7 @@ CREATE TABLE `crm_naf_main` (
   KEY `pendingwithid` (`pendingwithid`),
   KEY `authorise` (`authorise`),
   KEY `deleted` (`deleted`)
-) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=141 DEFAULT CHARSET=latin1;
 
 
 

@@ -42,9 +42,9 @@ $level = '';
 $pid = (isset($pid)) ? $pid : '';
 
 //RM/AM head
-if (($PROFILE_ID == 6 || $PROFILE_ID == 7) && !empty($pid)) {
+if ($PROFILE_ID == 6 || $PROFILE_ID == 7) {
 
-	$user_tabs = array(1,2,3,4,5,6,7,8,9,10);
+	$user_tabs = array(1,2,3,4,5,6,7,8);
 
 	// $_Qnafmain = sql_query("select level,authorise from crm_naf_main where id='$rid' ");
 	// list($NAF_level, $NAF_isAuthorise) = sql_fetch_row($_Qnafmain);
@@ -193,7 +193,7 @@ if ($PROFILE_ID == 22) {
 
 
 		
-		$user_tabs = array(1,2,3,4,5,6,7,8,9,10);
+		$user_tabs = array(1,9);
 		
 		//echo "$no_of_participants /  $NUm_of_PMAraised"; 
 		//exit;
@@ -253,7 +253,7 @@ if ($PROFILE_ID == 15) {
 
 //Medical Head
 if($PROFILE_ID == 11){
-	$user_tabs = array(1,2,3,4,5,6,7,8,9,10);
+	$user_tabs = array(1,9);
 }
 
 
@@ -308,11 +308,11 @@ $TABS_DATA[6] = '<div class="col-2 py-2">
 				</a>
 			</div>';
 
-$TABS_DATA[7] = '<div class="col-2 py-2">
-				<a href="' . $pdf_url . '">
-					<div class="tabBox">Acknowledgement/PDF</div>
-				</a>
-			</div>';
+// $TABS_DATA[7] = '<div class="col-2 py-2">
+// 				<a href="' . $pdf_url . '">
+// 					<div class="tabBox">Acknowledgement/PDF</div>
+// 				</a>
+// 			</div>';
 
 $TABS_DATA[8] = '<div class="col-2 py-2">
 				<a href="' . $camp_report_url . '">

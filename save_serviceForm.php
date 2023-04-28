@@ -2,6 +2,7 @@
 include 'includes/common.php';
 $pdo = connectToDatabase();
 $rid = (isset($_POST['rid'])) ? $_POST['rid'] : '';
+$prid = (isset($_POST['prid'])) ? $_POST['prid'] : '';
 $userid = (isset($_POST['userid'])) ? $_POST['userid'] : '';
 
 
@@ -21,7 +22,7 @@ $empcode=GetXFromYID("select user_name from users where id='$USER_ID' and delete
 
 $PENDING_WITH_ID = $STATUS = '';
 
-$crm_workflow = crm_workflow($USER_ID, 4, $New_level, $User_division);//Getting the details from crm_workflow 
+$crm_workflow = crm_workflow($USER_ID, 5, $New_level, $User_division);//Getting the details from crm_workflow 
 if (!empty($crm_workflow)) {
     $PENDING_WITH_ID = $crm_workflow['pending_with_id'];
     $STATUS = $crm_workflow['status'];

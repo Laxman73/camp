@@ -4,7 +4,7 @@
 ini_set('display_errors', '1'); */
 include 'includes/common.php';
 
-$disp_url = 'index_pma_camp.php';
+$disp_url = 'index_pma.php';
 $USER_ID = (isset($_GET['userid'])) ? $_GET['userid'] : '';
 if (empty($USER_ID) || (!empty($USER_ID) && !is_numeric($USER_ID))) {
 	echo 'Invalid Access Detected!!!';
@@ -156,7 +156,7 @@ if (sql_num_rows($_R)) {
 									<div style="display:flex;">
 
 										<div class="block1">
-											<b>PMA Reference Number</b>
+											<b>Reference Number</b>
 										</div>
 
 										<div class="block2">
@@ -285,19 +285,50 @@ if (sql_num_rows($_R)) {
 							<option selected="" disabled="" value="">Need Assessment Form</option>
 							<option value="naf_form_pma.php?userid=<?php echo $USER_ID; ?>">NAF</option>
 						</select>
-                    </div> -->
+					</div> -->
+
+
 
 								<?php
 
-								if (($PROFILE_ID == 6) || ($PROFILE_ID == 7)) { ?>
+								if (($PROFILE_ID == 6) || ($PROFILE_ID == 7)) {
+									$selelct_crm_naf_type = "SELECT pid,type_name FROM `crm_naf_type_master`
+									WHERE request_type = 'request_type' and pid!=15";
+									$res_crm_naf_type_query = sql_query($selelct_crm_naf_type, '');
+								}
+								elseif($PROFILE_ID == 22){
+									$selelct_crm_naf_type = "SELECT pid,type_name FROM `crm_naf_type_master`
+									WHERE pid = 15";
+									$res_crm_naf_type_query = sql_query($selelct_crm_naf_type, '');
+								}
+									?>
+								<?php
 
+								if (($PROFILE_ID == 6) || ($PROFILE_ID == 7) || ($PROFILE_ID == 22)) {
+									?>
 									<div class="col col-f">
-										<select onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);" class="naf-btn custom-select" id="">
+										<!--  Removied by Nitin Dahale for ticket id 0146686 -->
+										<!-- <select
+											onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);"
+											class="naf-btn custom-select" id="">
 											<option selected="" disabled="" value="">New Request</option>
 											<option value="pma_search.php?userid=<?php echo $USER_ID; ?>">PMA</option>
+										</select> -->
+
+										<!--  Added by Nitin Dahale for ticket id 0146686 -->
+										<select
+											onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);"
+											class="naf-btn custom-select" id="">
+											<option selected disabled value="">New Request</option>
+											<?php while ($row = mysqli_fetch_assoc($res_crm_naf_type_query)) { ?>
+												<option
+													value="pma_search.php?userid=<?php echo $USER_ID; ?>&typeid=<?php echo $row['pid']; ?>">
+													<?php echo $row['type_name']; ?>
+												</option>
+											<?php } ?>
 										</select>
 									</div>
-								<?php	}
+								<?php }
 								?>
 
 								<div class="col col-f">
@@ -332,12 +363,13 @@ if (sql_num_rows($_R)) {
 								<th>NAF Activity Name</th>
 								<th>Date of NAF initiation</th>
 								<th>Dr Name</th>
-								<th>PMA Reference Number</th>
+								<th>Reference Number</th>
 								<th>Category</th>
 								<th>HCP Universal ID</th>
 								<th>Division</th>
 								<th>Requestor Name</th>
 								<th>Pending with</th>
+
 								<!-- <th>Approved by</th> -->
 								<th>Status</th>
 
@@ -345,17 +377,22 @@ if (sql_num_rows($_R)) {
 						</thead>
 						<tbody>
 							<?php
-							$_q = "select t1.id ,t2.level,t1.parent_id as Parent_ID,t1.initiator,t1.date,t1.naf_no,t2.request_no,t2.authorise,t2.submitted_on,t2.requestor_id,t2.pendingwithid,t2.id as pmaID,t1.naf_activity_name from  crm_naf_main t1 inner join crm_request_main t2 on t1.naf_no=t2.naf_no  where 1 and  t2.deleted=0 and t2.category_id=12 " . $cond . "   order by t2.id DESC";
+
+							$_q = "select t1.id ,t2.level,t1.initiator,t1.date,t1.naf_no,t2.request_no,t2.authorise,t2.submitted_on,t2.requestor_id,t2.pendingwithid,t2.id as pmaID,t1.naf_activity_name,t2.category_id,t3.type_name
+							FROM  crm_naf_main t1
+							INNER JOIN crm_request_main t2 ON t1.naf_no=t2.naf_no 
+							INNER JOIN crm_naf_type_master t3 ON t2.category_id = t3.pid
+							where 1 and  t2.deleted=0 and t3.deleted=0 " . $cond . "   order by t2.id DESC";
+
+
 							$_r = sql_query($_q, "");
 							if (sql_num_rows($_r)) {
 								for ($i = 1; $o = sql_fetch_object($_r); $i++) {
-									$crm_naf_ID=$o->id;
+									//$crm_request_main_ID=$o->id;
 									$subitted_on = $o->submitted_on;
 									$pendingwithID = $o->pendingwithid;
 									$naf_no = $o->naf_no;
 									$PMA_level = $o->level;
-									$PMA_PARENTID = $o->Parent_ID;
-									$PRID=GetXFromYID("select id from crm_naf_main where naf_no='$PMA_PARENTID' and deleted=0 ");//Parent ID
 									$requestor_id = $o->requestor_id;
 									$PMArefno = $o->request_no; //Pma reference NUmber
 									$PMAID = $o->pmaID; //id of crm_request_main
@@ -363,51 +400,75 @@ if (sql_num_rows($_R)) {
 									$PMauthorise = $o->authorise;
 									$NAFinitiator = $o->initiator;
 									$rid = $o->id; //ID of crm_naf_main table
+									$type_name = $o->type_name;
 									$naf_activity_name= $o->naf_activity_name;
+									$category_id= $o->category_id;
+									
 
-									$hcpid = GetXFromYID("select hcp_id from  crm_request_camp_letter where crm_request_main_id='$PMAID' ");
+									$hcpid = GetXFromYID("select hcp_id from  crm_request_details where crm_request_main_id='$PMAID' ");
+									
+									$hcpname = GetXFromYID("select CONCAT_WS(' ', contactmaster.firstname,contactmaster.lastname) AS hcp_name from  crm_request_details 
+									INNER JOIN contactdetails ON crm_request_details.hcp_id =  contactdetails.contactid
+									INNER JOIN contactmaster ON contactdetails.masterid =  contactmaster.id
+									where crm_request_main_id='$PMAID' ");
+									
 									// $PENDING_WITH_ID=GetXFromYID("select pendingwithid from crm_request_main where naf_no='$naf_no' ");
 									// $REQ_ID=GetXFromYID("select requestor_id from crm_request_main where naf_no='$naf_no' ");
 
-									$fname = GetXFromYID("select CONCAT(first_name, ' ', last_name) AS full_name from users where id='$pendingwithID' ");
+									$fname = GetXFromYID("select IF(CONCAT_WS(' ', users.first_name, users.last_name) IS NULL or CONCAT_WS(' ', users.first_name, users.last_name) = '', ' ', CONCAT_WS(' ', users.first_name, users.last_name,'(',`profile`.profilename,')'))AS full_name from users LEFT OUTER JOIN user2role ON user2role.userid=users.id
+										LEFT OUTER JOIN role2profile ON role2profile.roleid = user2role.roleid
+										LEFT OUTER JOIN profile on `profile`.profileid=role2profile.profileid where id='$pendingwithID' 
+										");
 
 									$division = GetXFromYID("SELECT division FROM users WHERE id='$requestor_id' ");
 									$x_total = GetXFromYID("select sum(naf_expense) from crm_naf_cost_details where naf_request_id='$rid' ");
-									$url = 'request_letter_camp.php?rid='.$crm_naf_ID.'&userid='.$USER_ID.'&pid='.$PMAID.'&prid='.$PRID;
-
+									$url = '';
 									
+									// Added by Nitin
+									$file_name = GetXFromYID("SELECT filename 
+									FROM crm_workflow 
+									WHERE level = $PMA_level
+									AND typeid = $category_id
+									AND `status` = $PMauthorise
+									AND pending_with_id = $pendingwithID");
+
+									// removed by Nitin
+									// $file_name = GetXFromYID("select file_name from `crm_listing_configuration` where profileid='".$PROFILE_ID."' and level='".$PMA_level."'
+									// and categoryid='".$category_id."' and authorise='".$PMauthorise."'");
+									
+									$url = $file_name.'?rid=' . $rid . '&userid=' . $USER_ID . '&pid=' . $PMAID; 
+
 									//state head	24676
-									// if ($PROFILE_ID == '15') {
-									// 	if (($PMA_level == 1 && $USER_ID==$pendingwithID && $PMauthorise == 1)) {
-									// 		//PMA Approval
-									// 		$url = 'pma_approve.php?rid=' . $rid . '&userid=' . $USER_ID . '&pid=' . $PMAID; 
-									// 	} elseif ($PMA_level == 2) {
-									// 		//Approved/Rejected
-									// 		$url = 'pma_details.php?rid=' . $rid . '&userid=' . $USER_ID . '&pid=' . $PMAID; 
-									// 	} elseif ($PMA_level == 3 && $PMauthorise == 1 && $USER_ID==$pendingwithID) {
-									// 		// HCP Approval
-									// 		$url = 'naf_form_pma.php?rid=' . $rid . '&userid=' . $USER_ID . '&pid=' . $PMAID;
-									// 	} elseif ($PMA_level >= 4) {
-									// 		$url = 'naf_form_pma.php?rid=' . $rid . '&userid=' . $USER_ID . '&pid=' . $PMAID;
-									// 	} 
-									// } elseif ($PROFILE_ID == '6' || $PROFILE_ID == '7') { 
-									// 	//AM user										
-									// 	if (($PMA_level == 1) || ($PMA_level == 2 && $PMauthorise == 4) ) { 
-									// 		// Rejected
-									// 		$url = 'pma_details.php?rid=' . $rid . '&userid=' . $USER_ID . '&pid=' . $PMAID;
-									// 	} elseif (($PMA_level == 2 && $PMauthorise == 2) || ($PMA_level >= 3)) {
-									// 		$url = 'hcp_form.php?rid=' . $rid . '&userid=' . $USER_ID . '&pid=' . $PMAID;
-									// 	} 
-									// }
+					/* 				if ($PROFILE_ID == '15') {
+										if (($PMA_level == 1 && $USER_ID==$pendingwithID && $PMauthorise == 1)) {
+											//PMA Approval
+											$url = 'pma_approve.php?rid=' . $rid . '&userid=' . $USER_ID . '&pid=' . $PMAID; 
+										} elseif ($PMA_level == 2) {
+											//Approved/Rejected
+											$url = 'pma_details.php?rid=' . $rid . '&userid=' . $USER_ID . '&pid=' . $PMAID; 
+										} elseif ($PMA_level == 3 && $PMauthorise == 1 && $USER_ID==$pendingwithID) {
+											// HCP Approval
+											$url = 'naf_form_pma.php?rid=' . $rid . '&userid=' . $USER_ID . '&pid=' . $PMAID;
+										} elseif ($PMA_level >= 4) {
+											$url = 'naf_form_pma.php?rid=' . $rid . '&userid=' . $USER_ID . '&pid=' . $PMAID;
+										} 
+									} elseif ($PROFILE_ID == '6' || $PROFILE_ID == '7') { 
+										//AM user										
+										if (($PMA_level == 1) || ($PMA_level == 2 && $PMauthorise == 4) ) { 
+											// Rejected
+											$url = 'pma_details.php?rid=' . $rid . '&userid=' . $USER_ID . '&pid=' . $PMAID;
+										} elseif (($PMA_level == 2 && $PMauthorise == 2) || ($PMA_level >= 3)) {
+											$url = 'hcp_form.php?rid=' . $rid . '&userid=' . $USER_ID . '&pid=' . $PMAID;
+										} 
+									} */
 							?>
 									<tr>
 										<td><?php echo $naf_no; ?></td>
 										<td><?php echo $naf_activity_name; ?></td>
 										<td><?php echo $naf_date; ?></td>
-										<td><a href="<?php echo $url; ?>"><?php echo 'Dr ' . $CONTACT_DETAILS[$hcpid]['firstname'] . ' ' . $CONTACT_DETAILS[$hcpid]['lastname']; ?></a></td>
+										<td><a href="<?php echo $url; ?>"><?php echo 'Dr ' . $hcpname; ?></a></td>
 										<td><?php echo $PMArefno; ?></td>
-										<td>PMA <?php //echo 'level=>'.$PMA_level.' Authorise=>'.$PMauthorise.'url=>'.$url;
-												?></td>
+										<td><?php echo $type_name; ?></td>
 										<td><?php echo 'HCP-' . $CONTACT_DETAILS_ARR[$hcpid]; ?></td>
 										<td><?php echo (isset($DIVISION_ARR[$division])) ? $DIVISION_ARR[$division] : ''; ?></td>
 										<td><?php echo $NAFinitiator; ?></td>
@@ -418,9 +479,19 @@ if (sql_num_rows($_R)) {
 											}
 
 											?></td>
-
+<?											
+if ($PMauthorise=='1'){
+	$color = "rgba(255,0,0,0.6)";
+}else if($PMauthorise=='2'){
+	$color = "rgba(255,255,0,0.6)";
+}else if($PMauthorise=='3'){
+	$color = "rgba(0,255,0,0.6)";
+}else if($PMauthorise=='5 '){
+	$color = "rgba(0,0,255,0.6)";
+}
+?>													
 										<!-- <td class="text-center"></td> -->
-										<td><?php echo isset($STATUS_ARR[$PMauthorise]) ? $STATUS_ARR[$PMauthorise] : ''; ?></td>
+										<td style="background:<?php echo $color;?>;color:black;" ><?php echo isset($STATUS_ARR[$PMauthorise]) ? $STATUS_ARR[$PMauthorise] : ''; ?></td>
 
 									</tr>
 

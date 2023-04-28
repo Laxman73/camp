@@ -4,6 +4,7 @@ $pdo=connectToDatabase();
 
 $rid=(isset($_POST['rid']))?$_POST['rid']:'';
 $pid=(isset($_POST['pid']))?$_POST['pid']:'';
+$prid=(isset($_POST['prid']))?$_POST['prid']:'';
 $userid=(isset($_POST['userid']))?$_POST['userid']:'';
 $shortcode_mode = db_input($_POST['shortcodemode']);
 
@@ -61,15 +62,16 @@ $id=NextID('id','crm_hcp_agreement');
 	 if($stmt->execute(array($id,$crm_hcp_information_id,$file1,$file,NOW,NOW,1,0,NOW))){
 		if($shortcode_mode=='')
 		{
-			//header('location: questionnaire.php?rid='.$rid.'&userid='.$userid.'&pid='.$pid);
-            echo 'success';
+			//http://88.99.140.102/MicrolabReplicav3/modules/CRM_demo/service_agreement_camp.php?rid=140&prid=&userid=19804&pid=134
+			header('location: service_agreement_camp.php?rid='.$rid.'&userid='.$userid.'&pid='.$pid.'&prid='.$prid);
+            //echo 'success';
 			exit;  
 		}
 		else
 		{
 				
-			//header('location: aggreement_view_smslink.php?qutaccessshorturl='.$shortcode_mode.'&userid='.$userid.'&rid='.$rid.'&pid='.$_POST['pid']);
-            echo 'success';
+			header('location: service_agreement_camp.php?rid='.$rid.'&userid='.$userid.'&pid='.$pid.'&prid='.$prid);
+            //echo 'success';
 			exit;		
 		}
 	}

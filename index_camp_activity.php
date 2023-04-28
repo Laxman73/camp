@@ -70,7 +70,7 @@ $STATUS_ARR = GetXArrFromYID("select pid,status_name from crm_status_master wher
 $TYPE_ARR = GetXArrFromYID("select pid,type_name from crm_naf_type_master where deleted=0", "3");
 $DIVISION_ARR = GetXArrFromYID("select divisionid,name from division ", '3');
 
-$_q = "select CONCAT(t1.first_name, ' ', t1.last_name) AS pending_with,t2.pendingwithid,t2.id,t2.eventdate,t2.naf_no,t2.userid,t2.category_id,t2.level,t2.authorise,t2.budget_amount from users t1 left join crm_naf_main t2 on t2.pendingwithid=t1.id where 1 and t2.deleted=0 " . $cond . $having;
+$_q = "select CONCAT(t1.first_name, ' ', t1.last_name) AS pending_with,t2.pendingwithid,t2.id,t2.eventdate,t2.naf_no,t2.userid,t2.category_id,t2.level,t2.authorise,t2.budget_amount from users t1 inner join crm_naf_main t2 on t2.pendingwithid=t1.id where 1 and t2.deleted=0  and category_id=5" . $cond . $having ."order by t2.id";
 $_r = sql_query($_q, "seacrh query");
 
 ?>
@@ -453,7 +453,7 @@ $_r = sql_query($_q, "seacrh query");
     <script>
         $(document).ready(function() {
             var table = $('#example').DataTable({
-
+                ordering:false,
                 responsive: true
             });
         });

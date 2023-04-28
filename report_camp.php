@@ -209,6 +209,7 @@ $CHECKBOXES = array('1' => 'Excellent', '2' => 'Good', '3' => 'Average', '4' => 
 			<input type="hidden" name="userid" value="<?php echo $USER_ID; ?>">
 			<input type="hidden" name="pid" value="<?php echo $pid; ?>">
 			<input type="hidden" name="rid" value="<?php echo $rid; ?>">
+			<input type="hidden" name="prid" value="<?php echo $prid; ?>">
 
 
 

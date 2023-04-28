@@ -61,6 +61,6 @@ if ($mode=='A') {
 }
 
 
-header('location: index.php?userid='.$USER_ID);
+header('location: index_qtr.php?userid='.$USER_ID);
 exit;
 ?>

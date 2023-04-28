@@ -48,6 +48,8 @@ $venue = (isset($_POST['venue'])) ? db_input($_POST['venue']):'';
 $medical_equipment_needed = (isset($_POST['medical_equipment_needed'])) ? db_input($_POST['medical_equipment_needed']):'';
 $deviation_amount = (isset($_POST['deviation_amount'])) ? db_input($_POST['deviation_amount']):'';
 $targetedSpeciality_Arr = (isset($_POST['targetedSpeciality']))? $_POST['targetedSpeciality']:array();
+$selected_hcp = (isset($_POST['selected_hcp']))? $_POST['selected_hcp']:'';
+$selected_request_letter = (isset($_POST['selected_request_letter']))? $_POST['selected_request_letter']:'';
 $advance_payment = (isset($_POST['advance_payment']))? $_POST['advance_payment']:'';
 $upload_path='';
 
@@ -77,7 +79,7 @@ if (is_uploaded_file($_FILES['advance_file']["tmp_name"])) {
 
 $PARENT_ID=GetXFromYID("select naf_no from crm_naf_main where id='$PR_ID' and deleted=0 ");
 
-$CrmID = NextID('id', 'crm_naf_main');
+$CrmID = NextID('id', 'crm_naf_main');//Main ID from the crm_naf_main table
 $EVENT_ID = 'Q' . 'CAM' . substr($DIVISION_ARR[$User_division], 0, 3) . str_pad($PR_ID, 4, '0', STR_PAD_LEFT). str_pad($CrmID, 4, '0', STR_PAD_LEFT);//Generating event ID 
 
 $Name = GetXFromYID("select first_name from users where id='$USER_ID' ");
@@ -108,6 +110,88 @@ while ($row = sql_fetch_assoc($_crm_fields_r)) {
 //Product Details
 $crm_naf_product_detailsID = NextID('pid', 'crm_naf_product_details');
 $pdo->prepare("insert into crm_naf_product_details (pid,naf_request_id,product_id,naf_product_therapy_others,deleted) values (?,?,?,?,?)")->execute(array($crm_naf_product_detailsID, $CrmID, $product_id, '', 0));
-header('location: index_camp_activity.php?userid='.$USER_ID);
+
+// Array
+// (
+//     [userid] => 19804
+//     [prid] => 106
+//     [rid] => 
+//     [selected_hcp] => [{"doctorid":"4","doctorid_value":"39399","hcp_name":"  A Aishwarya -","address":"TAMIL NADU,CHENNAI,600001","qualification":"Diplomate N.B. (Paed.)","associated_hospital":"PON Hospital","pan":"ABCTY1234D","hcp_mobile":"7350807077","govt":"No","honorarium_amount":"4000","role_of_hcp":"role","year_of_experience":"12"}]
+//     [selected_request_letter] => [{"nature_of_camp":"camp activity","proposed_camp_date":"2023-04-29","proposed_camp_location":"goa","estimated_cost":"5000","diagnostic_lab":"400"}]
+//     [reqDate] => 2023-04-28
+//     [productID] => 2818
+//     [eventID] => 
+//     [activty_name] => camp activity
+//     [Nature_of_activity] => 1
+//     [activity_Date] => 2023-04-28
+//     [city] => 4
+//     [venue] => GOA
+//     [no_of_p] => 40
+//     [targetedSpeciality] => Array
+//         (
+//             [0] => 7823
+//             [1] => 7824
+//             [2] => 7825
+//         )
+
+//     [objective] => objective
+//     [crm_14] => 500
+//     [crm_15] => 400
+//     [crm_16] => 
+//     [crm_17] => 
+//     [crm_18] => 
+//     [crm_19] => 
+//     [crm_20] => 
+//     [crm_21] => 
+//     [crm_22] => 
+//     [crm_23] => 
+//     [crm_24] => 
+//     [crm_25] => 
+//     [crm_29] => 
+//     [total] => 900
+//     [advance_payment] => No
+//     [example_length] => 10
+//     [example1_length] => 10
+//     [rationale] => rational for selection
+// )
+
+$json_hcp = json_decode($selected_hcp, true);
+
+$crm_naf_hcp_details_ID=NextID('id','crm_naf_hcp_details');//HCP DETAILS ID
+
+foreach($json_hcp as $key => $value)
+{
+    $DoctorID = db_input($json_hcp[$key]['doctorid']); //
+    $hcp_name = db_input($json_hcp[$key]['hcp_name']);
+    $address = db_input($json_hcp[$key]['address']);
+    $pan = db_input($json_hcp[$key]['pan']);
+    $associated_hospital = db_input($json_hcp[$key]['associated_hospital']);
+    $govt = db_input($json_hcp[$key]['govt']);
+    $hcp_honorium = db_input($json_hcp[$key]['honorarium_amount']);
+    $hcp_role = db_input($json_hcp[$key]['role_of_hcp']);
+    $year_of_experience = db_input($json_hcp[$key]['year_of_experience']);
+    $hcp_mobile = db_input($json_hcp[$key]['hcp_mobile']);
+    $qualification = db_input($json_hcp[$key]['qualification']);
+    $pdo->prepare("insert into crm_naf_hcp_details values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")->execute(array($crm_naf_hcp_details_ID,$CrmID,$DoctorID,$address,$pan,$qualification,$associated_hospital,$govt,$year_of_experience,$hcp_role,$hcp_honorium,$hcp_mobile,TODAY,0,TODAY));
+}
+
+$json_selected_request_letter = json_decode($selected_request_letter, true);
+
+foreach($json_selected_request_letter as $key => $value)
+{
+    $nature_of_camp = db_input($json_selected_request_letter[$key]['nature_of_camp']); //
+    $proposed_camp_date = db_input($json_selected_request_letter[$key]['proposed_camp_date']);
+    $proposed_camp_location = db_input($json_selected_request_letter[$key]['proposed_camp_location']);
+    $estimated_cost = db_input($json_selected_request_letter[$key]['estimated_cost']);
+    $diagnostic_lab = db_input($json_selected_request_letter[$key]['diagnostic_lab']);
+
+  
+    $crm_naf_camp_letters_ID=NextID('id','crm_naf_camp_letter');
+    $pdo->prepare("insert into crm_naf_camp_letter values(?,?,?,?,?,?,?)")->execute(array($crm_naf_camp_letters_ID,$crm_naf_hcp_details_ID,$nature_of_camp,$proposed_camp_date,$proposed_camp_location,$estimated_cost,$diagnostic_lab));
+}
+
+
+
+header('location: index_qtr.php?userid='.$USER_ID);
 exit;
 ?>

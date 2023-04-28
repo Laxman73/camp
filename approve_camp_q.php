@@ -15,10 +15,7 @@ if (empty($USER_ID) || (!empty($USER_ID) && !is_numeric($USER_ID))) {
     exit;
 }
 
-if (empty($prid) || (!empty($prid) && !is_numeric($prid))) {
-    echo 'Invalid Access Detected!!!';
-    exit;
-}
+
 
 
 
@@ -35,7 +32,7 @@ $QUARTER_ARR = GetXArrFromYID("select quarterid,quarter_name from crm_naf_quarte
 $selectoption = '';
 $readonly = 'readonly';
 
-$DATA = GetDataFromID('crm_naf_main', 'id', $prid);
+$DATA = GetDataFromID('crm_naf_main', 'id', $rid);
 //DFA($DATA);
 // [id] => 65
 // [initiator] => KhajaMuzammil Ali
@@ -86,6 +83,8 @@ $lead_event = $DATA[0]->lead_event;
 $medical_equipments = $DATA[0]->medical_equipments;
 $submitted_on=$DATA[0]->submitted_on;
 $deviation_amount = $DATA[0]->deviation_amount;
+$budget_amount=$DATA[0]->budget_amount;
+$event_benefit_society = $DATA[0]->event_benefit_society;
 
 
 
@@ -173,7 +172,7 @@ foreach ($SPECILITY_ARR as $key => $value) {
     <div id="appCapsule">
 
         <form action="_Approve_c_q.php" id="CAMP_Q_Approve_FORM" method="post">
-            <input type="hidden" name="rid" value="<?php echo $prid; ?>">
+            <input type="hidden" name="rid" value="<?php echo $rid; ?>">
             <input type="hidden" name="userid" value="<?php echo $USER_ID; ?>">
             <div class="tab-content mt-1">
 
@@ -256,7 +255,7 @@ foreach ($SPECILITY_ARR as $key => $value) {
 
                                             <b></b>
 
-                                            <div class="custom-control custom-radio mb-1">
+                                            <div class="custom-control" style="padding-left: 0px;">
                                                 <input type="text" class="form-control" name="activty_name" value="<?php echo $naf_activity_name; ?>" id="activty_name" readonly>
                                             </div>
 
@@ -316,7 +315,7 @@ foreach ($SPECILITY_ARR as $key => $value) {
 
                                     <div class="col-9">
                                         <div class="input-wrapper">
-                                            <input type="number" name="proposed_count" class="form-control" id="proposed_count" value="<?php $proposed_activity_count; ?>" readonly>
+                                            <input type="number" name="proposed_count" class="form-control" id="proposed_count" value="<?php echo  $proposed_activity_count; ?>" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -414,7 +413,7 @@ foreach ($SPECILITY_ARR as $key => $value) {
 
                                     <div class="col-9">
                                         <div class="input-wrapper">
-                                            <input type="number" class="form-control" id="budget_amt" name="budget_amt" value="">
+                                            <input type="number" class="form-control" id="budget_amt"  name="budget_amt" value="<?php echo $budget_amount;?>">
                                         </div>
                                     </div>
                                 </div>
@@ -476,7 +475,7 @@ foreach ($SPECILITY_ARR as $key => $value) {
 
                                     <div class="col-9">
                                         <div class="input-wrapper">
-                                            <input type="text" class="form-control" id="activity_benefit" name="activity_benefit">
+                                            <input type="text" value="<?php echo $event_benefit_society;?>" class="form-control" id="activity_benefit" name="activity_benefit">
                                         </div>
                                     </div>
                                 </div>

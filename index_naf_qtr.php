@@ -4,7 +4,7 @@ ini_set('display_errors', '1');
 
 include "includes/common.php";
 
-$disp_url = 'index_camp.php';
+$disp_url = 'index_naf_qtr.php';
 
 $page_title = 'Camp Quarter';
 $TITLE = SITE_NAME . ' | ' . $page_title;
@@ -34,7 +34,12 @@ $curr_dt = date('Y-m-d');
 
 $curr_fyear = GetXFromYID("SELECT financial_year FROM financialyear where '" . $curr_dt . "' between from_date and to_date ");
 
-$SPECILITY_ARR = GetXArrFromYID("select specialityid as id,specialityname as name from speciality where  in_use=0 AND fyear='$curr_fyear' and division='$division' ", '3');
+$cond = '';
+if (!empty($division) && (isset($division))) {
+	$cond .= " and division=$division ";
+}
+
+$SPECILITY_ARR = GetXArrFromYID("select specialityid as id,specialityname as name from speciality where  in_use=0 AND fyear='$curr_fyear'  ".$cond, '3');
 $QUARTER_ARR = GetXArrFromYID("select quarterid,quarter_name from crm_naf_quarter_master ", '3');
 
 
@@ -84,8 +89,8 @@ if ($mode == 'A') {
 	$rationale_remark = '';
 	$lead_event = '';
 	$medical_equipments = '';
-	$deviation_amount = '';
-	$budget_amount = '';
+	$deviation_amount = '0';
+	$budget_amount = '0';
 	$event_benefit_society = '';
 } elseif ($mode == 'E') {
 	$DATA = GetDataFromID('crm_naf_main', 'id', $prid, "and deleted=0 ");
@@ -136,13 +141,18 @@ if ($mode == 'A') {
 	$curr_dt = date('Y-m-d', strtotime($submitted_on));
 	$division = GetXFromYID("select division from users where id='$requestorID' ");
 
+	$cond = '';
+	if (!empty($division) && (isset($division))) {
+		$cond .= " and division=$division ";
+	}
+
 	$curr_fyear = GetXFromYID("SELECT financial_year FROM financialyear where '" . $curr_dt . "' between from_date and to_date ");
 
-	$SPECILITY_ARR = GetXArrFromYID("select specialityid as id,specialityname as name from speciality where  in_use=0 AND fyear='$curr_fyear' and division='$division' ", '3');
+	$SPECILITY_ARR = GetXArrFromYID("select specialityid as id,specialityname as name from speciality where  in_use=0 AND fyear='$curr_fyear' ".$cond, '3');
 	$QUARTER_ARR = GetXArrFromYID("select quarterid,quarter_name from crm_naf_quarter_master ", '3');
 
 
-	$_sp_q = "select speciality_id from crm_naf_speciality_details where naf_request_id='$rid' ";
+	$_sp_q = "select speciality_id from crm_naf_speciality_details where naf_request_id='$prid' ";
 	//$SELECTED_SPECIALITIES = array();
 	$_sq_q_r = sql_query($_sp_q, '');
 	while (list($specialityid) = sql_fetch_row($_sq_q_r)) {
@@ -152,7 +162,8 @@ if ($mode == 'A') {
 
 
 	//$S_ARRA = array();
-	//DFA($SELECTED_SPECIALITIES);
+	// DFA($SELECTED_SPECIALITIES);
+	// DFA($SPECILITY_ARR);
 	foreach ($SPECILITY_ARR as $key => $value) {
 		if (isset($SELECTED_SPECIALITIES[$key])) {
 			# code...
@@ -372,7 +383,7 @@ if ($mode == 'A') {
 								<div class="row">
 
 									<div class="col-3">
-										<b>Proposed Number of HCPS's:<span style="color:#ff0000">*</span></b>
+										<b>Proposed Number of HCP's:<span style="color:#ff0000">*</span></b>
 									</div>
 
 									<div class="col-9">

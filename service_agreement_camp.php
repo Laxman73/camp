@@ -26,7 +26,7 @@ if (!empty($rid) && $PROFILE_ID == 22) {
     $sign_edit = "display:none";
 }
 
-if ($PROFILE_ID == 6 || $PROFILE_ID == 7) {
+if (($PROFILE_ID == 6 || $PROFILE_ID == 7)&& !empty($pid)) {
     $MODE = 'I';
     $info_id = GetXFromYID("select id from crm_hcp_information where deleted=0 and crm_request_main_id = $pid");
     $sign_display = "display:none";
@@ -244,7 +244,7 @@ $naf_activity_name = GetXFromYID("select naf_activity_name from crm_naf_main whe
             </div>
         </div>-->
 
-
+        <?php include '_tabscamp.php'; ?>
 
     <div id="appCapsule">
 
@@ -494,6 +494,7 @@ $naf_activity_name = GetXFromYID("select naf_activity_name from crm_naf_main whe
                     <form action="save_agreement_camp.php" method="post">
                         <input type="hidden" name="crm_hcp_information_id" value="<?php echo $hcp_information_ID; ?>">
                         <input type="hidden" name="rid" id="rid" value="<?php echo $rid; ?>">
+                        <input type="hidden" name="prid" id="prid" value="<?php echo $prid; ?>">
                         <input type="hidden" name="pid" id="pid" value="<?php echo $pid; ?>">
                         <input type="hidden" name="userid" value="<?php echo $USER_ID; ?>">
                         <textarea id="signature1" name="signature1" style="display: none"></textarea>

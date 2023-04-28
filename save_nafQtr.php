@@ -45,7 +45,7 @@ $targetedSpeciality_Arr = $_POST['targetedSpeciality'];
 $CrmID = NextID('id', 'crm_naf_main');
 $EVENT_ID = 'Q' . 'CAM' . substr($DIVISION_ARR[$User_division], 0, 3) . str_pad($CrmID, 4, '0', STR_PAD_LEFT);//Generating event ID 
 $Name = GetXFromYID("select first_name from users where id='$USER_ID' ");
-$pdo->prepare("insert into crm_naf_main (id,initiator,userid,emp_code,date,post_comment,category_id,submitted_on,submitted,pendingwithid,authorise,approved_date,deleted,deleted_on,eventdate,level,naf_no,naf_activity_name,naf_city,naf_proposed_venue,naf_estimate_no_participents,naf_start_date,naf_end_date,naf_objective_rational,remarks,quarter,mode,proposed_activity_count,proposed_hcp_no,proposed_activity,proposed_objective,rationale_remark,lead_event,medical_equipments,deviation_amount,budget_amount) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")->execute(array($CrmID,$initiater,$USER_ID,$empcode,NOW,'',2,NOW,1,$PENDING_WITH_ID,$STATUS,NOW,0,NULL,$reqDate,1,$EVENT_ID,$activty_name,0,'',$number_of_participants,NOW,NOW,$rationale,'',$Quarter,0,$proposed_count,$number_of_HCP,$Nature_of_activity,$proposed_obj,'',$event_lead,$medical_equipment_needed,$deviation_amount,$budget_amt));
+$pdo->prepare("insert into crm_naf_main (id,initiator,userid,emp_code,date,post_comment,category_id,submitted_on,submitted,pendingwithid,authorise,approved_date,deleted,deleted_on,eventdate,level,naf_no,naf_activity_name,naf_city,naf_proposed_venue,naf_estimate_no_participents,naf_start_date,naf_end_date,naf_objective_rational,remarks,quarter,mode,proposed_activity_count,proposed_hcp_no,proposed_activity,proposed_objective,rationale_remark,lead_event,medical_equipments,deviation_amount,budget_amount,event_benefit_society) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")->execute(array($CrmID,$initiater,$USER_ID,$empcode,NOW,'',2,NOW,1,$PENDING_WITH_ID,$STATUS,NOW,0,NULL,$reqDate,1,$EVENT_ID,$activty_name,0,'',$number_of_participants,NOW,NOW,$rationale,'',$Quarter,0,$proposed_count,$number_of_HCP,$Nature_of_activity,$proposed_obj,'',$event_lead,$medical_equipment_needed,$deviation_amount,$budget_amt,$activity_benefit));
 
 $stmt = $pdo->prepare("insert into crm_naf_speciality_details(pid,naf_request_id,speciality_id,deleted) values(?,?,?,?) ");
 //$stmt->bind_param("iiii",$pid,$naf_request_id,$speciality_id,$deleted);
@@ -59,6 +59,6 @@ foreach ($targetedSpeciality_Arr as $key => $value) {
 }
 
 
-header('location: index.php?userid='.$USER_ID);
+header('location: index_qtr.php?userid='.$USER_ID);
 exit;
 ?>

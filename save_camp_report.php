@@ -9,6 +9,7 @@ $pdo=connectToDatabase();
 // exit;
 $mode = (isset($_POST['mode'])) ? db_input($_POST['mode']) : 'I';
 $rid = (isset($_POST['rid'])) ? db_input($_POST['rid']) : '';
+$prid = (isset($_POST['prid'])) ? db_input($_POST['prid']) : '';
 $pid = (isset($_POST['pid'])) ? db_input($_POST['pid']) : '';
 $USER_ID = (isset($_POST['userid'])) ? db_input($_POST['userid']) : '';
 
@@ -35,7 +36,8 @@ $total_no_of_ind = (isset($_POST['total_no_of_ind'])) ? db_input($_POST['total_n
 
 $ID=NextID('pid','crm_naf_camp_report');
 $pdo->prepare("insert crm_naf_camp_report values(?,?,?,?,?,?,?,?,?,?)")->execute(array($ID,$pid,$camp_objective,$camp_duration,$type_of_diagnostic,$diagnostic_charges,$total_no_of_ind,$camp_organised,$camp_received,$remarks));
-echo 'success';
+
+header('location : index_qtr.php?');
 
 
 ?>
