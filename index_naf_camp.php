@@ -270,6 +270,8 @@ $_r = sql_query($_q, "");
 			<input type="hidden" name="userid" value="<?php echo $USER_ID; ?>">
 			<input type="hidden" name="prid" value="<?php echo $prid; ?>">
 			<input type="hidden" name="rid" value="<?php echo $rid; ?>">
+			<input type="hidden" name="selected_hcp" id="selected_hcp" value="">
+			<input type="hidden" name="selected_request_letter" id="selected_request_letter" value="">
 
 			<div class="tab-content mt-1">
 
@@ -842,16 +844,18 @@ $_r = sql_query($_q, "");
 										<th>HCP Universal ID</th>
 										<th>Name of the HCP</th>
 										<th>Address(city)</th>
+										<th>Honrarium Amount</th>
+										<th>Role of HCP</th>
+										<th>Mobile Number</th>
 										<th>PAN #</th>
 										<th>Qualification</th>
 										<th>Associated Hospital/Clinic</th>
 										<th>Govt.(Yes/No)</th>
 										<th>Years of experience</th>
-										<th>Honorarium</th>
-										<th>Role of the HCP</th>
+										<th></th>
 									</tr>
 								</thead>
-								<tbody>
+								<tbody id="append_data">
 
 
 
@@ -862,7 +866,7 @@ $_r = sql_query($_q, "");
 
 							<br><br><br><br>
 
-							<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#addrequestletter">ADD</button>
+							<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#addrequestletterMODAL">ADD</button>
 							<table id="example1" class="display" style="width:100%">
 
 								<thead>
@@ -873,39 +877,12 @@ $_r = sql_query($_q, "");
 										<th>Nature of Camps</th>
 										<th>Proposed Date</th>
 										<th>Venue</th>
-										<th>HCP(Complete Appendix 1)</th>
 										<th>Estimated Cost, if any</th>
 										<th>Diagnostic labs collaboration</th>
 									</tr>
 								</thead>
-								<tbody>
-									<tr>
-										<th></th>
-										<td>1</td>
-										<td>
-											<div class="input-wrapper">
-												<input type="text" class="form-control" id="" placeholder="" required="">
-											</div>
-										</td>
-										<td>&nbsp;</td>
-										<td>
-											<div class="input-wrapper">
-												<input type="text" class="form-control" id="" placeholder="" required="">
-											</div>
-										</td>
-										<td>&nbsp;</td>
-										<td>
-											<div class="input-wrapper">
-												<input type="number" class="form-control" id="" placeholder="" required="">
-											</div>
-										</td>
-										<td>
-											<div class="input-wrapper">
-												<input type="text" class="form-control" id="" placeholder="" required="">
-											</div>
-										</td>
+								<tbody id="addrequestletter">
 
-									</tr>
 
 
 
@@ -1209,7 +1186,7 @@ $_r = sql_query($_q, "");
 				</div>
 			</div>
 		</div>
-		<div class="modal fade action-sheet" id="addrequestletter" tabindex="-1" role="dialog">
+		<div class="modal fade action-sheet" id="addrequestletterMODAL" tabindex="-1" role="dialog">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -1218,7 +1195,7 @@ $_r = sql_query($_q, "");
 					<div class="modal-body">
 						<div class="wide-block pt-2 pb-2">
 
-							
+
 
 
 							<div class="row">
@@ -1355,6 +1332,343 @@ $_r = sql_query($_q, "");
 	<script src="assets/js/base.js"></script>
 
 	<script>
+		var addeddocarray = [];
+		var added_request_letter = [];
+		var selecteddoctorarray = [];
+
+		function addRequestLetter() {
+			var nature_of_camp = $('#nature_of_camp').val();
+			var proposed_camp_date = $('#proposed_camp_date').val();
+			var proposed_camp_location = $('#proposed_camp_location').val();
+			var estimated_cost = $('#estimated_cost').val();
+			var diagnostic_lab = $('#diagnostic_lab').val();
+			var saveDataObj = {};
+
+			saveDataObj = {
+				'nature_of_camp': nature_of_camp,
+				'proposed_camp_date': proposed_camp_date,
+				'proposed_camp_location': proposed_camp_location,
+				'estimated_cost': estimated_cost,
+				'diagnostic_lab': diagnostic_lab
+			}
+
+			added_request_letter.push(saveDataObj);
+			closeRequestletter();
+			selected_request_letter();
+
+
+		}
+
+		function addDoctor() {
+			var DoctorID = document.getElementById("DoctorID").value;
+			var hcp_name = document.getElementById("hcp_name").value;
+			var address = document.getElementById("address").value;
+			var qualification = document.getElementById("qualification").value;
+			var associated_hospital = document.getElementById("associated_hospital").value;
+			var hcp_mobile = document.getElementById("hcp_mobile").value;
+			var pan = document.getElementById("pan").value;
+			var govt = document.getElementById("govt").value;
+			var year_of_experience = document.getElementById("year_of_experience").value;
+			var honorarium = document.getElementById("Honorarium").value;
+			var role_of_hcp = document.getElementById("role_of_hcp").value;
+
+
+			var DoctorID_value = $("#DoctorID option:selected").text();
+			var DoctorID_passed = $('#DoctorID').val();
+			var hcp_name_passed = $('#hcp_name').val();
+			var address_passed = $('#address').val();
+			var qualification_passed = $('#qualification').val();
+			var associated_hospital_passed = $('#associated_hospital').val();
+			var pan_passed = $('#pan').val();
+			var hcp_mobile_passed = $('#hcp_mobile').val();
+
+			if (honorarium < 1) {
+				alert("Honorarium amount should be greater than zero!!");
+				return false;
+			}
+
+			if (jQuery.trim(DoctorID_passed).length == 0) {
+				alert("Please select HCP Universal ID !");
+				return false;
+			}
+			if (jQuery.trim(address_passed).length == 0) {
+				alert("Please enter Address !");
+				return false;
+			}
+
+			if (jQuery.trim(hcp_mobile_passed).length == 0) {
+				alert("Please enter Mobile Number !");
+				return false;
+			}
+
+			if (jQuery.trim(hcp_mobile_passed).length != 10) {
+				alert("Please enter valid Mobile Number !");
+				return false;
+			}
+
+			if (jQuery.trim(pan_passed).length == 0) {
+				alert("Please enter PAN !");
+				return false;
+			}
+
+			if (jQuery.trim(qualification_passed).length == 0) {
+				alert("Please enter Qualification !");
+				return false;
+			}
+
+			if (jQuery.trim(associated_hospital_passed).length == 0) {
+				alert("Please enter Associated Hospital !");
+				return false;
+			}
+
+			if (jQuery.trim(govt).length == 0) {
+				alert("Please select Govt(Yes/No) !");
+				return false;
+			}
+			if (jQuery.trim(honorarium).length == 0) {
+				alert("Please enter honorarium amount !");
+				return false;
+			}
+			if (jQuery.trim(role_of_hcp).length == 0) {
+				alert("Please enter role of hcp !");
+				return false;
+			}
+			if (jQuery.trim(year_of_experience).length == 0) {
+				alert("Please enter Year Of Experience !");
+				return false;
+			}
+
+
+
+
+
+			if (DoctorID == "" || address == "" || pan == "" || hcp_mobile == "" || govt == "" || year_of_experience == "") {
+				alert("Please select all Parameters, marked with * !");
+				return false;
+			}
+
+			if (addeddocarray.length > 20) {
+				alert(" Maximum of 20 HCP can be added to the list. Kindly adjust the HCP  List");
+				error = 1;
+				return false;
+			}
+
+			if (addeddocarray.length == $('#Num_of_Participants').val()) {
+				alert("HCP cannot be more than the Number of Participants");
+				error = 1;
+				return false;
+			}
+
+			for (var i = 0; i < addeddocarray.length; i++) {
+				if (DoctorID == addeddocarray[i].doctorid) {
+					alert("HCP already added");
+					return false;
+				}
+			}
+
+
+			$("#DoctorID").val("");
+			$("#hcp_name").val("");
+			$("#address").val("");
+			$("#qualification").val("");
+			$("#associated_hospital").val("");
+			$("#hcp_mobile").val("");
+			$("#year_of_experience").val("");
+			$("#pan").val("");
+			$("#govt").val("");
+			$("#Honorarium").val("");
+			$("#role_of_hcp").val("");
+
+			var saveDataObj = {};
+
+			saveDataObj = {
+				'doctorid': DoctorID,
+				'doctorid_value': DoctorID_value,
+				'hcp_name': hcp_name,
+				'address': address,
+				'qualification': qualification,
+				'associated_hospital': associated_hospital,
+				'pan': pan,
+				'hcp_mobile': hcp_mobile,
+				'govt': govt,
+				'honorarium_amount': honorarium,
+				'role_of_hcp': role_of_hcp,
+				'year_of_experience': year_of_experience
+			}
+
+
+			addeddocarray.push(saveDataObj);
+
+
+			closeModal();
+			selected_doctors();
+		}
+
+		const modal = document.querySelector(".modal");
+		const overlay = document.querySelector(".overlay");
+		const openModalBtn = document.querySelector(".btn-open");
+		const closeModalBtn = document.querySelector(".btn-close");
+
+		// close modal function
+		const closeModal = function() {
+			$('#addhcp').modal('hide');
+		};
+
+		// close modal function
+		const closeRequestletter = function() {
+			$('#addrequestletterMODAL').modal('hide');
+		};
+
+		// close the modal when the close button and overlay is clicked
+		// closeModalBtn.addEventListener("click", closeModal);
+		// overlay.addEventListener("click", closeModal);
+
+		// close modal when the Esc key is pressed
+		// document.addEventListener("keydown", function(e) {
+		// 	if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+		// 		closeModal();
+		// 	}
+		// });
+
+		function validateName(name) {
+			var nameReg = /^[A-Za-z]*$/;
+			if (!nameReg.test(name)) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+
+		function HideError(element) {
+			var elemID = $(element).attr('id');
+			var spanID = elemID + "_span";
+
+			$(element).removeClass("is-invalid");
+			$('#' + spanID).remove();
+		}
+
+		function selected_doctors() {
+			if (addeddocarray.length > 0) {
+				var m = 1;
+				var htmltable = '';
+				for (var k = 0; k < addeddocarray.length; k++) {
+					htmltable += '<tr>';
+					htmltable += '<th></th><td>' + m + '</td><td>' + addeddocarray[k].doctorid_value + '</td><td>' + addeddocarray[k].hcp_name + '</td><td>' + addeddocarray[k].address + '</td><td>' + addeddocarray[k].honorarium_amount + '</td><td>' + addeddocarray[k].role_of_hcp + '</td><td>' + addeddocarray[k].hcp_mobile + '</td><td>' + addeddocarray[k].pan + '</td><td>' + addeddocarray[k].qualification + '</td><td>' + addeddocarray[k].associated_hospital + '</td><td>' + addeddocarray[k].govt + '</td><td>' + addeddocarray[k].year_of_experience + '</td>';
+					htmltable += '<td><button type="button" onclick="remove(' + k + ')" id="del_link">Delete</button></td>';
+					htmltable += '</tr>';
+					m++;
+				}
+				$("#append_data").empty();
+				$("#append_data").append(htmltable);
+
+			}
+
+			$('#selected_hcp').val(JSON.stringify(addeddocarray)); //store array
+			var value = $('#selected_hcp').val(); //retrieve arra
+			value = JSON.parse(value);
+
+
+
+		}
+
+		function selected_request_letter() {
+			if (added_request_letter.length > 0) {
+				var m = 1;
+				var htmltable = '';
+				for (var k = 0; k < added_request_letter.length; k++) {
+					htmltable += '<tr>';
+					htmltable += '<th></th><td>' + m + '</td><td>' + added_request_letter[k].nature_of_camp + '</td><td>' + added_request_letter[k].proposed_camp_date + '</td><td>' + added_request_letter[k].proposed_camp_location + '</td><td>' + added_request_letter[k].estimated_cost + '</td><td>' + added_request_letter[k].diagnostic_lab + '</td>';
+					htmltable += '<td><button type="button" onclick="removeRq(' + k + ')" id="del_link">Delete</button></td>';
+					htmltable += '</tr>';
+					m++;
+				}
+				$("#addrequestletter").empty();
+				$("#addrequestletter").append(htmltable);
+
+			}
+			$('#selected_request_letter').val(JSON.stringify(added_request_letter)); //store array
+			var value = $('#selected_request_letter').val(); //retrieve arra
+			value = JSON.parse(value);
+		}
+
+
+		function ShowError(element, mesg) {
+			var spanID = element + "_span";
+
+			if ($(element).hasClass("is-invalid")) {
+
+			} else {
+				$(element).addClass("is-invalid");
+				$('<span id="' + spanID + '";" class="invalid-feedback em">' + mesg + '</span>').insertAfter(element);
+			}
+		}
+
+
+		$(document).on('click', '#del_link', function() {
+			$(this).closest('tr').remove();
+			return false;
+		});
+
+		function remove(element) {
+			addeddocarray.splice(element, 1);
+			selected_doctors();
+		}
+
+		function removeRq(element) {
+			added_request_letter.splice(element, 1);
+			selected_request_letter();
+		}
+
+
+		$('#pan').keyup(function(event) {
+			var pan = $(this);
+			var inputvalues = $(this).val();
+			var regex = /[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+			if (!regex.test(inputvalues)) {
+				//$("#pan").val("");
+				//alert("invalid PAN no");
+				ShowError(pan, "invalid PAN no");
+				return regex.test(inputvalues);
+			} else {
+				HideError(pan);
+			}
+
+			//});
+
+		});
+
+		function getDeatils() {
+
+			$("#hcp_name").val("");
+			$("#address").val("");
+			$("#qualification").val("");
+			$("#associated_hospital").val("");
+			$("#hcp_mobile").val("");
+			$("#year_of_experience").val("");
+			$("#pan").val("");
+			$("#govt").val("");
+			$("#Honorarium").val("");
+			$("#role_of_hcp").val("");
+
+			var conatactid = $('#DoctorID').val();
+			$.ajax({
+				url: '_getDetails.php',
+				method: 'POST',
+				data: {
+					cid: conatactid
+				},
+				success: function(res) {
+					const myArray = res.split("~~");
+					console.log(myArray);
+					$('#hcp_name').val(myArray[0] + ' ' + myArray[1]);
+					$('#address').val(myArray[5]);
+					$('#qualification').val(myArray[2]);
+					$('#associated_hospital').val(myArray[4]);
+				}
+
+			});
+		}
+
 		function CalculateTotal() {
 			var total = 0;
 			$('.amountCalculate').each(function() {
