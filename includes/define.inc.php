@@ -9,7 +9,10 @@ define('CRM_ATTACHMENT_UPLOAD',DOCROOT.'CRMATTACHMENT/');
 
 
 define('CRM_ADVANCE_ATTACH_PATH',SITE_ADDRESS.'advance_attachment/');
+
 define('CRM_ADVANCE_ATTACH_UPLOAD',DOCROOT.'advance_attachment/');
+
+define('CRM_CAMP_ADVANCE_ATTACH_UPLOAD',DOCROOT.'advance_attachment/');
 
 define('IMAGE_PATH',SITE_ADDRESS.'images/');
 define('IMAGE_UPLOAD',DOCROOT.'images/');

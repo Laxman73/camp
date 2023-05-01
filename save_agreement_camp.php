@@ -63,14 +63,14 @@ $id=NextID('id','crm_hcp_agreement');
 		if($shortcode_mode=='')
 		{
 			//http://88.99.140.102/MicrolabReplicav3/modules/CRM_demo/service_agreement_camp.php?rid=140&prid=&userid=19804&pid=134
-			header('location: service_agreement_camp.php?rid='.$rid.'&userid='.$userid.'&pid='.$pid.'&prid='.$prid);
+			header('location: document_upload_camp.php?rid='.$rid.'&userid='.$userid.'&pid='.$pid.'&prid='.$prid);
             //echo 'success';
 			exit;  
 		}
 		else
 		{
 				
-			header('location: service_agreement_camp.php?rid='.$rid.'&userid='.$userid.'&pid='.$pid.'&prid='.$prid);
+			header('location: document_upload_camp.php?rid='.$rid.'&userid='.$userid.'&pid='.$pid.'&prid='.$prid);
             //echo 'success';
 			exit;		
 		}

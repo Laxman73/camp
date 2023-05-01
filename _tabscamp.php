@@ -44,7 +44,7 @@ $pid = (isset($pid)) ? $pid : '';
 //RM/AM head
 if ($PROFILE_ID == 6 || $PROFILE_ID == 7) {
 
-	$user_tabs = array(1,2,3,4,5,6,7,8);
+	$user_tabs = array(1,2,3,4,5,6,7,8,9,10);
 
 	// $_Qnafmain = sql_query("select level,authorise from crm_naf_main where id='$rid' ");
 	// list($NAF_level, $NAF_isAuthorise) = sql_fetch_row($_Qnafmain);

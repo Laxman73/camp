@@ -7,11 +7,16 @@ include "includes/common.php";
 $page_title = 'Request Letter';
 $TITLE = SITE_NAME . ' | ' . $page_title;
 
+//http://88.99.140.102/MicrolabReplicav3/modules/CRM_demo/request_letter_camp.php?rid=153&userid=19804&typeid=12
+
 $rid = (isset($_GET['rid'])) ? $_GET['rid'] : '';
 $pid = (isset($_GET['pid'])) ? $_GET['pid'] : '';
 $prid = (isset($_GET['prid'])) ? $_GET['prid'] : '';
+$typeid = (isset($_GET['typeid'])) ? $_GET['typeid'] : '';//type of PMA
 $USER_ID = (isset($_GET['userid'])) ? $_GET['userid'] : '';
 $display_all = (isset($_GET['display_all'])) ? $_GET['display_all'] : '0';
+
+$CRM_HCP_DETAILS=array();
 
 
 if (empty($USER_ID) || (!empty($USER_ID) && !is_numeric($USER_ID))) {
@@ -31,7 +36,6 @@ if (empty($pid) || (!empty($pid) && !is_numeric($pid))) {
 }
 
 if ($mode=='A') {
-
 	//crm_request_main
   $request_no='';
   $naf_no='';
@@ -49,11 +53,15 @@ if ($mode=='A') {
   $remarks='';
 
   //crm_request_camp_letter
- 
-  $hcp_id='';
-  $nature_of_camp='';
-  $proposed_camp_date=TODAY;
-  $proposed_camp_location='';
+
+  //$CRM_HCP_DETAILS=GetDataFromID('crm_naf_hcp_details','naf_main_id',$rid,'and deleted=0');
+  $crm_naf_hcp_id=GetXFromYID("select id from crm_naf_hcp_details where naf_main_id='$rid' and deleted=0 ");
+  $CRM_NAF_CAMP_LETTER_DATA=GetDataFromID('crm_naf_camp_letter','crm_naf_hcp_details_id',$crm_naf_hcp_id);
+
+  $hcp_id=(isset($CRM_NAF_CAMP_LETTER_DATA[0]->crm_naf_hcp_details_id))?$CRM_NAF_CAMP_LETTER_DATA[0]->crm_naf_hcp_details_id:'';
+  $nature_of_camp=(isset($CRM_NAF_CAMP_LETTER_DATA[0]->nature_of_camp))?$CRM_NAF_CAMP_LETTER_DATA[0]->nature_of_camp:'';
+  $proposed_camp_date=(isset($CRM_NAF_CAMP_LETTER_DATA[0]->proposed_camp_date))?$CRM_NAF_CAMP_LETTER_DATA[0]->proposed_camp_date:'';
+  $proposed_camp_location=(isset($CRM_NAF_CAMP_LETTER_DATA[0]->proposed_camp_location))?$CRM_NAF_CAMP_LETTER_DATA[0]->proposed_camp_location:'';
   $proposed_camp_duration='';
 
 }elseif ($mode=='E') {
@@ -120,6 +128,7 @@ $HCP_UNIVERSAL_ID = GetXArrFromYID("select contactid,masterid from contactdetail
 <form action="save_camp_letter.php" method="post">
 	<input type="hidden" name="userid" value="<?php echo $USER_ID;?>">
 	<input type="hidden" name="rid" value="<?php echo $rid;?>">
+	<input type="hidden" name="typeid" value="<?php echo $typeid;?>">
 	<input type="hidden" name="pid" value="<?php echo $pid;?>">
 		<div class="tab-content mt-1">
 

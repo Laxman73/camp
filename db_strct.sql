@@ -255,3 +255,18 @@ CREATE TABLE `crm_naf_camp_letter` (
   `diagnostic_lab` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+CREATE TABLE `crm_naf_document_upload` (
+  `id` int(19) NOT NULL AUTO_INCREMENT,
+  `crm_request_main_id` int(19) NOT NULL,
+  `document_type_id` int(2) NOT NULL,
+  `file_name` text NOT NULL,
+  `file_path` text,
+  `uploaded_on` datetime NOT NULL,
+  `deleted` int(2) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `crm_request_main_id` (`crm_request_main_id`),
+  KEY `deleted` (`deleted`),
+  KEY `type_document_id` (`document_type_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=164 DEFAULT CHARSET=latin1;

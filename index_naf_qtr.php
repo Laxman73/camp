@@ -668,7 +668,12 @@ if ($mode == 'A') {
 							<!-- <div class="col"><button type="button" class="exampleBox btn btn-primary rounded me-1">Save</button>
 							</div> -->
 							<div class="col">
-								<button type="submit" class="exampleBox btn btn-primary rounded me-1">Submit</button>
+								<?php
+								if ($mode!='E') { ?>
+									<button type="submit" class="exampleBox btn btn-primary rounded me-1">Submit</button>
+									
+							<?php	}
+								?>
 							</div>
 							<!-- <div class="col">
 								<a href="#"><button type="button" class="exampleBox btn btn-primary rounded me-1">Cancel</button></a>

@@ -9,6 +9,7 @@ include 'includes/common.php';
 $pdo = connectToDatabase();
 
 $USER_ID = (isset($_POST['userid'])) ? $_POST['userid'] : '';
+$category= (isset($_POST['category'])) ? $_POST['category'] : '';
 $PR_ID = (isset($_POST['prid'])) ? $_POST['prid'] : '';
 $R_ID = (isset($_POST['rid'])) ? $_POST['rid'] : '';
 $ROLE_ID = GetXFromYID("select roleid from user2role where userid='" . $USER_ID . "'");
@@ -22,7 +23,7 @@ $initiater=GetXFromYID("SELECT CONCAT(first_name, ' ', last_name) AS result from
 
 
 $PENDING_WITH_ID = $STATUS = '';
-$crm_workflow = crm_workflow($USER_ID, 5, 1, 0);
+$crm_workflow = crm_workflow($USER_ID, $category, 1, 0);
 
 if (!empty($crm_workflow)) {
     $PENDING_WITH_ID = $crm_workflow['pending_with_id'];
@@ -192,6 +193,8 @@ foreach($json_selected_request_letter as $key => $value)
 
 
 
-header('location: index_qtr.php?userid='.$USER_ID);
+//index_PM.php?userid=19804
+
+header('location: index_PM.php?userid='.$USER_ID);
 exit;
 ?>

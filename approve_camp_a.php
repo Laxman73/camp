@@ -10,6 +10,7 @@ $TITLE = SITE_NAME . ' | ' . $page_title;
 $rid = (isset($_GET['rid'])) ? $_GET['rid'] : '';
 $pid = (isset($_GET['pid'])) ? $_GET['pid'] : '';
 $USER_ID = (isset($_GET['userid'])) ? $_GET['userid'] : '';
+$category = (isset($_GET['category'])) ? $_GET['category'] : '';
 $display_all = (isset($_GET['display_all'])) ? $_GET['display_all'] : '0';
 
 if (empty($USER_ID) || (!empty($USER_ID) && !is_numeric($USER_ID))) {
@@ -162,6 +163,7 @@ $_r = sql_query($_q, "");
         <form action="_Approve_c_a.php" method="post" enctype="multipart/form-data">
             <input type="hidden" name="userid" value="<?php echo $USER_ID; ?>">
             <input type="hidden" name="rid" value="<?php echo $rid; ?>">
+            <input type="hidden" name="category" value="<?php echo $category; ?>">
 
             <div class="tab-content mt-1">
 

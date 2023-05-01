@@ -11,6 +11,7 @@ $USER_ID = (isset($_POST['userid'])) ? $_POST['userid'] : '';
 $rid = (isset($_POST['rid'])) ? $_POST['rid'] : '';
 $mode = (isset($_POST['choice'])) ? $_POST['choice'] : '';
 $remark=(isset($_POST['remark']))?$_POST['remark']:'';
+$category=(isset($_POST['category']))?$_POST['category']:'';
 
 $ROLE_ID = GetXFromYID("select roleid from user2role where userid='" . $USER_ID . "'");
 $PROFILE_ID = GetXFromYID("select profileid from role2profile where roleid='" . $ROLE_ID . "'");
@@ -26,7 +27,7 @@ $New_level=$Current_level+1;// increment by 1
 
 
 $PENDING_WITH_ID = $STATUS = '';
-$crm_workflow = crm_workflow($USER_ID, 2, $New_level, 0);//Getting the details from crm_workflow 
+$crm_workflow = crm_workflow($USER_ID, $category, $New_level, 0);//Getting the details from crm_workflow 
 
 // DFA($crm_workflow);
 // exit;
@@ -60,6 +61,6 @@ if ($mode=='A') {
    $stmt->execute(array($ID,$rid,$USER_ID,0,4,$New_level,$remark,NOW,0));  
 }
 
-header('location: index_camp_activity.php?userid='.$USER_ID);
+header('location: index_PM.php?userid='.$USER_ID);
 exit;
 ?>

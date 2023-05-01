@@ -37,7 +37,9 @@ $total_no_of_ind = (isset($_POST['total_no_of_ind'])) ? db_input($_POST['total_n
 $ID=NextID('pid','crm_naf_camp_report');
 $pdo->prepare("insert crm_naf_camp_report values(?,?,?,?,?,?,?,?,?,?)")->execute(array($ID,$pid,$camp_objective,$camp_duration,$type_of_diagnostic,$diagnostic_charges,$total_no_of_ind,$camp_organised,$camp_received,$remarks));
 
-header('location : index_qtr.php?');
+///http://88.99.140.102/MicrolabReplicav3/modules/CRM_demo/index_pma.php?rid=153&userid=19804&pid=141
+header('location : index_pma.php?userid='.$USER_ID);
+exit;
 
 
 ?>

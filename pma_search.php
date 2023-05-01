@@ -338,7 +338,7 @@ if (!empty($txtDto)) {
 												if ($typeid == $row['pid']) {
 													//type_name.php from crm_naf_type_master without space and lowercase
 													if ($typeid==5 || $typeid==8)													
-														$url = $row['file_name'].'?prid='.$rid.'&userid='.$USER_ID.'&typeid='.$typeid;
+														$url = $row['file_name'].'?prid='.$rid.'&userid='.$USER_ID.'&typeid='.$typeid.'&category='.$typeid;
 													else	
 														$url = $row['file_name'].'?rid='.$rid.'&userid='.$USER_ID.'&typeid='.$typeid;
 													

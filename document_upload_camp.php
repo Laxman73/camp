@@ -124,7 +124,7 @@ if ($MODE == 'R' || $MODE == 'E') {
 
 							<div class="wide-block pt-2 pb-2">
 
-								<p><b>Upload attendance  file here:<span style="color:#ff0000">*(Max 3 MB)</span></b></p>
+								<p><b>Upload PAN Card here:<span style="color:#ff0000">*(Max 3 MB)</span></b></p>
 								<div class=" PANDIV">
 									<?php if ($MODE != 'R') {
 										if (!empty($pan_image)) {
@@ -135,13 +135,13 @@ if ($MODE == 'R' || $MODE == 'E') {
 
 											}
 										} else { ?>
-											<input type="file" id="attendance_file" name="attendance_file"  class="form-control">
+											<input type="file" id="pan" name="pan" accept=".png, .jpg, .jpeg" class="form-control">
 										<?php	}
 
 										?>
 									<?php
 									} else { ?>
-										<input type="file" id="attendance_file" name="attendance_file"  class="form-control">
+										<input type="file" id="pan" name="pan" accept=".png, .jpg, .jpeg" class="form-control">
 										
 
 									<?php	}
@@ -151,7 +151,65 @@ if ($MODE == 'R' || $MODE == 'E') {
 							</div>
 
 
-						
+							<div class="wide-block pt-2 pb-2">
+
+								<p><b>Upload Image of Cancelled Cheque here:<span style="color:#ff0000">*(Max 3 MB)</span></b></p>
+
+
+
+								<div class=" CANCEL_CHECKDIV">
+									<?php if ($MODE != 'R') {
+										if (!empty($chaque_image)) {
+											if ($PROFILE_ID==15) {
+												echo '<div><img src="' . $chaque_image . '" alt="PAN Image" style="width:30%;height:auto;"><button type="button"  class="btn btn-danger DeleteCancelSrc">Delete</button></div>';
+											}else{
+
+												echo '<img src="' . $chaque_image . '" alt="PAN Image">';
+											}
+										} else { ?>
+
+											<input type="file" id="cancel_check" name="cancel_check" accept=".png, .jpg, .jpeg" class="form-control">
+											
+										<?php	}
+										?>
+									<?php
+									}else { ?>
+										<input type="file" id="cancel_check" name="cancel_check" accept=".png, .jpg, .jpeg" class="form-control">
+											
+								<?php	}
+									?>
+								</div>
+							</div>
+
+
+							<div class="wide-block pt-2 pb-2">
+
+								<p><b>Upload Image of Visiting Card/Letterhead here:<span style="color:#ff0000">*(Max 3 MB)</span></b></p>
+								<div class=" VISITING_CARD">
+									<?php if ($MODE != 'R') {
+										if (!empty($visiting_image)) {
+											if ($PROFILE_ID==15) {
+												echo '<div><img src="' . $visiting_image . '" alt="PAN Image" style="width:30%;height:auto;"><button type="button"  class="btn btn-danger DeleteVisitingSrc">Delete</button></div>';
+											}else{
+
+												echo '<div><img src="' . $visiting_image . '" alt="PAN Image"></div>';
+											}
+										}else { ?>
+											<input type="file" id="visiting_card" name="visiting_card" accept=".png, .jpg, .jpeg" class="form-control">
+											
+											
+									<?php	}
+										?>
+									<?php
+									}else { ?>
+										<input type="file" id="visiting_card" name="visiting_card" accept=".png, .jpg, .jpeg" class="form-control">
+											
+									<?php }
+									 ?>
+								</div>
+
+
+							</div>
 						</div>
 					</div>
 				</div>

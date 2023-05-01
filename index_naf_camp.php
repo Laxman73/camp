@@ -12,6 +12,7 @@ $TITLE = SITE_NAME . ' | ' . $page_title;
 $rid = (isset($_GET['rid'])) ? $_GET['rid'] : '';
 $prid = (isset($_GET['prid'])) ? $_GET['prid'] : '';
 $pid = (isset($_GET['pid'])) ? $_GET['pid'] : '';
+$category = (isset($_GET['category'])) ? $_GET['category'] : '';
 
 $USER_ID = (isset($_GET['userid'])) ? $_GET['userid'] : '';
 $display_all = (isset($_GET['display_all'])) ? $_GET['display_all'] : '0';
@@ -23,10 +24,10 @@ if (empty($USER_ID) || (!empty($USER_ID) && !is_numeric($USER_ID))) {
 	exit;
 }
 
-if (empty($prid) || (!empty($prid) && !is_numeric($prid))) {
-	echo 'Invalid Access Detected!!!';
-	exit;
-}
+// if (empty($prid) || (!empty($prid) && !is_numeric($prid))) {
+// 	echo 'Invalid Access Detected!!!';
+// 	exit;
+// }
 
 if (empty($rid) || (!empty($rid) && !is_numeric($rid))) {
 	$mode = 'A';
@@ -276,6 +277,7 @@ $_r = sql_query($_q, "");
 		<form action="save_nafActivity.php" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="userid" value="<?php echo $USER_ID; ?>">
 			<input type="hidden" name="prid" value="<?php echo $prid; ?>">
+			<input type="hidden" name="category" value="<?php echo $category; ?>">
 			<input type="hidden" name="rid" value="<?php echo $rid; ?>">
 			<input type="hidden" name="selected_hcp" id="selected_hcp" value="">
 			<input type="hidden" name="selected_request_letter" id="selected_request_letter" value="">

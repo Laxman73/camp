@@ -7,10 +7,11 @@ include 'includes/common.php';
 // DFA($_FILES);
 // DFA($_POST);
 $pdo = connectToDatabase();
-$rid = db_input($_POST['rid']);
-$pid = db_input($_POST['pid']);
-$mode = db_input($_POST['mode']);
-$userid = db_input($_POST['userid']);
+$rid = (isset($_POST['rid']))?$_POST['rid']:'';
+$pid = (isset($_POST['pid']))?$_POST['pid']:'';
+$prid = (isset($_POST['prid']))?$_POST['prid']:'';
+$mode = (isset($_POST['mode']))?$_POST['mode']:'';
+$userid = (isset($_POST['userid']))?$_POST['userid']:'';
 $error = array();
 $pendingStateHeadID = GetXFromYID("select statehead_id from crm_statehead_details");
 
@@ -280,12 +281,12 @@ if ($PROFILE_ID == '6' || $PROFILE_ID == '7') {
 
 //     }
 // }
-if ($PROFILE_ID == 15){
-    header('location:document_upload.php?userid=' . $userid.'&rid='.$rid.'&pid='.$pid);
-    exit;
-}else{
+// if ($PROFILE_ID == 15){
+//     header('location:document_upload.php?userid=' . $userid.'&rid='.$rid.'&pid='.$pid);
+//     exit;
+// }else{
 
-    header('location:index_pma.php?userid=' . $userid);
+    header('location: report_camp.php?rid='.$rid.'&userid='.$userid.'&pid='.$pid.'&prid='.$prid);
     exit;
-}
+//}
 ?>
