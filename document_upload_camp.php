@@ -1,11 +1,14 @@
 <?php
 include 'includes/common.php';
 $rid = (isset($_GET['rid'])) ? $_GET['rid'] : '';
-$prid = (isset($_GET['prid'])) ? $_GET['prid'] : '';//Parent Id
+$prid = (isset($_GET['prid'])) ? $_GET['prid'] : ''; //Parent Id
 $pid = (isset($_GET['pid'])) ? $_GET['pid'] : '';
 $USER_ID = (isset($_GET['userid'])) ? $_GET['userid'] : '';
 $MODE = (isset($_GET['mode'])) ? $_GET['mode'] : '';
 $display_all = (isset($_GET['display_all'])) ? $_GET['display_all'] : '0';
+
+
+//type id 7 for attendance sheet
 
 //if(empty($USER_ID) || (!empty($USER_ID) && !is_numeric($USER_ID))|| $USER_ID!='2')
 if (empty($USER_ID) || (!empty($USER_ID) && !is_numeric($USER_ID))) {
@@ -41,7 +44,7 @@ $_qr = sql_query("select level,authorise from crm_request_main where id = $pid")
 list($Plevel, $PisAuthorise) = sql_fetch_row($_qr);
 
 // defining variables
-$pan_image = $chaque_image = $visiting_image = '';
+$attendance_sheet = $chaque_image = $visiting_image = '';
 
 if ($MODE == 'R' || $MODE == 'E') {
 
@@ -57,16 +60,19 @@ if ($MODE == 'R' || $MODE == 'E') {
 		}
 	}
 
+	//DFA($ATTACHMENT_ARR);
+
 	// getting data from the array
 	if (!empty($ATTACHMENT_ARR)) {
-		$pan_image = isset($ATTACHMENT_ARR[1]) && !empty($ATTACHMENT_ARR[1]) ? $ATTACHMENT_ARR[1] : '';
+		$attendance_sheet = isset($ATTACHMENT_ARR[17]) && !empty($ATTACHMENT_ARR[17]) ? $ATTACHMENT_ARR[17] : '';
 		$chaque_image = isset($ATTACHMENT_ARR[2]) && !empty($ATTACHMENT_ARR[2]) ? $ATTACHMENT_ARR[2] : '';
 		$visiting_image = isset($ATTACHMENT_ARR[3]) && !empty($ATTACHMENT_ARR[3]) ? $ATTACHMENT_ARR[3] : '';
 	}
 	// DFA($ATTACHMENT_ARR);
 	// exit;
 }
-
+ //echo $MODE;
+// echo $attendance_sheet;
 ?>
 <!doctype html>
 <html lang="en">
@@ -124,25 +130,21 @@ if ($MODE == 'R' || $MODE == 'E') {
 
 							<div class="wide-block pt-2 pb-2">
 
-								<p><b>Upload PAN Card here:<span style="color:#ff0000">*(Max 3 MB)</span></b></p>
+								<p><b>Upload Attendance sheet here:<span style="color:#ff0000">*(Max 3 MB)</span></b></p>
 								<div class=" PANDIV">
 									<?php if ($MODE != 'R') {
-										if (!empty($pan_image)) {
-											if ($PROFILE_ID==15) {
-												echo '<div id="pan_SRC"><img src="' . $pan_image . '"  alt="PAN Image"  style="width:30%;height:auto;"><button type="button"  class="btn btn-danger DeletePansrc">Delete</button></div>';
-											}else{
-												echo '<div id="pan_SRC"><img src="' . $pan_image . '"  alt="PAN Image"></div>';
+										if (!empty($attendance_sheet)) {
 
-											}
+											echo '<div id="pan_SRC"><a href="' . $attendance_sheet . '" > view file</a></div>';
 										} else { ?>
-											<input type="file" id="pan" name="pan" accept=".png, .jpg, .jpeg" class="form-control">
+											<input type="file" id="attendance_sheet" name="attendance_sheet" class="form-control">
 										<?php	}
 
 										?>
 									<?php
 									} else { ?>
-										<input type="file" id="pan" name="pan" accept=".png, .jpg, .jpeg" class="form-control">
-										
+										<input type="file" id="attendance_sheet" name="attendance_sheet" class="form-control">
+
 
 									<?php	}
 									?>
@@ -151,100 +153,39 @@ if ($MODE == 'R' || $MODE == 'E') {
 							</div>
 
 
-							<div class="wide-block pt-2 pb-2">
-
-								<p><b>Upload Image of Cancelled Cheque here:<span style="color:#ff0000">*(Max 3 MB)</span></b></p>
-
-
-
-								<div class=" CANCEL_CHECKDIV">
-									<?php if ($MODE != 'R') {
-										if (!empty($chaque_image)) {
-											if ($PROFILE_ID==15) {
-												echo '<div><img src="' . $chaque_image . '" alt="PAN Image" style="width:30%;height:auto;"><button type="button"  class="btn btn-danger DeleteCancelSrc">Delete</button></div>';
-											}else{
-
-												echo '<img src="' . $chaque_image . '" alt="PAN Image">';
-											}
-										} else { ?>
-
-											<input type="file" id="cancel_check" name="cancel_check" accept=".png, .jpg, .jpeg" class="form-control">
-											
-										<?php	}
-										?>
-									<?php
-									}else { ?>
-										<input type="file" id="cancel_check" name="cancel_check" accept=".png, .jpg, .jpeg" class="form-control">
-											
-								<?php	}
-									?>
-								</div>
-							</div>
-
-
-							<div class="wide-block pt-2 pb-2">
-
-								<p><b>Upload Image of Visiting Card/Letterhead here:<span style="color:#ff0000">*(Max 3 MB)</span></b></p>
-								<div class=" VISITING_CARD">
-									<?php if ($MODE != 'R') {
-										if (!empty($visiting_image)) {
-											if ($PROFILE_ID==15) {
-												echo '<div><img src="' . $visiting_image . '" alt="PAN Image" style="width:30%;height:auto;"><button type="button"  class="btn btn-danger DeleteVisitingSrc">Delete</button></div>';
-											}else{
-
-												echo '<div><img src="' . $visiting_image . '" alt="PAN Image"></div>';
-											}
-										}else { ?>
-											<input type="file" id="visiting_card" name="visiting_card" accept=".png, .jpg, .jpeg" class="form-control">
-											
-											
-									<?php	}
-										?>
-									<?php
-									}else { ?>
-										<input type="file" id="visiting_card" name="visiting_card" accept=".png, .jpg, .jpeg" class="form-control">
-											
-									<?php }
-									 ?>
-								</div>
-
-
-							</div>
 						</div>
 					</div>
 				</div>
 
 
 
-				<?php //if (($PROFILE_ID == 15 && $Plevel == 3) || (($PROFILE_ID == '6' || $PROFILE_ID == '7') && ($Plevel == 2))) { ?>
-					<div class="section full mt-2">
-						<div class="wide-block pt-2 pb-2">
+				<?php //if (($PROFILE_ID == 15 && $Plevel == 3) || (($PROFILE_ID == '6' || $PROFILE_ID == '7') && ($Plevel == 2))) { 
+				?>
+				<div class="section full mt-2">
+					<div class="wide-block pt-2 pb-2">
 
-							<div class="row">
-								<!-- <div class="col"><button type="button" class="exampleBox btn btn-primary rounded me-1">Save</button>
+
+						<div class="row">
+							<!-- <div class="col"><button type="button" class="exampleBox btn btn-primary rounded me-1">Save</button>
 								</div> -->
-								<div class="col">
-									<button type="submit" id="BtnSUBMIT" class="exampleBox btn btn-primary rounded me-1">Submit</button>
-								</div>
-								<!-- <div class="col">
+							<?php if ( $MODE!='R') { ?>
+							<div class="col">
+								<button type="submit" id="BtnSUBMIT" class="exampleBox btn btn-primary rounded me-1">Submit</button>
+							</div>
+							<?php } ?>
+							<!-- <div class="col">
 									<a href="#"><button type="button" class="exampleBox btn btn-primary rounded me-1">Cancel</button></a>
 								</div> -->
-							</div>
-
 						</div>
+
 					</div>
-				<?php //} ?>
+				</div>
+				<?php //} 
+				?>
 			</div>
 		</form>
 
-		<?php if ($PROFILE_ID == 15 && $Plevel == 3) { ?>
-			<div class="section full mt-2">
-				<div class="wide-block pt-2 pb-2 text-center">
-					<a href="approve_hcp_final.php?rid=<?php echo $rid; ?>&userid=<?php echo $USER_ID; ?>&pid=<?php echo $pid; ?>&mode=A"><button type="button" class="btn btn-success mr-1 mb-1 pd-sr">Approve</button></a>
-					<a href="approve_hcp_final.php?rid=<?php echo $rid; ?>&userid=<?php echo $USER_ID; ?>&pid=<?php echo $pid; ?>&mode=R"><button type="button" class="btn btn-danger mr-1 mb-1 pd-sr">Reject</button></a>
-				</div>
-			</div>
-		<?php } ?>
+
 
 
 	</div>
@@ -294,16 +235,16 @@ if ($MODE == 'R' || $MODE == 'E') {
 			console.log($('#pan').length);
 			if ($('#pan').length) {
 				var pan = $('#pan')[0].files;
-				if (pan.length > 0){
+				if (pan.length > 0) {
 					if (pan[0].size > 3000000) {
-					alert('Pan Card size should be less than 3 MB');
-					ret = false;
-				}
+						alert('Pan Card size should be less than 3 MB');
+						ret = false;
+					}
 
-				}else {
+				} else {
 					alert('Please select the file');
 					ret = false;
-					
+
 				}
 			}
 
@@ -311,36 +252,36 @@ if ($MODE == 'R' || $MODE == 'E') {
 				var cancel_check = $('#cancel_check')[0].files;
 				if (cancel_check.length > 0) {
 					if (cancel_check[0].size > 3000000) {
-					alert('Cancel check size should be less than 3 MB');
-					ret = false;
-				}
-					
-				}else {
+						alert('Cancel check size should be less than 3 MB');
+						ret = false;
+					}
+
+				} else {
 					alert('Please select the file');
 					ret = false;
-					
+
 				}
-				
+
 			}
 
 
 			if ($('#visiting_card').length) {
-				if ($('#visiting_card').length>0) {
+				if ($('#visiting_card').length > 0) {
 					var visiting_card = $('#visiting_card')[0].files;
 					if (visiting_card[0].size > 3000000) {
 						alert('Visiting card size should be less than 3 MB');
 						ret = false;
-					}				
-					
+					}
+
 				} else {
 					alert('Please select the file');
 					ret = false;
-					
+
 				}
 			}
 
 			// if ($('#visiting_card').length || $('#cancel_check').length || $('#pan').length ) {
-				
+
 			// }else{
 			// 	alert('Please upload the files before submitting');
 			// 	ret=false;

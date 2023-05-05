@@ -11,6 +11,7 @@ $TITLE = SITE_NAME . ' | ' . $page_title;
 
 $rid = (isset($_GET['rid'])) ? $_GET['rid'] : '';
 $prid = (isset($_GET['prid'])) ? $_GET['prid'] : '';
+$category = (isset($_GET['category'])) ? $_GET['category'] : '';
 $pid = (isset($_GET['pid'])) ? $_GET['pid'] : '';
 $USER_ID = (isset($_GET['userid'])) ? $_GET['userid'] : '';
 $display_all = (isset($_GET['display_all'])) ? $_GET['display_all'] : '0';
@@ -45,7 +46,7 @@ $QUARTER_ARR = GetXArrFromYID("select quarterid,quarter_name from crm_naf_quarte
 
 // $mode = 'A';
 
-if (empty($prid) || (!empty($prid) && !is_numeric($prid))) {
+if (empty($rid) || (!empty($rid) && !is_numeric($rid))) {
 	$mode = 'A';
 }else{
 	$mode='E';
@@ -93,7 +94,7 @@ if ($mode == 'A') {
 	$budget_amount = '0';
 	$event_benefit_society = '';
 } elseif ($mode == 'E') {
-	$DATA = GetDataFromID('crm_naf_main', 'id', $prid, "and deleted=0 ");
+	$DATA = GetDataFromID('crm_naf_main', 'id', $rid, "and deleted=0 ");
 	if (empty($DATA)) {
 		header('location: ' . $disp_url . '?userid=' . $USER_ID);
 		exit;
@@ -148,11 +149,13 @@ if ($mode == 'A') {
 
 	$curr_fyear = GetXFromYID("SELECT financial_year FROM financialyear where '" . $curr_dt . "' between from_date and to_date ");
 
-	$SPECILITY_ARR = GetXArrFromYID("select specialityid as id,specialityname as name from speciality where  in_use=0 AND fyear='$curr_fyear' ".$cond, '3');
+	//echo $curr_fyear;
+
+	$SPECILITY_ARR = GetXArrFromYID("select specialityid as id,specialityname as name from speciality where  in_use=0 AND fyear='$curr_fyear' ", '3');
 	$QUARTER_ARR = GetXArrFromYID("select quarterid,quarter_name from crm_naf_quarter_master ", '3');
 
 
-	$_sp_q = "select speciality_id from crm_naf_speciality_details where naf_request_id='$prid' ";
+	$_sp_q = "select speciality_id from crm_naf_speciality_details where naf_request_id='$rid' ";
 	//$SELECTED_SPECIALITIES = array();
 	$_sq_q_r = sql_query($_sp_q, '');
 	while (list($specialityid) = sql_fetch_row($_sq_q_r)) {

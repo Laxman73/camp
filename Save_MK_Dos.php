@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
+
 include 'includes/common.php';
 $pdo = connectToDatabase();
 $rid = (isset($_POST['rid'])) ? $_POST['rid'] : '';
@@ -12,10 +15,21 @@ $User_division = GetXFromYID("select division from users where id='$USER_ID' ");
 // DFA($_POST);
 // exit;
 
-$comment=(isset($_POST['comment']))?$_POST['comment']:'';
+$Current_level = GetXFromYID("select level from crm_naf_main where id=$rid "); //current level from crm_naf_main table
+$New_level = $Current_level + 1;// increment by 1
 
-$pdo->prepare("update crm_naf_main set post_comment=? where id=? ")->execute(array($comment,$rid));
-header('location: mt_delivery_service_form_camp.php?userid='.$USER_ID.'&rid='.$rid);
+$PENDING_WITH_ID = $STATUS = '';
+
+$crm_workflow = crm_workflow($USER_ID, 13, $New_level, 0); //Getting the details from crm_workflow 
+if (!empty($crm_workflow)) {
+    $PENDING_WITH_ID = $crm_workflow['pending_with_id'];
+    $STATUS = $crm_workflow['status'];
+}
+
+$comment=(isset($_POST['comment']))?db_input2($_POST['comment']):'';
+
+$pdo->prepare("update crm_naf_main set post_comment=?,level=?,authorise=?,pendingwithid=? where id=? ")->execute(array($comment,$New_level,$STATUS,$PENDING_WITH_ID,$rid));
+header('location: index_PM.php?userid='.$USER_ID);
 exit;
 
 ?>

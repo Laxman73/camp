@@ -38,7 +38,8 @@ $ID=NextID('pid','crm_naf_camp_report');
 $pdo->prepare("insert crm_naf_camp_report values(?,?,?,?,?,?,?,?,?,?)")->execute(array($ID,$pid,$camp_objective,$camp_duration,$type_of_diagnostic,$diagnostic_charges,$total_no_of_ind,$camp_organised,$camp_received,$remarks));
 
 ///http://88.99.140.102/MicrolabReplicav3/modules/CRM_demo/index_pma.php?rid=153&userid=19804&pid=141
-header('location : index_pma.php?userid='.$USER_ID);
+//http://88.99.140.102/MicrolabReplicav3/modules/CRM_demo/delivery_service_form_camp.php?rid=167&prid=&userid=19804
+header('location : delivery_service_form_camp.php?rid='.$rid.'&userid='.$USER_ID.'&pid='.$pid);
 exit;
 
 

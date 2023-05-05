@@ -11,6 +11,7 @@ $rid = (isset($_GET['rid'])) ? $_GET['rid'] : '';
 $pid = (isset($_GET['pid'])) ? $_GET['pid'] : '';
 $prid = (isset($_GET['prid'])) ? $_GET['prid'] : '';
 $USER_ID = (isset($_GET['userid'])) ? $_GET['userid'] : '';
+$category = (isset($_GET['category'])) ? $_GET['category'] : '';
 $display_all = (isset($_GET['display_all'])) ? $_GET['display_all'] : '0';
 
 if (empty($USER_ID) || (!empty($USER_ID) && !is_numeric($USER_ID))) {
@@ -27,7 +28,7 @@ $employee_name = GetXFromYID("select concat(first_name,' ',last_name) from users
 
 
 $readonly = $disabled = '';
-$employee_id =$activity_name=$details_of_activity= $type_of_activity = $mode = $vendor_services = $vendor_name = $vendor_description = $actual_vendor_cost = $naf_travel_flight_cost = $naf_insurance_cost = $naf_flight_cost = $naf_travel_cab_cost = $naf_visa_cost = $naf_stay_hotel_cost = $naf_audio_visual_cost = $naf_meal_snack_cost = $naf_banners_pamphlets_cost = $naf_other_additonal_cost = $MODE = '';
+$employee_id = $activity_name = $details_of_activity = $type_of_activity = $mode = $vendor_services = $vendor_name = $vendor_description = $actual_vendor_cost = $naf_travel_flight_cost = $naf_insurance_cost = $naf_flight_cost = $naf_travel_cab_cost = $naf_visa_cost = $naf_stay_hotel_cost = $naf_audio_visual_cost = $naf_meal_snack_cost = $naf_banners_pamphlets_cost = $naf_other_additonal_cost = $MODE = '';
 $Delivery_form_count = GetXFromYID("select count(*) from crm_naf_delivery_form where crm_naf_main_id='$rid' and deleted=0 ");
 
 if ($Delivery_form_count > 0) {
@@ -46,8 +47,8 @@ if ($MODE == 'R' || $MODE == 'E') {
 	$vendor_name = $DELIVERY_FORM_DATA[0]->vendor_name;
 	$vendor_services = $DELIVERY_FORM_DATA[0]->vendor_services;
 	$vendor_description = $DELIVERY_FORM_DATA[0]->vendor_description;
-	$activity_name=$DELIVERY_FORM_DATA[0]->name_of_activity;
-	$details_of_activity=$DELIVERY_FORM_DATA[0]->details_of_activity;
+	$activity_name = $DELIVERY_FORM_DATA[0]->name_of_activity;
+	$details_of_activity = $DELIVERY_FORM_DATA[0]->details_of_activity;
 
 
 	$DELIVERY_COST_DETAILS = GetDataFromID('crm_naf_delivery_form_cost_details', 'naf_delivery_form_id', $naf_delivery_form_id, "and deleted=0 ");
@@ -74,8 +75,9 @@ if ($MODE == 'E') {
 	$type_of_activity = $ACTIVITY_ARR[$activity_ID];
 }
 $naf_no = GetXFromYID("select naf_no from crm_naf_main where id='$rid'");
-$TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_request_main t1 inner join crm_request_details t2 on t1.id=t2.crm_request_main_id where t1.naf_no='$naf_no' and t1.deleted=0 and t2.deleted=0  and t1.authorise=3 and t1.level=5 ");
+$TOTAL_HONORIUM_AMT = GetXFromYID("select sum(honorarium_amount) from crm_naf_hcp_details  where naf_main_id='$rid' ");
 
+$HCP_DATA = GetDataFromID('crm_naf_hcp_details', 'naf_main_id', $rid, "and deleted=0 ");
 
 ?>
 <!doctype html>
@@ -99,8 +101,8 @@ $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_req
 	<!--<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">-->
 	<script src="https://phpcoder.tech/multiselect/js/jquery.multiselect.js"></script>
 	<link rel="stylesheet" href="https://phpcoder.tech/multiselect/css/jquery.multiselect.css">
-	
-	
+
+
 	<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
 	<link rel="stylesheet" href="https://cdn.datatables.net/rowreorder/1.2.8/css/rowReorder.dataTables.min.css">
 	<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.3.0/css/responsive.dataTables.min.css">
@@ -206,7 +208,7 @@ $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_req
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="text" class="form-control" id="activity_name" name="activity_name" value="<?php echo (isset($activity_name))?$activity_name:''; ?>" required="" <?php echo $readonly; ?>>
+											<input type="text" class="form-control" id="activity_name" name="activity_name" value="<?php echo (isset($activity_name)) ? $activity_name : ''; ?>" required="" <?php echo $readonly; ?>>
 										</div>
 									</div>
 								</div>
@@ -251,7 +253,7 @@ $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_req
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="text" class="form-control" id="details_of_activity" value="<?php echo $details_of_activity;?>" name="details_of_activity" required="" <?php echo $readonly; ?>>
+											<input type="text" class="form-control" id="details_of_activity" value="<?php echo $details_of_activity; ?>" name="details_of_activity" required="" <?php echo $readonly; ?>>
 										</div>
 									</div>
 								</div>
@@ -675,9 +677,9 @@ $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_req
 
 				<div class=" pt-2 pb-2" style="width: 100%;justify-content: center;text-align: center;">
 
-					<button type="button" class="btn btn-primary rounded me-1 " onclick="showAllHCP()"><b>View all HCP</b></button>
+
 					<?php
-					if (($MODE=='A') && $PROFILE_ID == 11) { ?>
+					if (($MODE == 'A') && ($PROFILE_ID == 6 || $PROFILE_ID == 7)) { ?>
 
 						<button type="submit" class="btn btn-primary rounded me-1 "><b>Submit</b></button>
 					<?php	}
@@ -687,7 +689,7 @@ $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_req
 				</div>
 
 
-				
+
 
 			</div>
 
@@ -696,54 +698,83 @@ $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_req
 
 
 		<div class="section mt-7">
-        <div class="card">
-        <div class="card-body">
+			<div class="card">
+				<div class="card-body">
 
-            <div class="wide-block pt-2 pb-2">
-			
-	   		<table id="example" class="display mt-2" style="width:100%">
-				
-				<thead>
+					<div class="wide-block pt-2 pb-2">
 
-					<tr >
-						<th></th>
-						<th>Sr. No</th>
-						<th>Name of the HCP</th>
-						<th>Address(city)</th>
-						<th>PAN #</th>
-						<th>Qualification</th>
-						<th>Associated Hospital</th>
-						<th>Govt.(Yes/No)</th>
-						<th>Years of experience</th>
-						<th>Honorarium</th>
-						<th>Role of the HCP</th>
-					</tr>
-				</thead>
-				<tbody>
-                    <tr>
-						<th></th>
-						<td>1</td>
-						<td>&nbsp;</td>			  
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-                        <td>&nbsp;</td>
-						<td>&nbsp;</td>			  
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-					</tr> 
-					
-			
-	
-				
-				</tbody>
-				</table>	
-				
+						<table id="example" class="display mt-2" style="width:100%">
+
+							<thead>
+
+								<tr>
+									<th></th>
+									<th>Sr. No</th>
+									<th>HCP Universal ID</th>
+									<th>Name of the HCP</th>
+									<th>Address(city)</th>
+									<th>Honrarium Amount</th>
+									<th>Role of HCP</th>
+									<th>Mobile Number</th>
+									<th>PAN #</th>
+									<th>Qualification</th>
+									<th>Associated Hospital/Clinic</th>
+									<th>Govt.(Yes/No)</th>
+									<th>Years of experience</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody id="append_data">
+								<?php
+								if (!empty($HCP_DATA)) {
+									for ($i = 0; $i < count($HCP_DATA); $i++) {
+										$k = $i + 1;
+										$hcp_id = $HCP_DATA[$i]->hcp_id;
+										$masterid = GetXFromYID("select masterid from contactdetails where contactid='$hcp_id' ");
+										$hcp_name = GetXFromYID("SELECT CONCAT(firstname, ' ', lastname) AS full_name FROM contactdetails where contactid='$hcp_id' ");
+										$hcp_address = $HCP_DATA[$i]->hcp_address;
+										$hcp_pan = $HCP_DATA[$i]->hcp_pan;
+										$hcp_qualification = $HCP_DATA[$i]->hcp_qualification;
+										$hcp_associated_hospital_id = $HCP_DATA[$i]->hcp_associated_hospital_id;
+										$govt_type = $HCP_DATA[$i]->govt_type;
+										$yr_of_experience = $HCP_DATA[$i]->yr_of_experience;
+										$role_of_hcp = $HCP_DATA[$i]->role_of_hcp;
+										$honorarium_amount = $HCP_DATA[$i]->honorarium_amount;
+										$mobile = $HCP_DATA[$i]->mobile;
+								?>
+										<tr>
+											<td></td>
+											<td><?php echo $k; ?></td>
+											<td><?php echo $masterid; ?></td>
+											<td><?php echo $hcp_name; ?></td>
+											<td><?php echo $hcp_address; ?></td>
+											<td><?php echo $honorarium_amount; ?></td>
+											<td><?php echo $role_of_hcp; ?></td>
+											<td><?php echo $mobile; ?></td>
+											<td><?php echo $hcp_pan; ?></td>
+											<td><?php echo $hcp_qualification; ?></td>
+											<td><?php echo $hcp_associated_hospital_id; ?></td>
+											<td><?php echo $govt_type; ?></td>
+											<td><?php echo $yr_of_experience; ?></td>
+											<td></td>
+
+										</tr>
+
+
+								<?php    }
+								}
+								?>
+
+
+
+
+							</tbody>
+						</table>
+
+					</div>
+				</div>
 			</div>
-        </div>
 		</div>
-		</div>	
 
 	</div>
 
@@ -768,12 +799,12 @@ $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_req
 	<script src="assets/js/base.js"></script>
 	<script>
 		$(document).ready(function() {
-			
+
 			var table = $('#example').DataTable({
-				
+
 				responsive: true
 			});
-		
+
 
 			$('#SERVICE_FORM').on('submit', function() {
 				var ret = true;
@@ -878,8 +909,6 @@ $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_req
 
 			}
 		}
-
-		
 	</script>
 
 

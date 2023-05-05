@@ -9,6 +9,7 @@ $TITLE = SITE_NAME . ' | ' . $page_title;
 
 $rid = (isset($_GET['rid'])) ? $_GET['rid'] : ''; //naf id
 $pid = (isset($_GET['pid'])) ? $_GET['pid'] : ''; //pma id
+$category = (isset($_GET['category'])) ? $_GET['category'] : '';
 $prid = (isset($_GET['prid'])) ? $_GET['prid'] : ''; //pma id
 $USER_ID = (isset($_GET['userid'])) ? $_GET['userid'] : '';
 $display_all = (isset($_GET['display_all'])) ? $_GET['display_all'] : '0';
@@ -137,6 +138,7 @@ if ($mode == 'A') {
 	$remarks = '';
 } elseif ($mode == 'E') {
 	$DATA = GetDataFromID('crm_naf_camp_report', 'crm_request_id', $pid);
+	//DFA($DATA);
 	$readonly = 'readonly';
 	$objective = db_output2($DATA[0]->objective);
 	$camp_duration = db_output2($DATA[0]->camp_duration);
@@ -484,7 +486,7 @@ $CHECKBOXES = array('1' => 'Excellent', '2' => 'Good', '3' => 'Average', '4' => 
 									</div>
 
 									<div class="col-9">
-										<div class="input-wrapper"><input type="number" class="form-control" name="total_no_of_ind" id="total_no_of_ind" required></div>
+										<div class="input-wrapper"><input type="number" value="<?php echo $total_no_ind;?>" class="form-control" name="total_no_of_ind" id="total_no_of_ind" required></div>
 									</div>
 
 								</div>

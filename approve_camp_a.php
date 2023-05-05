@@ -108,6 +108,16 @@ $x_total = GetXFromYID("select sum(naf_expense) from crm_naf_cost_details where 
 $_q = "select field_id,field_name from crm_naf_fields_master where deleted=0 AND typeid=6 "; //fetch typeid from the category id passed in url
 $_r = sql_query($_q, "");
 
+
+$HCP_DATA = GetDataFromID('crm_naf_hcp_details', 'naf_main_id', $rid, "and deleted=0 ");
+
+$hcp_details_ID = GetXFromYID("select id from crm_naf_hcp_details where naf_main_id='$rid' and deleted=0 ");
+
+$REQUEST_LETTER = GetDataFromID('crm_naf_camp_letter', 'crm_naf_hcp_details_id', $hcp_details_ID);
+
+
+
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -693,7 +703,136 @@ $_r = sql_query($_q, "");
                 </div>
 
 
+                <div class="section mt-2">
+                    <div class="card">
+                        <div class="card-body pd-1">
 
+                            <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#addhcp" style="<?php echo $display_style; ?>">ADD</button>
+
+
+                            <table id="example" class="display mt-2" style="width:100%">
+
+                                <thead>
+
+                                    <tr>
+                                        <th></th>
+                                        <th>Sr. No</th>
+                                        <th>HCP Universal ID</th>
+                                        <th>Name of the HCP</th>
+                                        <th>Address(city)</th>
+                                        <th>Honrarium Amount</th>
+                                        <th>Role of HCP</th>
+                                        <th>Mobile Number</th>
+                                        <th>PAN #</th>
+                                        <th>Qualification</th>
+                                        <th>Associated Hospital/Clinic</th>
+                                        <th>Govt.(Yes/No)</th>
+                                        <th>Years of experience</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="append_data">
+                                    <?php
+                                    if (!empty($HCP_DATA)) {
+                                        for ($i = 0; $i < count($HCP_DATA); $i++) {
+                                            $k = $i + 1;
+                                            $hcp_id = $HCP_DATA[$i]->hcp_id;
+                                            $masterid = GetXFromYID("select masterid from contactdetails where contactid='$hcp_id' ");
+                                            $hcp_name = GetXFromYID("SELECT CONCAT(firstname, ' ', lastname) AS full_name FROM contactdetails where contactid='$hcp_id' ");
+                                            $hcp_address = $HCP_DATA[$i]->hcp_address;
+                                            $hcp_pan = $HCP_DATA[$i]->hcp_pan;
+                                            $hcp_qualification = $HCP_DATA[$i]->hcp_qualification;
+                                            $hcp_associated_hospital_id = $HCP_DATA[$i]->hcp_associated_hospital_id;
+                                            $govt_type = $HCP_DATA[$i]->govt_type;
+                                            $yr_of_experience = $HCP_DATA[$i]->yr_of_experience;
+                                            $role_of_hcp = $HCP_DATA[$i]->role_of_hcp;
+                                            $honorarium_amount = $HCP_DATA[$i]->honorarium_amount;
+                                            $mobile = $HCP_DATA[$i]->mobile;
+                                    ?>
+                                            <tr>
+                                                <td></td>
+                                                <td><?php echo $k; ?></td>
+                                                <td><?php echo $masterid; ?></td>
+                                                <td><?php echo $hcp_name; ?></td>
+                                                <td><?php echo $hcp_address; ?></td>
+                                                <td><?php echo $honorarium_amount; ?></td>
+                                                <td><?php echo $role_of_hcp; ?></td>
+                                                <td><?php echo $mobile; ?></td>
+                                                <td><?php echo $hcp_pan; ?></td>
+                                                <td><?php echo $hcp_qualification; ?></td>
+                                                <td><?php echo $hcp_associated_hospital_id; ?></td>
+                                                <td><?php echo $govt_type; ?></td>
+                                                <td><?php echo $yr_of_experience; ?></td>
+                                                <td></td>
+
+                                            </tr>
+
+
+                                    <?php    }
+                                    }
+                                    ?>
+
+
+
+
+                                </tbody>
+                            </table>
+
+
+                            <br><br><br><br>
+
+                            <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#addrequestletterMODAL" style="<?php echo $display_style; ?>">ADD</button>
+                            <table id="example1" class="display" style="width:100%">
+
+                                <thead>
+
+                                    <tr>
+                                        <th></th>
+                                        <th>Sr. No</th>
+                                        <th>Nature of Camps</th>
+                                        <th>Proposed Date</th>
+                                        <th>Venue</th>
+                                        <th>Estimated Cost, if any</th>
+                                        <th>Diagnostic labs collaboration</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="addrequestletter">
+                                    <?php
+                                    if (!empty($REQUEST_LETTER)) {
+                                        for ($i = 0; $i < count($REQUEST_LETTER); $i++) {
+                                            $k = $i + 1;
+                                            $nature_of_camp = $REQUEST_LETTER[$i]->nature_of_camp;
+                                            $proposed_camp_date = $REQUEST_LETTER[$i]->proposed_camp_date;
+                                            $proposed_camp_location = $REQUEST_LETTER[$i]->proposed_camp_location;
+                                            $estimated_cost = $REQUEST_LETTER[$i]->estimated_cost;
+                                            $diagnostic_lab = $REQUEST_LETTER[$i]->diagnostic_lab; ?>
+                                            <tr>
+                                                <td></td>
+                                                <td><?php echo $k; ?></td>
+                                                <td><?php echo $nature_of_camp; ?></td>
+                                                <td><?php echo $proposed_camp_date; ?></td>
+                                                <td><?php echo $proposed_camp_location; ?></td>
+                                                <td><?php echo $estimated_cost; ?></td>
+                                                <td><?php echo $diagnostic_lab; ?></td>
+                                            </tr>
+
+
+                                    <?php    }
+                                    }
+
+                                    ?>
+
+
+
+
+
+                                </tbody>
+                            </table>
+
+
+                        </div>
+                    </div>
+                </div>
 
 
 
@@ -719,17 +858,23 @@ $_r = sql_query($_q, "");
                     <div class="card">
                         <div class="card-body">
 
-                            <div class="row" style="justify-content: center">
-                                <span class="btn btn-success mr-1 mb-1 pd-sr">
-                                    <input type="radio" id="approve" onchange="addRemark();" name="choice" value="A">
-                                    <label for="approve" style="margin-bottom:0px;">Approve</label><br>
-                                </span>
+                        <?php
+                            if ($pendingwithid==$USER_ID) { ?>
+                                <div class="row" style="justify-content: center">
+                                    <span class="btn btn-success mr-1 mb-1 pd-sr">
+                                        <input type="radio" id="approve" onchange="addRemark();" name="choice" value="A">
+                                        <label for="approve" style="margin-bottom:0px;">Approve</label><br>
+                                    </span>
+    
+                                    <span class="btn btn-danger mr-1 mb-1 pd-sr">
+                                        <input type="radio" onchange="addRemark();" id="reject" name="choice" value="R">
+                                        <label for="reject" style="margin-bottom:0px;">Reject</label><br>
+                                    </span>
+                                </div>
+                                
+                         <?php   }
+                        ?>
 
-                                <span class="btn btn-danger mr-1 mb-1 pd-sr">
-                                    <input type="radio" onchange="addRemark();" id="reject" name="choice" value="R">
-                                    <label for="reject" style="margin-bottom:0px;">Reject</label><br>
-                                </span>
-                            </div>
 
 
 
@@ -748,10 +893,10 @@ $_r = sql_query($_q, "");
 						</div> -->
                             <div class="col">
                                 <?php
-                                if ($pendingwithid==$USER_ID) { ?>
-                                   
-                                   <button type="submit" class="exampleBox btn btn-primary rounded me-1">Submit</button>
-                              <?php  } ?>
+                                if ($pendingwithid == $USER_ID) { ?>
+
+                                    <button type="submit" class="exampleBox btn btn-primary rounded me-1">Submit</button>
+                                <?php  } ?>
                             </div>
                             <!-- <div class="col">
 							<a href="#"><button type="button" class="exampleBox btn btn-primary rounded me-1">Cancel</button></a>
@@ -846,4 +991,3 @@ $_r = sql_query($_q, "");
 </body>
 
 </html>
-

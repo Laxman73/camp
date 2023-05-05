@@ -1343,7 +1343,7 @@ $_r = sql_query($_q, "");
 
 								<div class="col-9">
 									<div class="input-wrapper">
-										<input type="number" name="diagnostic_lab" class="form-control" id="diagnostic_lab" placeholder="">
+										<input type="text" name="diagnostic_lab" class="form-control" id="diagnostic_lab" placeholder="">
 									</div>
 								</div>
 							</div>

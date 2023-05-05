@@ -7,6 +7,9 @@ define('TODAY', date("Y-m-d"));
 define('CRM_ATTACHMENT_PATH',SITE_ADDRESS.'CRMATTACHMENT/');
 define('CRM_ATTACHMENT_UPLOAD',DOCROOT.'CRMATTACHMENT/');
 
+define('CRM_ATTENDANCE_SHEET_PATH',SITE_ADDRESS.'attendance_sheet/');
+define('CRM_ATTENDANCE_SHEET_UPLOAD',DOCROOT. 'attendance_sheet/');
+
 
 define('CRM_ADVANCE_ATTACH_PATH',SITE_ADDRESS.'advance_attachment/');
 

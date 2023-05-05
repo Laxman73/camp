@@ -9,6 +9,8 @@ $TITLE = SITE_NAME . ' | ' . $page_title;
 
 $rid = (isset($_GET['rid'])) ? $_GET['rid'] : '';
 $prid = (isset($_GET['prid'])) ? $_GET['prid'] : '';
+$category = (isset($_GET['category'])) ? $_GET['category'] : '';
+$typeid = (isset($_POST['typeid'])) ? $_POST['typeid'] : '';
 $pid = (isset($_GET['pid'])) ? $_GET['pid'] : '';
 $USER_ID = (isset($_GET['userid'])) ? $_GET['userid'] : '';
 $display_all = (isset($_GET['display_all'])) ? $_GET['display_all'] : '0';
@@ -161,6 +163,8 @@ if ($mode == 'A') {
 			<input type="hidden" name="userid" value="<?php echo $USER_ID; ?>">
 			<input type="hidden" name="rid" value="<?php echo $rid; ?>">
 			<input type="hidden" name="pid" value="<?php echo $pid; ?>">
+			<input type="hidden" name="typeid" value="<?php echo $typeid; ?>">
+			<input type="hidden" name="category" value="<?php echo $category; ?>">
 			<input type="hidden" name="prid" value="<?php echo $prid; ?>">
 			<div class="tab-content mt-1">
 
@@ -422,11 +426,14 @@ if ($mode == 'A') {
 						<div class="row">
 							<!-- <div class="col"><button type="button" class="exampleBox btn btn-primary rounded me-1">Save</button>
 						</div> -->
+						<?php
+								if ($mode!='E') { ?>
 							<div class="col">
 								<!-- <a href="service_agreement_camp.php"> -->
 								<button type="submit" class="exampleBox btn btn-primary rounded me-1">Submit</button>
 								<!-- </a> -->
 							</div>
+							<?php } ?>
 							<!-- <div class="col">
 							<a href="#"><button type="button" class="exampleBox btn btn-primary rounded me-1">Cancel</button></a>
 						</div> -->

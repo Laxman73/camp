@@ -4,6 +4,9 @@ ini_set('display_errors', '1');
 
 include "includes/common.php";
 
+$page_title = 'Camp Quarter approval';
+$TITLE = SITE_NAME . ' | ' . $page_title;
+
 
 $rid = (isset($_GET['rid'])) ? $_GET['rid'] : '';
 $prid = (isset($_GET['prid'])) ? $_GET['prid'] : '';
@@ -72,6 +75,7 @@ $DATA = GetDataFromID('crm_naf_main', 'id', $rid);
 // [parent_id] => 
 $requestorID = $DATA[0]->userid;
 $quarter = $DATA[0]->quarter;
+$pending_with_id=$DATA[0]->pendingwithid;
 $proposed_activity = $DATA[0]->proposed_activity;
 $naf_activity_name = $DATA[0]->naf_activity_name;
 $proposed_activity_count = $DATA[0]->proposed_activity_count;
@@ -81,20 +85,20 @@ $proposed_objective = $DATA[0]->proposed_objective;
 $naf_objective_rational = $DATA[0]->naf_objective_rational;
 $lead_event = $DATA[0]->lead_event;
 $medical_equipments = $DATA[0]->medical_equipments;
-$submitted_on=$DATA[0]->submitted_on;
+$submitted_on = $DATA[0]->submitted_on;
 $deviation_amount = $DATA[0]->deviation_amount;
-$budget_amount=$DATA[0]->budget_amount;
+$budget_amount = $DATA[0]->budget_amount;
 $event_benefit_society = $DATA[0]->event_benefit_society;
 
 
 
 $division = GetXFromYID("select division from users where id='$requestorID' ");
-$curr_dt = date('Y-m-d',strtotime($submitted_on));
+$curr_dt = date('Y-m-d', strtotime($submitted_on));
 // $financial_qry = "SELECT financial_year FROM financialyear where '".$curr_dt."' between from_date and to_date";
 // $financial_qry_res = sql_query($financial_qry);
 $curr_fyear = GetXFromYID("SELECT financial_year FROM financialyear where '" . $curr_dt . "' between from_date and to_date ");
 
-$SPECILITY_ARR = GetXArrFromYID("select specialityid as id,specialityname as name from speciality where  in_use=0 AND fyear='$curr_fyear' and division='$division' ", '3');
+$SPECILITY_ARR = GetXArrFromYID("select specialityid as id,specialityname as name from speciality where  in_use=0 AND fyear='$curr_fyear'  ", '3');
 
 
 $_sp_q = "select speciality_id from crm_naf_speciality_details where naf_request_id='$rid' ";
@@ -413,7 +417,7 @@ foreach ($SPECILITY_ARR as $key => $value) {
 
                                     <div class="col-9">
                                         <div class="input-wrapper">
-                                            <input type="number" class="form-control" id="budget_amt"  name="budget_amt" value="<?php echo $budget_amount;?>">
+                                            <input type="number" class="form-control" id="budget_amt" name="budget_amt" value="<?php echo $budget_amount; ?>">
                                         </div>
                                     </div>
                                 </div>
@@ -475,7 +479,7 @@ foreach ($SPECILITY_ARR as $key => $value) {
 
                                     <div class="col-9">
                                         <div class="input-wrapper">
-                                            <input type="text" value="<?php echo $event_benefit_society;?>" class="form-control" id="activity_benefit" name="activity_benefit">
+                                            <input type="text" value="<?php echo $event_benefit_society; ?>" class="form-control" id="activity_benefit" name="activity_benefit">
                                         </div>
                                     </div>
                                 </div>
@@ -527,21 +531,26 @@ foreach ($SPECILITY_ARR as $key => $value) {
                                 </div>
                                 <div class="remark">
 
-							</div>
+                                </div>
 
                                 <br><br>
 
-                                <div class="row" style="justify-content: center">
-                                    <span class="btn btn-success mr-1 mb-1 pd-sr">
-                                        <input type="radio" id="approve" onchange="addRemark();" name="choice" value="A">
-                                        <label for="approve" style="margin-bottom:0px;">Approve</label><br>
-                                    </span>
-
-                                    <span class="btn btn-danger mr-1 mb-1 pd-sr">
-                                        <input type="radio" onchange="addRemark();" id="reject" name="choice" value="R">
-                                        <label for="reject" style="margin-bottom:0px;">Reject</label><br>
-                                    </span>
-                                </div>
+                                <?php 
+                                if ($pending_with_id==$USER_ID) { ?>
+                                    <div class="row" style="justify-content: center">
+                                        <span class="btn btn-success mr-1 mb-1 pd-sr">
+                                            <input type="radio" id="approve" onchange="addRemark();" name="choice" value="A">
+                                            <label for="approve" style="margin-bottom:0px;">Approve</label><br>
+                                        </span>
+    
+                                        <span class="btn btn-danger mr-1 mb-1 pd-sr">
+                                            <input type="radio" onchange="addRemark();" id="reject" name="choice" value="R">
+                                            <label for="reject" style="margin-bottom:0px;">Reject</label><br>
+                                        </span>
+                                    </div>
+                                    
+                               <?php }
+                                ?>
 
 
                                 <!-- <div class="row">
@@ -613,7 +622,11 @@ foreach ($SPECILITY_ARR as $key => $value) {
                             <!-- <div class="col"><button type="button" class="exampleBox btn btn-primary rounded me-1">Save</button>
 							</div> -->
                             <div class="col">
+                                 <?php 
+                                if ($pending_with_id==$USER_ID) { ?>
                                 <button type="submit" class="exampleBox btn btn-primary rounded me-1">Submit</button>
+
+                                <?php }?>
                             </div>
                             <!-- <div class="col">
 								<a href="#"><button type="button" class="exampleBox btn btn-primary rounded me-1">Cancel</button></a>
@@ -637,9 +650,9 @@ foreach ($SPECILITY_ARR as $key => $value) {
 
     <script>
         function addRemark() {
-			var choice = $('input[name="choice"]:checked').val();
-			if (choice == 'R') {
-				$('.remark').after(`<div class="form-group basic Remark">
+            var choice = $('input[name="choice"]:checked').val();
+            if (choice == 'R') {
+                $('.remark').after(`<div class="form-group basic Remark">
 									<div class="input-wrapper">
 												<label><b>Remark:<span style="color:#ff0000">*</span></b></label>
 													<input type="text" value="" class="form-control" id="remark" name="remark" placeholder="" required="">
@@ -647,13 +660,13 @@ foreach ($SPECILITY_ARR as $key => $value) {
 											</div>
 									</div>`);
 
-			} else {
-				$('.Remark').empty();
+            } else {
+                $('.Remark').empty();
 
-			}
+            }
 
 
-		}
+        }
         jQuery('#targetedSpeciality').multiselect({
             columns: 1,
             placeholder: 'Choose...',

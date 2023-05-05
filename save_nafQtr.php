@@ -59,6 +59,6 @@ foreach ($targetedSpeciality_Arr as $key => $value) {
 }
 
 
-header('location: index_qtr.php?userid='.$USER_ID);
+header('location: index_PM.php?userid='.$USER_ID);
 exit;
 ?>
