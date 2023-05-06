@@ -45,8 +45,6 @@ $ROLE_ID = GetXFromYID("select roleid from user2role where userid='" . $USER_ID 
 $PROFILE_ID = GetXFromYID("select profileid from role2profile where roleid='" . $ROLE_ID . "'");
 
 
-$advance_amt_display = '';
-
 
 $User_division = GetXFromYID("select division from users where id='$USER_ID' "); //Getting division
 $SPECILITY_ARR = $CRM_FILEDS = $SELECTED_SPECIALITIES = $S_ARRA = array();
@@ -118,8 +116,6 @@ if ($mode == 'A') {
 	$doc_upload_path = '';
 	$status = '';
 	$advance_payment = '';
-	$advance_payment_type = '';
-	$advance_amt_display = 'display: none;';
 	$productID = '';
 	$x_total = '';
 } elseif ($mode == 'E') {
@@ -170,7 +166,6 @@ if ($mode == 'A') {
 	$doc_upload_path = db_output2($DATA[0]->doc_upload_path);
 	$status = db_output2($DATA[0]->status);
 	$advance_payment = db_output2($DATA[0]->advance_payment);
-	$advance_payment_type = db_output2($DATA[0]->advance_payment_type);
 	$productID = GetXFromYID("select product_id from crm_naf_product_details where naf_request_id='$rid' ");
 
 	$curr_dt = date('Y-m-d', strtotime($submitted_on));
@@ -182,10 +177,6 @@ if ($mode == 'A') {
 
 
 	$selectoption = $readonly = 'readonly';
-
-	if ($advance_payment_type == 'Yes') {
-		$advance_amt_display = '';
-	}
 
 	$cond = '';
 	if (!empty($User_division) && (isset($User_division))) {
@@ -326,7 +317,7 @@ $_r = sql_query($_q, "");
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<select class="form-control custom-select" id="Product" onchange="chkothers();" name="productID" required="" <?php echo $selectoption; ?>>
+											<select class="form-control custom-select" id="Product" name="productID" required="" <?php echo $selectoption; ?>>
 												<option value="">Choose...</option>
 												<?php
 												foreach ($PRODUCTS_ARR as $key => $value) {
@@ -335,7 +326,7 @@ $_r = sql_query($_q, "");
 													echo '<option value="' . $key . '" ' . $selected . ' >' . $value . '</option>';
 												}
 												$k = 0;
-												$selected =    ($productID == $k) ? 'selected' : '';
+												//$selected =    ($productID == $k) ? 'selected' : '';
 												echo '<option value="' . $k . '" > Others </option>';
 
 												?>
@@ -802,7 +793,7 @@ $_r = sql_query($_q, "");
 												<div id="advance_SRC"><img src="<?php echo $doc_upload_path; ?>" alt="PAN Image" style="width:30%;height:auto;"></div>
 
 											<?php	} elseif ($mode == 'A') { ?>
-												<select class="form-control custom-select" name="advance_payment_type" id="dropdown" required="">
+												<select class="form-control custom-select" name="advance_payment" id="myselection" required="">
 													<option selected="" disabled="" value="">Choose...</option>
 													<?php
 													foreach ($ADVANCE_PAYMENT_ARRAY as $key => $value) {
@@ -820,20 +811,20 @@ $_r = sql_query($_q, "");
 								</div>
 
 
-								<div id="form" style="display: none;">
-									<label for="file">Upload file:</label>
-									<?php
-									if ($mode == 'A') {
-										echo '<input type="file" id="advance_file" name="advance_file">';
-									} elseif ($mode == 'E') {
-										echo '<a href="' . $doc_upload_path . '" > view file</a></div>';
-									}
-
-									?>
-
-									<br>
-									<label for="amount">Enter amount:</label>
-									<input type="number" class="form-control" id="advance_payment" name="advance_payment">
+								<div id="showYes" class="myDiv">
+									
+										<div class="custom-file-upload">
+											<input type="file" id="advance_file" name="advance_file" accept=".png, .jpg, .jpeg">
+											<label for="advance_file">
+												<span>
+													<strong>
+														<ion-icon name="cloud-upload-outline"></ion-icon>
+														<i>Tap to Upload</i>
+													</strong>
+												</span>
+											</label>
+										</div>
+									
 								</div>
 
 
@@ -1418,17 +1409,6 @@ $_r = sql_query($_q, "");
 	<script src="assets/js/base.js"></script>
 
 	<script>
-		const dropdown = document.getElementById('dropdown');
-		const form = document.getElementById('form');
-
-		dropdown.addEventListener('change', (event) => {
-			if (event.target.value === 'Yes') {
-				form.style.display = 'block';
-			} else {
-				form.style.display = 'none';
-			}
-		});
-
 		function chkothers() {
 			var x = document.getElementById("Product").value;
 			//alert(x);
@@ -1444,15 +1424,11 @@ $_r = sql_query($_q, "");
 		var selecteddoctorarray = [];
 
 		function addRequestLetter() {
-			var ret = true;
 			var nature_of_camp = $('#nature_of_camp').val();
 			var proposed_camp_date = $('#proposed_camp_date').val();
 			var proposed_camp_location = $('#proposed_camp_location').val();
 			var estimated_cost = $('#estimated_cost').val();
 			var diagnostic_lab = $('#diagnostic_lab').val();
-			var total = $('#total').val();
-
-
 			var saveDataObj = {};
 
 			saveDataObj = {
@@ -1463,40 +1439,14 @@ $_r = sql_query($_q, "");
 				'diagnostic_lab': diagnostic_lab
 			}
 
-			$('#nature_of_camp').val('');
-			$('#proposed_camp_date').val('');
-			$('#proposed_camp_location').val('');
-			$('#estimated_cost').val('');
-			$('#diagnostic_lab').val('');
-
-			for (var i = 0; i < addeddocarray.length; i++) {
-				if (addeddocarray[i].honorarium_amount + estimated_cost > total) {
-					alert("The estimate amount should be less than total amount");
-					return false;
-					ret = false;
-				}
-			}
-
-			if (added_request_letter.length == 0 && ret ) {
-				added_request_letter.push(saveDataObj);
-				closeRequestletter();
-				selected_request_letter();
-
-			} else {
-				alert('You can add only one request letter at time');
-				closeRequestletter();
-			}
-
-
-
-
-
+			added_request_letter.push(saveDataObj);
+			closeRequestletter();
+			selected_request_letter();
 
 
 		}
 
 		function addDoctor() {
-			//console.log(addeddocarray.length);
 			var DoctorID = document.getElementById("DoctorID").value;
 			var hcp_name = document.getElementById("hcp_name").value;
 			var address = document.getElementById("address").value;
@@ -1507,8 +1457,6 @@ $_r = sql_query($_q, "");
 			var govt = document.getElementById("govt").value;
 			var year_of_experience = document.getElementById("year_of_experience").value;
 			var honorarium = document.getElementById("Honorarium").value;
-			var total = document.getElementById("total").value;
-			console.log(total);
 			var role_of_hcp = document.getElementById("role_of_hcp").value;
 
 
@@ -1525,13 +1473,6 @@ $_r = sql_query($_q, "");
 				alert("Honorarium amount should be greater than zero!!");
 				return false;
 			}
-
-			if (honorarium > total) {
-				alert("Honorarium amount should be less than total amount!!");
-				return false;
-			}
-
-
 
 			if (jQuery.trim(DoctorID_passed).length == 0) {
 				alert("Please select HCP Universal ID !");
@@ -1613,8 +1554,6 @@ $_r = sql_query($_q, "");
 			}
 
 
-
-
 			$("#DoctorID").val("");
 			$("#hcp_name").val("");
 			$("#address").val("");
@@ -1644,17 +1583,12 @@ $_r = sql_query($_q, "");
 				'year_of_experience': year_of_experience
 			}
 
-			if (addeddocarray.length == 0) {
-				addeddocarray.push(saveDataObj);
-				selected_doctors();
 
-			} else {
-				alert('You can add only one HCP');
-				return false;
-			}
+			addeddocarray.push(saveDataObj);
 
 
 			closeModal();
+			selected_doctors();
 		}
 
 		const modal = document.querySelector(".modal");

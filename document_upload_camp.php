@@ -9,6 +9,7 @@ $display_all = (isset($_GET['display_all'])) ? $_GET['display_all'] : '0';
 
 
 //type id 7 for attendance sheet
+$READ_MODE='';
 
 //if(empty($USER_ID) || (!empty($USER_ID) && !is_numeric($USER_ID))|| $USER_ID!='2')
 if (empty($USER_ID) || (!empty($USER_ID) && !is_numeric($USER_ID))) {
@@ -68,6 +69,12 @@ if ($MODE == 'R' || $MODE == 'E') {
 		$chaque_image = isset($ATTACHMENT_ARR[2]) && !empty($ATTACHMENT_ARR[2]) ? $ATTACHMENT_ARR[2] : '';
 		$visiting_image = isset($ATTACHMENT_ARR[3]) && !empty($ATTACHMENT_ARR[3]) ? $ATTACHMENT_ARR[3] : '';
 	}
+
+	if (empty($ATTACHMENT_ARR)) {
+		$READ_MODE = 'A';
+	} else {
+		$READ_MODE = 'E';
+	}
 	// DFA($ATTACHMENT_ARR);
 	// exit;
 }
@@ -115,7 +122,7 @@ if ($MODE == 'R' || $MODE == 'E') {
 
 	<div id="appCapsule">
 
-		<form action="upload_doc.php" id="DOC_FORM" method="post" enctype="multipart/form-data">
+		<form action="upload_doc_camp.php" id="DOC_FORM" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="rid" value="<?php echo $rid; ?>">
 			<input type="hidden" name="pid" value="<?php echo $pid; ?>">
 			<input type="hidden" name="mode" value="<?php echo $MODE; ?>">
@@ -168,7 +175,7 @@ if ($MODE == 'R' || $MODE == 'E') {
 						<div class="row">
 							<!-- <div class="col"><button type="button" class="exampleBox btn btn-primary rounded me-1">Save</button>
 								</div> -->
-							<?php if ( $MODE!='R') { ?>
+							<?php if ( $READ_MODE!='E') { ?>
 							<div class="col">
 								<button type="submit" id="BtnSUBMIT" class="exampleBox btn btn-primary rounded me-1">Submit</button>
 							</div>

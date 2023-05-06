@@ -22,6 +22,9 @@ if (empty($rid) || (!empty($rid) && !is_numeric($rid))) {
     exit;
 }
 
+
+$ADVANCE_PAYMENT_ARRAY = array('Yes' => 'Yes', 'No' => 'NO');
+
 // getting role and profile id of user
 $ROLE_ID = GetXFromYID("select roleid from user2role where userid='" . $USER_ID . "'");
 $PROFILE_ID = GetXFromYID("select profileid from role2profile where roleid='" . $ROLE_ID . "'");
@@ -45,10 +48,25 @@ $naf_estimate_no_participents = $DATA[0]->naf_estimate_no_participents;
 $proposed_objective = $DATA[0]->proposed_objective;
 $naf_objective_rational = $DATA[0]->naf_objective_rational;
 $pendingwithid = $DATA[0]->pendingwithid;
+$advance_payment_type = $DATA[0]->advance_payment_type;
+$advance_payment = $DATA[0]->advance_payment;
+$doc_upload_path = $DATA[0]->doc_upload_path;
+
 
 
 
 $productID = GetXFromYID("select product_id from crm_naf_product_details where naf_request_id='$rid' ");
+$naf_product_therapy_others = GetXFromYID("select naf_product_therapy_others from crm_naf_product_details where naf_request_id='$rid' ");
+
+$product_display_style = $advance_amt_display = '';
+if ($productID == 0) {
+    $product_display_style = 'display: none;';
+}
+
+$advance_amt_display = 'display: none;';
+if ($advance_payment_type == 'Yes') {
+    $advance_amt_display = '';
+}
 
 $User_division = GetXFromYID("select division from users where id='$requestorID' ");
 $curr_dt = date('Y-m-d', strtotime($submited_date));
@@ -220,10 +238,15 @@ $REQUEST_LETTER = GetDataFromID('crm_naf_camp_letter', 'crm_naf_hcp_details_id',
                                                 }
 
                                                 //$selected =    ($productID == $k) ? 'selected' : '';
+                                                $k = 0;
+                                                $selected =    ($productID == $k) ? 'selected' : '';
+                                                echo '<option value="' . $k . '" ' . $selected . ' > Others </option>';
 
                                                 ?>
                                             </select>
                                         </div>
+                                        <br>
+                                        <input type="text" class="form-control" id="others" size="70" value="<?php echo $naf_product_therapy_others; ?>" placeholder="Enter product here " name="others" style="<?php $product_display_style; ?>" <?php echo $readonly; ?>>
                                     </div>
                                 </div>
 
@@ -666,10 +689,14 @@ $REQUEST_LETTER = GetDataFromID('crm_naf_camp_letter', 'crm_naf_hcp_details_id',
 
                                     <div class="col-9">
                                         <div class="input-wrapper">
-                                            <select class="form-control custom-select" id="myselection">
-                                                <option selected="" disabled="" value="">Choose...</option>
-                                                <option value="Yes">Yes</option>
-                                                <option value="No">No</option>
+                                            <select class="form-control custom-select" name="advance_payment_type" id="dropdown" required="">
+                                                <option value="">Choose...</option>
+                                                <?php
+                                                foreach ($ADVANCE_PAYMENT_ARRAY as $key => $value) {
+                                                    $selected = ($advance_payment_type == $key) ? 'selected' : '';
+                                                    echo '<option value="' . $key . '" ' . $selected . ' >' . $value . '</option>';
+                                                }
+                                                ?>
                                             </select>
                                         </div>
                                     </div>
@@ -677,20 +704,18 @@ $REQUEST_LETTER = GetDataFromID('crm_naf_camp_letter', 'crm_naf_hcp_details_id',
                                 </div>
 
 
-                                <div id="showYes" class="myDiv">
-                                    <form>
-                                        <div class="custom-file-upload">
-                                            <input type="file" id="fileuploadInput" accept=".png, .jpg, .jpeg">
-                                            <label for="fileuploadInput">
-                                                <span>
-                                                    <strong>
-                                                        <ion-icon name="cloud-upload-outline"></ion-icon>
-                                                        <i>Tap to Upload</i>
-                                                    </strong>
-                                                </span>
-                                            </label>
-                                        </div>
-                                    </form>
+                                <div id="form" style="<?php echo $advance_amt_display; ?>">
+                                    <label for="file">Upload file:</label>
+                                    <?php if (!empty($doc_upload_path)) {
+                                        echo '<a href="' . $doc_upload_path . '" > view file</a></div>';
+
+
+                                    } ?>
+
+                                  
+                                    <br>
+                                    <label for="amount">Enter amount:</label>
+                                    <input type="number" class="form-control" value="<?php echo $advance_payment; ?>" id="advance_payment" name="advance_payment" readonly>
                                 </div>
 
 
@@ -858,22 +883,22 @@ $REQUEST_LETTER = GetDataFromID('crm_naf_camp_letter', 'crm_naf_hcp_details_id',
                     <div class="card">
                         <div class="card-body">
 
-                        <?php
-                            if ($pendingwithid==$USER_ID) { ?>
+                            <?php
+                            if ($pendingwithid == $USER_ID) { ?>
                                 <div class="row" style="justify-content: center">
                                     <span class="btn btn-success mr-1 mb-1 pd-sr">
                                         <input type="radio" id="approve" onchange="addRemark();" name="choice" value="A">
                                         <label for="approve" style="margin-bottom:0px;">Approve</label><br>
                                     </span>
-    
+
                                     <span class="btn btn-danger mr-1 mb-1 pd-sr">
                                         <input type="radio" onchange="addRemark();" id="reject" name="choice" value="R">
                                         <label for="reject" style="margin-bottom:0px;">Reject</label><br>
                                     </span>
                                 </div>
-                                
-                         <?php   }
-                        ?>
+
+                            <?php   }
+                            ?>
 
 
 
