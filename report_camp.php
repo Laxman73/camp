@@ -9,6 +9,7 @@ $TITLE = SITE_NAME . ' | ' . $page_title;
 
 $rid = (isset($_GET['rid'])) ? $_GET['rid'] : ''; //naf id
 $pid = (isset($_GET['pid'])) ? $_GET['pid'] : ''; //pma id
+$category = (isset($_GET['category'])) ? $_GET['category'] : '';
 $prid = (isset($_GET['prid'])) ? $_GET['prid'] : ''; //pma id
 $USER_ID = (isset($_GET['userid'])) ? $_GET['userid'] : '';
 $display_all = (isset($_GET['display_all'])) ? $_GET['display_all'] : '0';
@@ -137,6 +138,7 @@ if ($mode == 'A') {
 	$remarks = '';
 } elseif ($mode == 'E') {
 	$DATA = GetDataFromID('crm_naf_camp_report', 'crm_request_id', $pid);
+	//DFA($DATA);
 	$readonly = 'readonly';
 	$objective = db_output2($DATA[0]->objective);
 	$camp_duration = db_output2($DATA[0]->camp_duration);
@@ -149,6 +151,17 @@ if ($mode == 'A') {
 }
 
 $CHECKBOXES = array('1' => 'Excellent', '2' => 'Good', '3' => 'Average', '4' => 'Poor');
+
+
+$HCP_NAF_DETAILS=GetDataFromID('crm_naf_hcp_details','naf_main_id',$rid,"");
+$hcp_id=$HCP_NAF_DETAILS[0]->hcp_id;
+$hcp_name=GetXFromYID("SELECT CONCAT(firstname, ' ', lastname) AS full_name FROM contactdetails where  contactid='$hcp_id' ");
+$hcp_address=$HCP_NAF_DETAILS[0]->hcp_address;
+$hcp_associated_hospital_id=$HCP_NAF_DETAILS[0]->hcp_associated_hospital_id;
+$crm_naf_hcp_details_id=$HCP_NAF_DETAILS[0]->id;
+$registration_number=GetXFromYID("select registration_no from contactmaster where id='$hcp_id' ");
+$collaboration_with_diag=GetXFromYID("select diagnostic_lab from crm_naf_camp_letter where crm_naf_hcp_details_id='$crm_naf_hcp_details_id' ");
+$medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where naf_field_id=24 and naf_request_id='$rid' ");
 
 ?>
 <!doctype html>
@@ -244,18 +257,25 @@ $CHECKBOXES = array('1' => 'Excellent', '2' => 'Good', '3' => 'Average', '4' => 
 
 								<div class="row">
 
-
-
 									<div class="col-3">
-										<b>Nature of the camp<span style="color:#ff0000">*</span></b>
+										<b>Nature of the Activity:<span style="color:#ff0000">*</span></b>
 									</div>
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="text" class="form-control" id="details_activity" placeholder="" value="<?php echo $proposed_activity; ?>">
+											<select class="form-control custom-select" id="Nature_of_activity" name="Nature_of_activity" disabled>
+												<?php
+												foreach ($ACTIVITY_ARR as $key => $value) {
+													//echo $value[$key]['iModID'];
+													$selected = ($proposed_activity == $key) ? 'selected' : '';
+													echo '<option value="' . $key . '" ' . $selected . ' >' . $value . '</option>';
+												}
+												?>
+											</select>
 										</div>
 									</div>
 								</div>
+
 
 								<br>
 
@@ -365,7 +385,7 @@ $CHECKBOXES = array('1' => 'Excellent', '2' => 'Good', '3' => 'Average', '4' => 
 									</div>
 
 									<div class="col-9">
-										<div class="input-wrapper"><input type="text" class="form-control" id="" value="<?php echo $doctors_name; ?>" required></div>
+										<div class="input-wrapper"><input type="text" class="form-control" id="" value="<?php echo $hcp_name; ?>" required></div>
 									</div>
 
 								</div>
@@ -395,7 +415,7 @@ $CHECKBOXES = array('1' => 'Excellent', '2' => 'Good', '3' => 'Average', '4' => 
 									</div>
 
 									<div class="col-9">
-										<div class="input-wrapper"><input type="text" class="form-control" id=""></div>
+										<div class="input-wrapper"><input type="text" value="<?php echo $registration_number;?>" class="form-control" id=""></div>
 									</div>
 
 								</div>
@@ -410,7 +430,7 @@ $CHECKBOXES = array('1' => 'Excellent', '2' => 'Good', '3' => 'Average', '4' => 
 									</div>
 
 									<div class="col-9">
-										<div class="input-wrapper"><input type="text" class="form-control" id="hospital_name" name="hospital_name"></div>
+										<div class="input-wrapper"><input type="text" value="<?php echo $hcp_associated_hospital_id;?>" class="form-control" id="hospital_name" name="hospital_name"></div>
 									</div>
 
 								</div>
@@ -438,7 +458,7 @@ $CHECKBOXES = array('1' => 'Excellent', '2' => 'Good', '3' => 'Average', '4' => 
 									</div>
 
 									<div class="col-9">
-										<div class="input-wrapper"><input type="text" class="form-control" id="collab" value="" name="collab" required></div>
+										<div class="input-wrapper"><input type="text" class="form-control" id="collab" value="<?php echo $collaboration_with_diag;?>" name="collab" ></div>
 									</div>
 
 								</div>
@@ -469,7 +489,7 @@ $CHECKBOXES = array('1' => 'Excellent', '2' => 'Good', '3' => 'Average', '4' => 
 									</div>
 
 									<div class="col-9">
-										<div class="input-wrapper"><input type="number" class="form-control" id="medical_equipment_cost" name="medical_equipment_cost" required></div>
+										<div class="input-wrapper"><input type="number" class="form-control" id="medical_equipment_cost" name="medical_equipment_cost" value="<?php echo $medical_cost;?>" ></div>
 									</div>
 
 								</div>
@@ -484,7 +504,7 @@ $CHECKBOXES = array('1' => 'Excellent', '2' => 'Good', '3' => 'Average', '4' => 
 									</div>
 
 									<div class="col-9">
-										<div class="input-wrapper"><input type="number" class="form-control" name="total_no_of_ind" id="total_no_of_ind" required></div>
+										<div class="input-wrapper"><input type="number" value="<?php echo $total_no_ind;?>" class="form-control" name="total_no_of_ind" id="total_no_of_ind" required></div>
 									</div>
 
 								</div>
@@ -620,7 +640,13 @@ $CHECKBOXES = array('1' => 'Excellent', '2' => 'Good', '3' => 'Average', '4' => 
 							<!-- <div class="col"><button type="button" class="exampleBox btn btn-primary rounded me-1">Save</button>
                     </div> -->
 							<div class="col">
+								<?php
+								if ($mode!='E') { ?>
 								<button type="submit" class="exampleBox btn btn-primary rounded me-1">Submit</button>
+								
+							<?php	}
+
+								?>
 								<!-- <a href="delivery_service_form_camp.php"><button type="button" class="exampleBox btn btn-primary rounded me-1">Submit</button></a> -->
 							</div>
 							<!-- <div class="col">

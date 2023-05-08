@@ -9,6 +9,8 @@ $TITLE = SITE_NAME . ' | ' . $page_title;
 
 $rid = (isset($_GET['rid'])) ? $_GET['rid'] : '';
 $prid = (isset($_GET['prid'])) ? $_GET['prid'] : '';
+$category = (isset($_GET['category'])) ? $_GET['category'] : '';
+$typeid = (isset($_POST['typeid'])) ? $_POST['typeid'] : '';
 $pid = (isset($_GET['pid'])) ? $_GET['pid'] : '';
 $USER_ID = (isset($_GET['userid'])) ? $_GET['userid'] : '';
 $display_all = (isset($_GET['display_all'])) ? $_GET['display_all'] : '0';
@@ -76,7 +78,8 @@ $_q2 = "select hoscontactid from approval_doctor_hospital_association where cont
 $_r2 = sql_query($_q2);
 list($hostcontactid) = sql_fetch_row($_r2);
 $hospital_name = (isset($HOSPITAL_ARR[$hostcontactid])) ? $HOSPITAL_ARR[$hostcontactid] : '';
-
+$HCP_NAF_DETAILS=GetDataFromID('crm_naf_hcp_details','naf_main_id',$rid,"");
+$hcp_id=$HCP_NAF_DETAILS[0]->hcp_id;
 if ($mode == 'A') {
 	$readonly = '';
 	$yr_of_registration = '';
@@ -112,7 +115,8 @@ if ($mode == 'A') {
 	$emp_sign_date = db_output2($HCP_DATA[0]->emp_sign_date);
 	$submitted_on = db_output2($HCP_DATA[0]->submitted_on);
 }
-
+$hcp_name=GetXFromYID("SELECT CONCAT(firstname, ' ', lastname) AS full_name FROM contactdetails where  contactid='$hcp_id' ");
+$hcp_address=$HCP_NAF_DETAILS[0]->hcp_address;
 
 ?>
 <!doctype html>
@@ -161,6 +165,8 @@ if ($mode == 'A') {
 			<input type="hidden" name="userid" value="<?php echo $USER_ID; ?>">
 			<input type="hidden" name="rid" value="<?php echo $rid; ?>">
 			<input type="hidden" name="pid" value="<?php echo $pid; ?>">
+			<input type="hidden" name="typeid" value="<?php echo $typeid; ?>">
+			<input type="hidden" name="category" value="<?php echo $category; ?>">
 			<input type="hidden" name="prid" value="<?php echo $prid; ?>">
 			<div class="tab-content mt-1">
 
@@ -184,7 +190,7 @@ if ($mode == 'A') {
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="text" class="form-control" name="hcp_name" id="hcp_name" value="<?php echo $firstname . ' ' . $lastname; ?>" required>
+											<input type="text" class="form-control" name="hcp_name" id="hcp_name" value="<?php echo $hcp_name; ?>" required>
 										</div>
 									</div>
 								</div>
@@ -201,7 +207,7 @@ if ($mode == 'A') {
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="text" class="form-control" id="hcp_address" name="hcp_address" required>
+											<input type="text" class="form-control" id="hcp_address" name="hcp_address" value="<?php echo $hcp_address;?>" required>
 										</div>
 									</div>
 								</div>
@@ -422,11 +428,14 @@ if ($mode == 'A') {
 						<div class="row">
 							<!-- <div class="col"><button type="button" class="exampleBox btn btn-primary rounded me-1">Save</button>
 						</div> -->
+						<?php
+								if ($mode!='E') { ?>
 							<div class="col">
 								<!-- <a href="service_agreement_camp.php"> -->
 								<button type="submit" class="exampleBox btn btn-primary rounded me-1">Submit</button>
 								<!-- </a> -->
 							</div>
+							<?php } ?>
 							<!-- <div class="col">
 							<a href="#"><button type="button" class="exampleBox btn btn-primary rounded me-1">Cancel</button></a>
 						</div> -->

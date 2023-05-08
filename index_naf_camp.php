@@ -312,7 +312,7 @@ $_r = sql_query($_q, "");
 								<div class="row">
 
 									<div class="col-3">
-										<b>Product:<span style="color:#ff0000">*</span></b>
+										<b>Product/Therapy:<span style="color:#ff0000">*</span></b>
 									</div>
 
 									<div class="col-9">
@@ -1305,7 +1305,7 @@ $_r = sql_query($_q, "");
 							<div class="row">
 
 								<div class="col-3">
-									<b>Proposed camp location:<span style="color:#ff0000">*</span></b>
+									<b>Venue:<span style="color:#ff0000">*</span></b>
 								</div>
 
 								<div class="col-9">
@@ -1343,7 +1343,7 @@ $_r = sql_query($_q, "");
 
 								<div class="col-9">
 									<div class="input-wrapper">
-										<input type="number" name="diagnostic_lab" class="form-control" id="diagnostic_lab" placeholder="">
+										<input type="text" name="diagnostic_lab" class="form-control" id="diagnostic_lab" placeholder="">
 									</div>
 								</div>
 							</div>

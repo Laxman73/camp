@@ -7,6 +7,8 @@ $USER_ID = (isset($_GET['userid'])) ? $_GET['userid'] : '';
 $MODE = (isset($_GET['mode'])) ? $_GET['mode'] : '';
 $display_all = (isset($_GET['display_all'])) ? $_GET['display_all'] : '0';
 
+$READ_MODE='';
+
 //if(empty($USER_ID) || (!empty($USER_ID) && !is_numeric($USER_ID))|| $USER_ID!='2')
 if (empty($USER_ID) || (!empty($USER_ID) && !is_numeric($USER_ID))) {
 	echo 'Invalid Access Detected!!!';
@@ -62,6 +64,11 @@ if ($MODE == 'R' || $MODE == 'E') {
 		$pan_image = isset($ATTACHMENT_ARR[1]) && !empty($ATTACHMENT_ARR[1]) ? $ATTACHMENT_ARR[1] : '';
 		$chaque_image = isset($ATTACHMENT_ARR[2]) && !empty($ATTACHMENT_ARR[2]) ? $ATTACHMENT_ARR[2] : '';
 		$visiting_image = isset($ATTACHMENT_ARR[3]) && !empty($ATTACHMENT_ARR[3]) ? $ATTACHMENT_ARR[3] : '';
+	}
+	if (empty($ATTACHMENT_ARR)) {
+		$READ_MODE='A';
+	}else{
+		$READ_MODE='E';
 	}
 	// DFA($ATTACHMENT_ARR);
 	// exit;
@@ -223,8 +230,12 @@ if ($MODE == 'R' || $MODE == 'E') {
 							<div class="row">
 								<!-- <div class="col"><button type="button" class="exampleBox btn btn-primary rounded me-1">Save</button>
 								</div> -->
-								<div class="col">
-									<button type="submit" id="BtnSUBMIT" class="exampleBox btn btn-primary rounded me-1">Submit</button>
+								<div class="col">.
+									<?php
+									if ($READ_MODE!='E') { ?>
+										
+										<button type="submit" id="BtnSUBMIT" class="exampleBox btn btn-primary rounded me-1">Submit</button> 
+									<?php } ?>
 								</div>
 								<!-- <div class="col">
 									<a href="#"><button type="button" class="exampleBox btn btn-primary rounded me-1">Cancel</button></a>
@@ -237,14 +248,7 @@ if ($MODE == 'R' || $MODE == 'E') {
 			</div>
 		</form>
 
-		<?php if ($PROFILE_ID == 15 && $Plevel == 3) { ?>
-			<div class="section full mt-2">
-				<div class="wide-block pt-2 pb-2 text-center">
-					<a href="approve_hcp_final.php?rid=<?php echo $rid; ?>&userid=<?php echo $USER_ID; ?>&pid=<?php echo $pid; ?>&mode=A"><button type="button" class="btn btn-success mr-1 mb-1 pd-sr">Approve</button></a>
-					<a href="approve_hcp_final.php?rid=<?php echo $rid; ?>&userid=<?php echo $USER_ID; ?>&pid=<?php echo $pid; ?>&mode=R"><button type="button" class="btn btn-danger mr-1 mb-1 pd-sr">Reject</button></a>
-				</div>
-			</div>
-		<?php } ?>
+		
 
 
 	</div>

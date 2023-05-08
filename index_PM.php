@@ -51,7 +51,7 @@ $_q="select * from crm_naf_main where deleted=0 order by submitted_on DESC";
 	}
 	
 	$inner_join = "LEFT OUTER JOIN crm_questionoire_approval cqa on cqa.crm_request_main_id = crm_naf_main.id and cqa.deleted=0 and cqa.authorise <> 4/*and cqa.authorise <> 3*/";
-	$_q="select crm_naf_main.id, crm_naf_main.naf_no, crm_naf_main.eventdate, division.name AS 'div_name', crm_naf_main.category_id, crm_naf_type_master.type_name as category, crm_naf_type_master.detailview_filename, crm_naf_type_master.approve_filename, '40000' AS estimated_cost, 'Approved' as status, IF(CONCAT_WS(' ', u1.first_name, u1.last_name) IS NULL or CONCAT_WS(' ', u1.first_name, u1.last_name) = '', ' ', CONCAT_WS(' ', u1.first_name, u1.last_name,'(',`profile`.profilename,')'))AS pending_with, CONCAT_WS(' ', u2.first_name, u2.last_name) AS approved_b, CONCAT_WS(' ', u3.first_name, u3.last_name) AS pendingwithquestionnire, if(crm_naf_main.authorise=1,'Pending', if(crm_naf_main.authorise=2,'Accepted', if(crm_naf_main.authorise=3,'Approved', if(crm_naf_main.authorise=4,'Rejected','')))) AS approval_status, crm_naf_main.authorise,crm_naf_main.pendingwithid,csm.status_name as question_status,cqa.authorise as quest_auth,crm_naf_main.level  from `crm_naf_main`  
+	$_q="select crm_naf_main.id, crm_naf_main.naf_no, crm_naf_main.eventdate, division.name AS 'div_name', crm_naf_main.category_id, crm_naf_type_master.type_name as category, crm_naf_type_master.detailview_filename, crm_naf_type_master.approve_filename, '40000' AS estimated_cost, 'Approved' as status, IF(CONCAT_WS(' ', u1.first_name, u1.last_name) IS NULL or CONCAT_WS(' ', u1.first_name, u1.last_name) = '', ' ', CONCAT_WS(' ', u1.first_name, u1.last_name,'(',`profile`.profilename,')'))AS pending_with, CONCAT_WS(' ', u2.first_name, u2.last_name) AS approved_b, CONCAT_WS(' ', u3.first_name, u3.last_name) AS pendingwithquestionnire, if(crm_naf_main.authorise=1,'Pending', if(crm_naf_main.authorise=2,'Accepted', if(crm_naf_main.authorise=3,'Approved', if(crm_naf_main.authorise=4,'Rejected','')))) AS approval_status, crm_naf_main.authorise,crm_naf_main.pendingwithid,csm.status_name as question_status,cqa.authorise as quest_auth,crm_naf_main.level,crm_naf_main.budget_amount  from `crm_naf_main`  
 	INNER JOIN users ON crm_naf_main.userid = users.id
 	INNER JOIN division ON users.division = division.divisionid
 	LEFT OUTER JOIN crm_naf_type_master on crm_naf_main.category_id=crm_naf_type_master.pid and crm_naf_main.deleted=0
@@ -406,6 +406,11 @@ $_q="select * from crm_naf_main where deleted=0 order by submitted_on DESC";
 						$x_total=GetXFromYID("select sum(naf_expense) from crm_naf_cost_details where naf_request_id='$x_id' ");
 						$approved=GetXFromYID("select sum(naf_expense) from crm_naf_cost_details where naf_request_id='$x_id' ");
 						
+						if($category_id == 7 || $category_id==2 )
+						{
+						$x_total=$o->budget_amount;	
+						}
+						
 						$check_questionnire = "select * from crm_questions_upload where crm_request_main_id='".$x_id."' and deleted=0";
 						$check_quest_upload=GetXFromYID($check_questionnire);
 						// echo "<br>---****----".$check_quest_upload."--***--".$check_questionnire;
@@ -415,12 +420,22 @@ $_q="select * from crm_naf_main where deleted=0 order by submitted_on DESC";
 						
 						$status=($o->authorise=='1')?'Pending':'Approve';
 						$url='javascript:void(0)';
-						if ($PROFILE_ID=='15') {
+						
+								$file_name = GetXFromYID("SELECT filename 
+									FROM crm_workflow 
+									WHERE level = '$level'
+									AND typeid = '$category_id'
+									AND `status` = '$approved_status_id'
+									AND pending_with_id = '$pending_with_id'");
+						
+						$event_url='<a href="'.$file_name.'?rid='.$x_id.'&userid='.$USER_ID.'&category='.$category_id.'">'.strtoupper($naf_no).'</a>';
+						
+					/* 	if ($PROFILE_ID=='15') {
 							
-							if ($approved_status_id == 2 && $current_userid==$pending_with_id && $level==6)
+							if ($approved_status_id == 2 && $current_userid==$pending_with_id && $level>=6)
 							{
 								if($category_id==6)
-									$event_url='<a href="post_activity_advisory.php?rid='.$x_id.'&userid='.$USER_ID.'&category='.$category_id.'">'.strtoupper($naf_no).'</a>';
+									$event_url='<a href="dsf_advisory_approval_form.php?rid='.$x_id.'&userid='.$USER_ID.'&category='.$category_id.'">'.strtoupper($naf_no).'</a>';
 								else if($category_id==7)
 								$event_url='<a href="post_activity_quarter_consultancy.php?rid='.$x_id.'&userid='.$USER_ID.'&category='.$category_id.'">'.strtoupper($naf_no).'</a>';
 								else
@@ -434,17 +449,17 @@ $_q="select * from crm_naf_main where deleted=0 order by submitted_on DESC";
 						}
 						else if ($PROFILE_ID=='11' && $approved_status_id == 2 && $current_userid==$pending_with_id ) {
 				
-											// Rejected
+										
 											$event_url='<a href="document_upload_advisory.php?rid='.$x_id.'&userid='.$USER_ID.'&category='.$category_id.'">'.strtoupper($naf_no).'</a>';
 						}
 						else if ($PROFILE_ID=='27' && $approved_status_id == 1 && $current_userid==$pending_with_id && $level==1) {
 				
-											// Rejected
+										
 											$event_url='<a href="'.$approve_filename.'?rid='.$x_id.'&userid='.$USER_ID.'&category='.$category_id.'">'.strtoupper($naf_no).'</a>';
 						}
 					   else if ($PROFILE_ID=='27' && $approved_status_id == 1 && $current_userid==$pending_with_id && $level==5) {
 				
-							// Rejected
+							
 							if($category_id==6)
 								$event_url='<a href="post_activity_advisory.php?rid='.$x_id.'&userid='.$USER_ID.'&category='.$category_id.'">'.strtoupper($naf_no).'</a>';
 							else if($category_id==7)
@@ -453,21 +468,26 @@ $_q="select * from crm_naf_main where deleted=0 order by submitted_on DESC";
 								$event_url='<a href="post_activity.php?rid='.$x_id.'&userid='.$USER_ID.'&category='.$category_id.'">'.strtoupper($naf_no).'</a>';
 						}
 						else if(($current_userid==$pending_with_id) && ($approved_status_id==1 || $approved_status_id==2 )){
-							//$approve_url='<a href="approve_naf.php?id='.$x_id.'&userid='.$USER_ID.'">'.$approval_status.'</a>';
-							//$approve_url=$approval_status;
+							
 							$event_url='<a href="'.$approve_filename.'?rid='.$x_id.'&userid='.$USER_ID.'&category='.$category_id.'">'.strtoupper($naf_no).'</a>';
 						}
 						else{
-							//$approve_url=$approval_status;
-							if ($PROFILE_ID=='22' && $approved_status_id==3) {
 							
+							if ($PROFILE_ID=='22') {
+							    if($approved_status_id==3)
+								{
 								$event_url='<a href="document_upload_advisory.php?rid='.$x_id.'&userid='.$USER_ID.'&category='.$category_id.'">'.strtoupper($naf_no).'</a>';
+								}
+								else if($level>=8 && $category_id==6)
+								{
+									$event_url='<a href="post_activity_advisory.php?rid='.$x_id.'&userid='.$USER_ID.'&category='.$category_id.'">'.strtoupper($naf_no).'</a>';
+								}
 							}
 							else{
-								//$event_url=strtoupper($naf_no);
+								
 								$event_url='<a href="'.$detailview_filename.'?rid='.$x_id.'&userid='.$USER_ID.'&category='.$category_id.'">'.strtoupper($naf_no).'</a>';
 							}
-						}
+						} */
 						
 					/* 	if(($PROFILE_ID=='6' || $PROFILE_ID=='7') && $approved_status_id==2 && $level==4){
 							$event_url='<a href="naf_form_consultancy.php?prid='.$x_id.'&userid='.$USER_ID.'&category='.$category_id.'">'.strtoupper($naf_no).'</a>';
@@ -481,7 +501,7 @@ $_q="select * from crm_naf_main where deleted=0 order by submitted_on DESC";
 						{
 							$showstatus_quest = $question_status.' For </i><i>Approval With '.$pendingwithquestionnire.'</i>';
 						}
-						if ($PROFILE_ID=='11') {
+						if ($PROFILE_ID=='11' && $category_id==1) {
 							
 							//$questionnaire_link = '../../index.php?action=upload_questionnaire&module=CRM&id='.$x_id.'&userid='.$USER_ID;
 							/*if($check_quest_upload!="")

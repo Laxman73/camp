@@ -15,7 +15,7 @@ $User_division = GetXFromYID("select division from users where id='$USER_ID' ");
 
 
 $PENDING_WITH_ID = $STATUS = '';
-$crm_workflow = crm_workflow($USER_ID, $typeid, 0, $User_division);//Getting the details from crm_workflow 
+$crm_workflow = crm_workflow($USER_ID, $typeid, 1, 0);//Getting the details from crm_workflow 
 if (!empty($crm_workflow)) {
     $PENDING_WITH_ID = $crm_workflow['pending_with_id'];
     $STATUS = $crm_workflow['status'];
@@ -37,7 +37,7 @@ $empcode=GetXFromYID("select user_name from users where id='$USER_ID' and delete
 $CRM_R_ID = NextID('id', 'crm_request_main');
 $RNO = 'MG-' . str_pad($CRM_R_ID, 6, '0', STR_PAD_LEFT);
 $stmt = $pdo->prepare("insert into crm_request_main(id,request_no,naf_no,category_id,requestor_id,requestor_empcode,submitted_on,submitted,pendingwithid,authorise,approved_date,level,e_sign_doctor,cheque_path,e_sign_cheque_date) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-$stmt->execute(array($CRM_R_ID, $RNO, $NAF_NO, 12, $USER_ID, $empcode, NOW, 1, 0, 1, NOW, 1, '', '', NOW));
+$stmt->execute(array($CRM_R_ID, $RNO, $NAF_NO, 12, $USER_ID, $empcode, NOW, 1, 0, 2, NOW, 1, '', '', NOW));
 
 
 //insert into crm_camp_letter
@@ -47,6 +47,6 @@ $pdo->prepare("insert into crm_request_camp_letter values(?,?,?,?,?,?,?)")->exec
 //http://88.99.140.102/MicrolabReplicav3/modules/CRM_demo/index_pma.php?userid=19804
 //hcp_form_camp.php?rid=167&userid=19804&pid=146
 
-header('location: hcp_form_camp.php?userid='.$USER_ID.'&rid='.$rid.'&pid='.$CRM_R_ID);
+header('location: hcp_form_camp.php?userid='.$USER_ID.'&rid='.$rid.'&pid='.$CRM_R_ID. '&category=5&typeid='.$typeid);
 exit;
 ?>

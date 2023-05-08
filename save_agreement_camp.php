@@ -2,10 +2,16 @@
 include 'includes/common.php';
 $pdo=connectToDatabase();
 
+
 $rid=(isset($_POST['rid']))?$_POST['rid']:'';
 $pid=(isset($_POST['pid']))?$_POST['pid']:'';
 $prid=(isset($_POST['prid']))?$_POST['prid']:'';
 $userid=(isset($_POST['userid']))?$_POST['userid']:'';
+
+$Atitle=(isset($_POST['Atitle']))?db_input2($_POST['Atitle']):'';
+$Adate=(isset($_POST['Adate']))?$_POST['Adate']:'';
+$Avenue=(isset($_POST['Avenue']))?db_input2($_POST['Avenue']):'';
+
 $shortcode_mode = db_input($_POST['shortcodemode']);
 
 $crm_hcp_information_id=(isset($_POST['crm_hcp_information_id']))?$_POST['crm_hcp_information_id']:'';
@@ -53,13 +59,9 @@ if (empty($crm_hcp_information_id)) {
 	fclose( $fp1 );
 	
 	
-$stmt=$pdo->prepare("insert into crm_hcp_agreement (id,crm_hcp_information_id,hcp_sign,company_sign,sign_date,submitted_on,submitted,deleted,deleted_on) values(?,?,?,?,?,?,?,?,?)");
+$stmt=$pdo->prepare("insert into crm_hcp_agreement (id,crm_hcp_information_id,hcp_sign,company_sign,sign_date,topic,venue,meeting_date,submitted_on,submitted,deleted,deleted_on) values(?,?,?,?,?,?,?,?,?,?,?,?)");
 $id=NextID('id','crm_hcp_agreement');
-
-
-
-
-	 if($stmt->execute(array($id,$crm_hcp_information_id,$file1,$file,NOW,NOW,1,0,NOW))){
+	 if($stmt->execute(array($id,$crm_hcp_information_id,$file1,$file,NOW,$Atitle,$Avenue,$Adate,NOW,1,0,NOW))){
 		if($shortcode_mode=='')
 		{
 			//http://88.99.140.102/MicrolabReplicav3/modules/CRM_demo/service_agreement_camp.php?rid=140&prid=&userid=19804&pid=134

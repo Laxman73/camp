@@ -7,11 +7,10 @@ include 'includes/common.php';
 // DFA($_FILES);
 // DFA($_POST);
 $pdo = connectToDatabase();
-$rid = (isset($_POST['rid']))?$_POST['rid']:'';
-$pid = (isset($_POST['pid']))?$_POST['pid']:'';
-$prid = (isset($_POST['prid']))?$_POST['prid']:'';
-$mode = (isset($_POST['mode']))?$_POST['mode']:'';
-$userid = (isset($_POST['userid']))?$_POST['userid']:'';
+$rid = db_input($_POST['rid']);
+$pid = db_input($_POST['pid']);
+$mode = db_input($_POST['mode']);
+$userid = db_input($_POST['userid']);
 $error = array();
 $pendingStateHeadID = GetXFromYID("select statehead_id from crm_statehead_details");
 
@@ -267,7 +266,26 @@ if ($PROFILE_ID == '6' || $PROFILE_ID == '7') {
         $stmt->execute(array($ID, $pid, $userid, $PENDING_WITH_ID, $STATUS, 3, 'pending', TODAY, 0, TODAY));
     }
 }
+//added by rene for pdf saving in folder //4th may 
+$url = $_REQUEST['url'];
+$pdf_url="http://88.99.140.102/MicrolabReplicav3/modules/CRM/".$url;        //since pdf is generated dynamically, curl is used tp fetch and save content.
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $pdf_url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$pdf_content = curl_exec($ch);
+curl_close($ch);
 
+$hcp_id=GetXFromYID("select hcp_id from crm_request_details where deleted=0 and crm_request_main_id ='".$pid."' ");
+$naf_no = GetXFromYID("select naf_no from crm_naf_main where id='".$rid."' and deleted=0 ");
+$state=GetXFromYID("select statename from contactmaster 
+inner join state on contactmaster.otherstate=state.stateid
+where id='".$hcp_id."' and deleted=0");
+
+$file_name=$naf_no.'_'.$state.'.pdf';
+$dir = opendir(CRM_ATTACHMENT_PDF);
+file_put_contents(CRM_ATTACHMENT_PDF.$file_name, $pdf_content);
+closedir($dir);   
+//////////////////////////////////////////////////
 
 
 
@@ -281,12 +299,12 @@ if ($PROFILE_ID == '6' || $PROFILE_ID == '7') {
 
 //     }
 // }
-// if ($PROFILE_ID == 15){
-//     header('location:document_upload.php?userid=' . $userid.'&rid='.$rid.'&pid='.$pid);
-//     exit;
-// }else{
-
-    header('location: report_camp.php?rid='.$rid.'&userid='.$userid.'&pid='.$pid.'&prid='.$prid);
+if ($PROFILE_ID == 15){
+    header('location:document_upload.php?userid=' . $userid.'&rid='.$rid.'&pid='.$pid);
     exit;
-//}
+}else{
+
+    header('location:index_pma.php?userid=' . $userid);
+    exit;
+}
 ?>

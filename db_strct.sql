@@ -270,3 +270,21 @@ CREATE TABLE `crm_naf_document_upload` (
   KEY `deleted` (`deleted`),
   KEY `type_document_id` (`document_type_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=164 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `crm_hcp_agreement` (
+  `id` int(15) NOT NULL AUTO_INCREMENT,
+  `crm_hcp_information_id` int(15) NOT NULL,
+  `hcp_sign` varchar(255) NOT NULL,
+  `company_sign` varchar(255) NOT NULL,
+  `sign_date` datetime NOT NULL,
+  `topic` varchar(255) NOT NULL,
+  `venue` varchar(255) NOT NULL,
+  `meeting_date` date NOT NULL,
+  `submitted_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `submitted` int(1) NOT NULL,
+  `deleted` int(1) NOT NULL DEFAULT '0',
+  `deleted_on` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `crm_hcp_information_id` (`crm_hcp_information_id`),
+  KEY `deleted` (`deleted`)
+) ENGINE=InnoDB AUTO_INCREMENT=134 DEFAULT CHARSET=latin1;
