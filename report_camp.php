@@ -127,11 +127,13 @@ if ($is_report_submitted > 0) {
 	$mode = 'A';
 }
 
-$sign_edit = $sign_display = $hcp_sign = '';
+$sign_edit = $sign_display =$sign_date= $hcp_sign =$otp_verify_div= '';
 
 if ($mode == 'A') {
+	$otp_verify_div='display:block';
 	$sign_display= 'display:none';
 	$readonly = '';
+	$sign_date=TODAY;
 	$objective = '';
 	$camp_duration = '';
 	$type_of_diagnostic = '';
@@ -141,9 +143,12 @@ if ($mode == 'A') {
 	$camp_received = '';
 	$remarks = '';
 } elseif ($mode == 'E') {
+	$otp_verify_div='display:none';
 	$sign_edit= 'display:none';
 	$DATA = GetDataFromID('crm_naf_camp_report', 'crm_request_id', $pid);
 	//DFA($DATA);
+	$hcp_sign=GetXFromYID("select e_sign_doctor from crm_request_main where id='$pid' ");
+	$sign_date=GetXFromYID("select e_sign_cheque_date from crm_request_main where id='$pid' ");
 	$readonly = 'readonly';
 	$objective = db_output2($DATA[0]->objective);
 	$camp_duration = db_output2($DATA[0]->camp_duration);
@@ -285,7 +290,7 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 
 	<div id="appCapsule">
 
-		<form action="save_camp_report.php" method="post" id="camp_report">
+		<form action="save_camp_report.php"  method="post" id="camp_report_form">
 			<input type="hidden" name="userid" value="<?php echo $USER_ID; ?>">
 			<input type="hidden" name="pid" value="<?php echo $pid; ?>">
 			<input type="hidden" name="rid" id="rid" value="<?php echo $rid; ?>">
@@ -358,7 +363,7 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="text" class="form-control" name="camp_objective" id="camp_objective" value="<?php echo $objective; ?>" placeholder="" required <?php echo $readonly; ?>>
+											<input type="text" class="form-control" name="camp_objective" id="camp_objective" value="<?php echo $proposed_objective; ?>" placeholder="" required <?php echo $readonly; ?>>
 										</div>
 									</div>
 
@@ -702,7 +707,7 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 						SIGNED AND DELIVERED by <b></b>, acting
 						through its Authorised Signatory, Mr. <b>XX</b>, (XX) the within
 						named Party of the First Part.<br>
-						<b>DATE:<?php echo TODAY; ?></b>
+						<b>DATE:<?php echo $sign_date; ?></b>
 
 					</div>
 					<div class="col-6">
@@ -722,7 +727,7 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 
 							<div class="custom-signature-upload" style="<?php echo $sign_display; ?>">
 								<div class="wrapper1">
-									<img src="" width="95%" height="95%" alt="Italian Trulli">
+									<img src="<?php echo $hcp_sign;?>" width="95%" height="95%" alt="Italian Trulli">
 								</div>
 							</div>
 
@@ -730,30 +735,34 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 					</div>
 				</div>
 
-				<div class="row mt-3" id="hideDiv" style="display:block;">
-					<input type="hidden" id="questionID" name="questionID" value="1">
-					<input type="hidden" name="user_name" id="user_name" value="<?php echo $user_name; ?>">
+				<div style="<?php echo $otp_verify_div;?>">
 
-					<label for="otpmobilenumber" class="col-sm-3 col-form-label"><b>Verify Your Phone Number</b></label>
-					<div class="col-sm-3">
-						<input type="number" class="form-control" id="otpmobilenumber" name="otpmobilenumber" placeholder="" required="">
-
+					<div class="row mt-3" id="hideDiv" style="display:block;">
+						<input type="hidden" id="questionID" name="questionID" value="1">
+						<input type="hidden" name="user_name" id="user_name" value="<?php echo $user_name; ?>">
+	
+						<label for="otpmobilenumber" class="col-sm-3 col-form-label"><b>Verify Your Phone Number</b></label>
+						<div class="col-sm-3">
+							<input type="number" class="form-control" id="otpmobilenumber" name="otpmobilenumber" placeholder="" required="">
+	
+						</div>
+						<div class="col-sm-3">
+							<button type="button" class="btn btn-primary" onclick="createOTP()">Generate OTP</button>
+						</div>
 					</div>
-					<div class="col-sm-3">
-						<button type="button" class="btn btn-primary" onclick="createOTP()">Generate OTP</button>
+	
+					<div class="row mt-3" id="enterOtp_div" style="display:block;">
+						<label for="enter_otp" class="col-sm-3 col-form-label"><b>Enter OTP</b></label>
+						<div class="col-sm-3">
+							<input type="number" class="form-control" id="enter_otp" name="enter_otp" placeholder="" required="">
+	
+						</div>
+						<div class="col-sm-3">
+							<button type="button" class="btn btn-primary" onclick="validateOTP()">Confirm</button>
+						</div>
 					</div>
 				</div>
 
-				<div class="row mt-3" id="enterOtp_div" style="display:block;">
-					<label for="enter_otp" class="col-sm-3 col-form-label"><b>Enter OTP</b></label>
-					<div class="col-sm-3">
-						<input type="number" class="form-control" id="enter_otp" name="enter_otp" placeholder="" required="">
-
-					</div>
-					<div class="col-sm-3">
-						<button type="button" class="btn btn-primary" onclick="validateOTP()">Confirm</button>
-					</div>
-				</div>
 
 
 
@@ -832,6 +841,13 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 			// document.getElementById('signature2').value = data2;
 			return false;
 		}
+
+
+		$('#camp_report_form').submit(function(){
+			validate();
+
+			return true;
+		});
 
 
 		function createOTP() {

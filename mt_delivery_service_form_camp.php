@@ -86,7 +86,16 @@ if ($MODE == 'E') {
 $naf_no = GetXFromYID("select naf_no from crm_naf_main where id='$rid'");
 $NAF_IDS = GetXArrFromYID(" select id from crm_naf_main where parent_id='QCAMDTF0162'");
 $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(honorarium_amount) from crm_naf_hcp_details  where naf_main_id in (" . implode(", ", $NAF_IDS) . ") ");
-$pending_with_id=GetXFromYID("select pendingwithid from crm_naf_main where id='$rid' and deleted=0 ");
+$pending_with_id = GetXFromYID("select pendingwithid from crm_naf_main where id='$rid' and deleted=0 ");
+
+$NAF_ARRAY=GetXArrFromYID("select  t2.id
+from crm_naf_main t1 inner join crm_naf_main t2 on t1.naf_no=t2.parent_id 
+where t1.id='$rid' and t1.deleted=0");
+
+$HCP_DATA = GetDataFromID('crm_naf_hcp_details', 'naf_main_id', $rid, "and deleted=0 ");
+
+$_q="select * from crm_naf_hcp_details where naf_main_id in (".implode(",", $NAF_ARRAY).") and deleted=0 ";
+$_r=sql_query($_q,"");
 
 ?>
 
@@ -449,13 +458,6 @@ $pending_with_id=GetXFromYID("select pendingwithid from crm_naf_main where id='$
 										</div>
 
 									</div>
-
-
-
-
-
-
-
 								</div>
 
 
@@ -495,7 +497,7 @@ $pending_with_id=GetXFromYID("select pendingwithid from crm_naf_main where id='$
 
 
 				<?php
-				if ($MODE == 'R' && $pending_with_id==$USER_ID ) { ?>
+				if ($MODE == 'R' && $pending_with_id == $USER_ID) { ?>
 					<div class="section full mt-2">
 						<div class="wide-block pt-2 pb-2 text-center">
 							<!--	<a href="approve.php?rid=<?php echo $rid; ?>&userid=<?php echo $USER_ID; ?>&pid=<?php echo $pid; ?>&mode=A"><button type="button" class="btn btn-success mr-1 mb-1 pd-sr">Approve</button></a>
@@ -523,12 +525,12 @@ $pending_with_id=GetXFromYID("select pendingwithid from crm_naf_main where id='$
 						<div class="row">
 							<!-- <div class="col"><button type="button" class="exampleBox btn btn-primary rounded me-1">Save</button>
 						</div> -->
-							
-								<div class="col">
-									<button type="submit" class="exampleBox btn btn-primary rounded me-1">Submit</button>
-								</div>
 
-							
+							<div class="col">
+								<button type="submit" class="exampleBox btn btn-primary rounded me-1">Submit</button>
+							</div>
+
+
 							<!-- <div class="col">
 							<a href="#"><button type="button" class="exampleBox btn btn-primary rounded me-1">Cancel</button></a>
 						</div> -->
@@ -542,14 +544,84 @@ $pending_with_id=GetXFromYID("select pendingwithid from crm_naf_main where id='$
 
 		</form>
 
+		<div class="section mt-7">
+			<div class="card">
+				<div class="card-body">
+
+					<div class="wide-block pt-2 pb-2">
+
+						<table id="example" class="display mt-2" style="width:100%">
+
+							<thead>
+
+								<tr>
+									<th></th>
+									<th>Sr. No</th>
+									<th>HCP Universal ID</th>
+									<th>Name of the HCP</th>
+									<th>Address(city)</th>
+									<th>Honrarium Amount</th>
+									<th>Role of HCP</th>
+									<th>Mobile Number</th>
+									<th>PAN #</th>
+									<th>Qualification</th>
+									<th>Associated Hospital/Clinic</th>
+									<th>Govt.(Yes/No)</th>
+									<th>Years of experience</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody id="append_data">
+								<?php
+								if (sql_num_rows($_r)) {
+									for ($i = 0; $o=sql_fetch_object($_r); $i++) {
+										$k = $i + 1;
+										$hcp_id = $o->hcp_id;
+										$masterid = GetXFromYID("select masterid from contactdetails where contactid='$hcp_id' ");
+										$hcp_name = GetXFromYID("SELECT CONCAT(firstname, ' ', lastname) AS full_name FROM contactdetails where contactid='$hcp_id' ");
+										$hcp_address = $o->hcp_address;
+										$hcp_pan = $o->hcp_pan;
+										$hcp_qualification = $o->hcp_qualification;
+										$hcp_associated_hospital_id = $o->hcp_associated_hospital_id;
+										$govt_type = $o->govt_type;
+										$yr_of_experience = $o->yr_of_experience;
+										$role_of_hcp = $o->role_of_hcp;
+										$honorarium_amount = $o->honorarium_amount;
+										$mobile = $o->mobile;
+								?>
+										<tr>
+											<td></td>
+											<td><?php echo $k; ?></td>
+											<td><?php echo $masterid; ?></td>
+											<td><?php echo $hcp_name; ?></td>
+											<td><?php echo $hcp_address; ?></td>
+											<td><?php echo $honorarium_amount; ?></td>
+											<td><?php echo $role_of_hcp; ?></td>
+											<td><?php echo $mobile; ?></td>
+											<td><?php echo $hcp_pan; ?></td>
+											<td><?php echo $hcp_qualification; ?></td>
+											<td><?php echo $hcp_associated_hospital_id; ?></td>
+											<td><?php echo $govt_type; ?></td>
+											<td><?php echo $yr_of_experience; ?></td>
+											<td></td>
+
+										</tr>
+
+
+								<?php    }
+								}
+								?>
 
 
 
 
+							</tbody>
+						</table>
 
-
-
-
+					</div>
+				</div>
+			</div>
+		</div>
 
 
 	</div>

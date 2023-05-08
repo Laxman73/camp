@@ -336,3 +336,18 @@ CREATE TABLE `crm_camp_otp` (
   PRIMARY KEY (`id`),
   KEY `naf_request_id` (`naf_request_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+CREATE TABLE `crm_naf_camp_report` (
+  `pid` int(11) NOT NULL AUTO_INCREMENT,
+  `crm_request_id` int(11) DEFAULT NULL,
+  `objective` text,
+  `camp_duration` date DEFAULT NULL,
+  `type_of_diagnostic` text,
+  `diagnostic_charges` int(11) DEFAULT NULL,
+  `total_no_ind` int(11) DEFAULT NULL,
+  `camp_organised` int(2) DEFAULT NULL,
+  `camp_received` int(2) DEFAULT NULL,
+  `remarks` text,
+  PRIMARY KEY (`pid`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=latin1;

@@ -65,7 +65,7 @@ if ($MODE == 'R' || $MODE == 'E') {
 
 	// getting data from the array
 	if (!empty($ATTACHMENT_ARR)) {
-		$attendance_sheet = isset($ATTACHMENT_ARR[17]) && !empty($ATTACHMENT_ARR[17]) ? $ATTACHMENT_ARR[17] : '';
+		$attendance_sheet = isset($ATTACHMENT_ARR[7]) && !empty($ATTACHMENT_ARR[7]) ? $ATTACHMENT_ARR[7] : '';
 		$chaque_image = isset($ATTACHMENT_ARR[2]) && !empty($ATTACHMENT_ARR[2]) ? $ATTACHMENT_ARR[2] : '';
 		$visiting_image = isset($ATTACHMENT_ARR[3]) && !empty($ATTACHMENT_ARR[3]) ? $ATTACHMENT_ARR[3] : '';
 	}
@@ -78,8 +78,9 @@ if ($MODE == 'R' || $MODE == 'E') {
 	// DFA($ATTACHMENT_ARR);
 	// exit;
 }
- //echo $MODE;
+//  echo $READ_MODE;
 // echo $attendance_sheet;
+// echo ($READ_MODE == 'E');
 ?>
 <!doctype html>
 <html lang="en">
@@ -139,12 +140,12 @@ if ($MODE == 'R' || $MODE == 'E') {
 
 								<p><b>Upload Attendance sheet here:<span style="color:#ff0000">*(Max 3 MB)</span></b></p>
 								<div class=" PANDIV">
-									<?php if ($MODE != 'R') {
+									<?php if ($READ_MODE == 'E') {
 										if (!empty($attendance_sheet)) {
 
 											echo '<div id="pan_SRC"><a href="' . $attendance_sheet . '" > view file</a></div>';
 										} else { ?>
-											<input type="file" id="attendance_sheet" name="attendance_sheet" class="form-control">
+											<input type="file" id="attendance_sheet" name="attendance_sheet" class="form-control ff">
 										<?php	}
 
 										?>

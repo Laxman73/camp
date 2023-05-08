@@ -31,6 +31,13 @@ $readonly = $disabled = '';
 $employee_id = $activity_name = $details_of_activity = $type_of_activity = $mode = $vendor_services = $vendor_name = $vendor_description = $actual_vendor_cost = $naf_travel_flight_cost = $naf_insurance_cost = $naf_flight_cost = $naf_travel_cab_cost = $naf_visa_cost = $naf_stay_hotel_cost = $naf_audio_visual_cost = $naf_meal_snack_cost = $naf_banners_pamphlets_cost = $naf_other_additonal_cost = $MODE = '';
 $Delivery_form_count = GetXFromYID("select count(*) from crm_naf_delivery_form where crm_naf_main_id='$rid' and deleted=0 ");
 
+
+$CRM_MAIN_DATA = GetDataFromID('crm_naf_main', 'id', $rid, "and deleted=0 and category_id=5 ");
+
+$activity_name = db_output2($CRM_MAIN_DATA[0]->naf_activity_name);
+$type_of_activity = db_output2($CRM_MAIN_DATA[0]->naf_activity_name);
+$pending_with_id = db_output2($CRM_MAIN_DATA[0]->pendingwithid);
+
 if ($Delivery_form_count > 0) {
 	$MODE = 'R';
 	$readonly = 'readonly';
@@ -72,7 +79,7 @@ if ($MODE == 'R' || $MODE == 'E') {
 $ACTIVITY_ARR = GetXArrFromYID('SELECT id as id,activityname  as name FROM crm_naf_activitymaster where deleted=0', '3');
 if ($MODE == 'E') {
 	$activity_ID = GetXFromYID("select activity_id from crm_naf_activity_details where naf_request_id='$rid' ");
-	$type_of_activity = $ACTIVITY_ARR[$activity_ID];
+	//$type_of_activity = $ACTIVITY_ARR[$activity_ID];
 }
 $naf_no = GetXFromYID("select naf_no from crm_naf_main where id='$rid'");
 $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(honorarium_amount) from crm_naf_hcp_details  where naf_main_id='$rid' ");
@@ -273,7 +280,7 @@ $HCP_DATA = GetDataFromID('crm_naf_hcp_details', 'naf_main_id', $rid, "and delet
 												foreach ($ACTIVITY_ARR as $key => $value) {
 													//echo $value[$key]['iModID'];
 													$selected =    ($type_of_activity == $key) ? 'selected' : '';
-													echo '<option value="' . $key . '" >' . $value . '</option>';
+													echo '<option value="' . $key . '" ' . $selected . ' >' . $value . '</option>';
 												}
 												?>
 											</select>
@@ -348,7 +355,7 @@ $HCP_DATA = GetDataFromID('crm_naf_hcp_details', 'naf_main_id', $rid, "and delet
 
 									<div class="col-3">
 										<b>Nature of Actual Cost Vendor:</b>
-										<input type="text" class="form-control" value="<?php echo $actual_vendor_cost; ?>" name="nature_of_actual_cost" id="nature_of_actual_cost" placeholder="" <?php echo $readonly; ?>>
+										<input type="text" class="form-control amountCalculate" value="<?php echo $actual_vendor_cost; ?>" onkeyup="CalculateTotal();" name="nature_of_actual_cost" id="nature_of_actual_cost" placeholder="" <?php echo $readonly; ?>>
 									</div>
 
 									<div class="col-9">
@@ -361,12 +368,12 @@ $HCP_DATA = GetDataFromID('crm_naf_hcp_details', 'naf_main_id', $rid, "and delet
 
 									<div class="col-3">
 										<b>Travel-Flights:</b>
-										<input type="text" class="form-control" value="<?php echo $naf_travel_flight_cost; ?>" name="travel_flights" id="travel_flights" placeholder="" <?php echo $readonly; ?>>
+										<input type="text" class="form-control amountCalculate" value="<?php echo $naf_travel_flight_cost; ?>" onkeyup="CalculateTotal();" name="travel_flights" id="travel_flights" placeholder="" <?php echo $readonly; ?>>
 									</div>
 
 									<div class="col-9">
 										<b>Insurance:</b>
-										<input type="text" class="form-control" value="<?php echo $naf_insurance_cost; ?>" id="insurance" name="insurance" placeholder="" <?php echo $readonly; ?>>
+										<input type="text" class="form-control amountCalculate" value="<?php echo $naf_insurance_cost; ?>" onkeyup="CalculateTotal();" id="insurance" name="insurance" placeholder="" <?php echo $readonly; ?>>
 									</div>
 								</div>
 
@@ -376,12 +383,12 @@ $HCP_DATA = GetDataFromID('crm_naf_hcp_details', 'naf_main_id', $rid, "and delet
 
 									<div class="col-3">
 										<b>Travel-Cab:</b>
-										<input type="text" class="form-control" value="<?php echo $naf_travel_cab_cost; ?>" id="travel_cab" name="travel_cab" placeholder="" <?php echo $readonly; ?>>
+										<input type="text" class="form-control amountCalculate" value="<?php echo $naf_travel_cab_cost; ?>" onkeyup="CalculateTotal();" id="travel_cab" name="travel_cab" placeholder="" <?php echo $readonly; ?>>
 									</div>
 
 									<div class="col-9">
 										<b>Visa:</b>
-										<input type="text" class="form-control" value="<?php echo $naf_visa_cost; ?>" id="visa" name="visa" placeholder="" <?php echo $readonly; ?>>
+										<input type="text" class="form-control amountCalculate" value="<?php echo $naf_visa_cost; ?>" onkeyup="CalculateTotal();" id="visa" name="visa" placeholder="" <?php echo $readonly; ?>>
 									</div>
 								</div>
 
@@ -391,12 +398,12 @@ $HCP_DATA = GetDataFromID('crm_naf_hcp_details', 'naf_main_id', $rid, "and delet
 
 									<div class="col-3">
 										<b>Stay/Hotel:</b>
-										<input type="text" class="form-control" value="<?php echo $naf_stay_hotel_cost; ?>" id="stay_hotel" name="stay_hotel" placeholder="" <?php echo $readonly; ?>>
+										<input type="text" class="form-control amountCalculate" value="<?php echo $naf_stay_hotel_cost; ?>" onkeyup="CalculateTotal();" id="stay_hotel" name="stay_hotel" placeholder="" <?php echo $readonly; ?>>
 									</div>
 
 									<div class="col-9">
 										<b>Audio/Visual:</b>
-										<input type="text" class="form-control" value="<?php echo $naf_audio_visual_cost; ?>" name="audio_v" id="audio_v" placeholder="" <?php echo $readonly; ?>>
+										<input type="text" class="form-control amountCalculate" value="<?php echo $naf_audio_visual_cost; ?>" onkeyup="CalculateTotal();" name="audio_v" id="audio_v" placeholder="" <?php echo $readonly; ?>>
 									</div>
 								</div>
 
@@ -406,12 +413,12 @@ $HCP_DATA = GetDataFromID('crm_naf_hcp_details', 'naf_main_id', $rid, "and delet
 
 									<div class="col-3">
 										<b>Meal/Snacks:</b>
-										<input type="text" class="form-control" value="<?php echo $naf_meal_snack_cost; ?>" id="meal" name="meal" placeholder="" <?php echo $readonly; ?>>
+										<input type="text" class="form-control amountCalculate" value="<?php echo $naf_meal_snack_cost; ?>" onkeyup="CalculateTotal();" id="meal" name="meal" placeholder="" <?php echo $readonly; ?>>
 									</div>
 
 									<div class="col-9">
 										<b>Banners/Pamphelts:</b>
-										<input type="text" class="form-control" value="<?php echo $naf_banners_pamphlets_cost; ?>" id="banners" name="banners" placeholder="" <?php echo $readonly; ?>>
+										<input type="text" class="form-control amountCalculate" value="<?php echo $naf_banners_pamphlets_cost; ?>" onkeyup="CalculateTotal();" id="banners" name="banners" placeholder="" <?php echo $readonly; ?>>
 									</div>
 								</div>
 
@@ -421,7 +428,7 @@ $HCP_DATA = GetDataFromID('crm_naf_hcp_details', 'naf_main_id', $rid, "and delet
 
 									<div class="col-3">
 										<b>Others(Please Specify):</b>
-										<input type="text" class="form-control" value="<?php echo $naf_other_additonal_cost; ?>" id="other" name="other" placeholder="" <?php echo $readonly; ?>>
+										<input type="text" class="form-control amountCalculate" value="<?php echo $naf_other_additonal_cost; ?>" onkeyup="CalculateTotal();" id="other" name="other" placeholder="" <?php echo $readonly; ?>>
 									</div>
 
 									<div class="col-9">
@@ -463,7 +470,7 @@ $HCP_DATA = GetDataFromID('crm_naf_hcp_details', 'naf_main_id', $rid, "and delet
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="text" class="form-control" value="<?php echo $TOTAL_HONORIUM_AMT; ?>" id="total_honorium" placeholder="" readonly>
+											<input type="text" class="form-control amountCalculate" value="<?php echo $TOTAL_HONORIUM_AMT; ?>" id="total_honorium" placeholder="" readonly>
 										</div>
 									</div>
 								</div>
@@ -675,6 +682,27 @@ $HCP_DATA = GetDataFromID('crm_naf_hcp_details', 'naf_main_id', $rid, "and delet
 					</div>
 				</div>
 
+				<?php
+				if ($MODE == 'R' && $pending_with_id == $USER_ID) { ?>
+					<div class="section full mt-2">
+						<div class="wide-block pt-2 pb-2 text-center">
+							<!--	<a href="approve.php?rid=<?php echo $rid; ?>&userid=<?php echo $USER_ID; ?>&pid=<?php echo $pid; ?>&mode=A"><button type="button" class="btn btn-success mr-1 mb-1 pd-sr">Approve</button></a>
+							<a href="approve.php?rid=<?php echo $rid; ?>&userid=<?php echo $USER_ID; ?>&pid=<?php echo $pid; ?>&mode=R"><button type="button" class="btn btn-danger mr-1 mb-1 pd-sr">Reject</button></a>
+						 -->
+
+							<a href="<?php echo '_approve_dos_camp_amrm.php?userid=' . $USER_ID . '&mode=A&rid=' . $rid . '&category=5'; ?>"><button type="button" class="btn btn-success mr-1 mb-1 pd-sr">Approve</button></a>
+
+							<a href="<?php echo '_approve_dos_camp_amrm.php?userid=' . $USER_ID . '&mode=R&rid=' . $rid . '&category=5'; ?>"><button type="button" class="btn btn-danger mr-1 mb-1 pd-sr">Reject</button></a>
+
+
+
+						</div>
+					</div>
+
+
+				<?php   }
+				?>
+
 				<div class=" pt-2 pb-2" style="width: 100%;justify-content: center;text-align: center;">
 
 
@@ -798,6 +826,22 @@ $HCP_DATA = GetDataFromID('crm_naf_hcp_details', 'naf_main_id', $rid, "and delet
 	<!-- Base Js File -->
 	<script src="assets/js/base.js"></script>
 	<script>
+		function CalculateTotal() {
+			var total = 0;
+			$('.amountCalculate').each(function() {
+				var numbers = $(this).val();
+
+				if ((numbers != '')) {
+
+					total += parseFloat(numbers);
+				}
+
+			});
+
+			//console.log(parseInt(total));
+			$('#total_AMT').val(total);
+		}
+
 		$(document).ready(function() {
 
 			var table = $('#example').DataTable({

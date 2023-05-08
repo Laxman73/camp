@@ -22,7 +22,7 @@ $empcode=GetXFromYID("select user_name from users where id='$USER_ID' and delete
 
 $PENDING_WITH_ID = $STATUS = '';
 
-$crm_workflow = crm_workflow($USER_ID, 5, $New_level, $User_division);//Getting the details from crm_workflow 
+$crm_workflow = crm_workflow($USER_ID, 5, $New_level, 0);//Getting the details from crm_workflow 
 if (!empty($crm_workflow)) {
     $PENDING_WITH_ID = $crm_workflow['pending_with_id'];
     $STATUS = $crm_workflow['status'];
@@ -65,8 +65,9 @@ $stmt = $pdo->prepare("insert into crm_naf_delivery_form_cost_details (pid,naf_d
 $stmt->execute(array(NULL, $id, $nature_of_actual_cost, $travel_flights, $insurance, $travel_flights, $travel_cab, $visa, $stay_hotel, $audio_v, $meal, $banners, $other));
 
 //update crm_naf_main table
-// $pdo->prepare("update crm_naf_main set level=?,authorise=?,remarks=?,pendingwithid=? where id=? ")->execute(array($New_level,$STATUS,'pending',$PENDING_WITH_ID,$rid));
+ $pdo->prepare("update crm_naf_main set level=?,authorise=?,remarks=?,pendingwithid=? where id=? ")->execute(array($New_level,$STATUS,'pending',$PENDING_WITH_ID,$rid));
 
 
 header('location:index_pma.php?userid=' . $userid);
+exit;
 ?>
