@@ -65,8 +65,8 @@ $stmt = $pdo->prepare("insert into crm_naf_delivery_form_cost_details (pid,naf_d
 $stmt->execute(array(NULL, $id, $nature_of_actual_cost, $travel_flights, $insurance, $travel_flights, $travel_cab, $visa, $stay_hotel, $audio_v, $meal, $banners, $other));
 
 //update crm_naf_main table
-$pdo->prepare("update crm_naf_main set level=?,authorise=?,remarks=?,pendingwithid=? where id=? ")->execute(array($New_level,$STATUS,'pending',$PENDING_WITH_ID,$rid));
+// $pdo->prepare("update crm_naf_main set level=?,authorise=?,remarks=?,pendingwithid=? where id=? ")->execute(array($New_level,$STATUS,'pending',$PENDING_WITH_ID,$rid));
 
 
-header('location:mt_delivery_service_form_camp.php?rid=' . $rid . '&userid=' . $userid);
+header('location:index_pma.php?userid=' . $userid);
 ?>

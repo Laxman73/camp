@@ -8,6 +8,8 @@ $pdo=connectToDatabase();
 $mode = (isset($_POST['mode'])) ? db_input($_POST['mode']) : 'I';
 $rid = (isset($_POST['rid'])) ? db_input($_POST['rid']) : '';
 $pid = (isset($_POST['pid'])) ? db_input($_POST['pid']) : '';
+$category = (isset($_POST['category'])) ? db_input($_POST['category']) : '';
+$typeid = (isset($_POST['typeid'])) ? $_POST['typeid'] : '';
 $USER_ID = (isset($_POST['userid'])) ? db_input($_POST['userid']) : '';
 
 $hcp_name=(isset($_POST['hcp_name'])) ? db_input($_POST['hcp_name']) : '';
@@ -22,6 +24,25 @@ $speaker=(isset($_POST['speaker'])) ? db_input($_POST['speaker']) : '';
 $part_of_peer=(isset($_POST['part_of_peer'])) ? db_input($_POST['part_of_peer']) : '';
 $position=(isset($_POST['position'])) ? db_input($_POST['position']) : '';
 $no_of_yr_experience_clinic=(isset($_POST['num_of_years_of_clinical_expr'])) ? db_input($_POST['num_of_years_of_clinical_expr']) : '';
+
+$Current_level = GetXFromYID("select level from crm_request_main where id=$pid "); //current level from crm_naf_main table
+$New_level = $Current_level + 1; // increment by 1
+
+
+$PENDING_WITH_ID = $STATUS = '';
+$crm_workflow = crm_workflow($USER_ID, $typeid, $New_level, 0); //Getting the details from crm_workflow 
+
+// DFA($crm_workflow);
+// exit;
+if (!empty($crm_workflow)) {
+    $PENDING_WITH_ID = $crm_workflow['pending_with_id'];
+    $STATUS = $crm_workflow['status'];
+} else {
+    $PENDING_WITH_ID = 0;
+    $STATUS = 3;
+    $New_level = $Current_level;
+}
+
 
 
 if($mode == 'I'){

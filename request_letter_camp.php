@@ -36,7 +36,6 @@ if (empty($pid) || (!empty($pid) && !is_numeric($pid))) {
 	$mode = 'E';
 }
 
-$HCP_NAF_DETAILS=GetDataFromID('crm_naf_hcp_details','naf_main_id',$rid,"");
 if ($mode == 'A') {
 	//crm_request_main
 	$request_no = '';
@@ -60,8 +59,7 @@ if ($mode == 'A') {
 	$crm_naf_hcp_id = GetXFromYID("select id from crm_naf_hcp_details where naf_main_id='$rid' and deleted=0 ");
 	$CRM_NAF_CAMP_LETTER_DATA = GetDataFromID('crm_naf_camp_letter', 'crm_naf_hcp_details_id', $crm_naf_hcp_id);
 
-	//$hcp_id = (isset($CRM_NAF_CAMP_LETTER_DATA[0]->crm_naf_hcp_details_id)) ? $CRM_NAF_CAMP_LETTER_DATA[0]->crm_naf_hcp_details_id : '';
-	$hcp_id=$HCP_NAF_DETAILS[0]->hcp_id;
+	$hcp_id = (isset($CRM_NAF_CAMP_LETTER_DATA[0]->crm_naf_hcp_details_id)) ? $CRM_NAF_CAMP_LETTER_DATA[0]->crm_naf_hcp_details_id : '';
 	$nature_of_camp = (isset($CRM_NAF_CAMP_LETTER_DATA[0]->nature_of_camp)) ? $CRM_NAF_CAMP_LETTER_DATA[0]->nature_of_camp : '';
 	$proposed_camp_date = (isset($CRM_NAF_CAMP_LETTER_DATA[0]->proposed_camp_date)) ? $CRM_NAF_CAMP_LETTER_DATA[0]->proposed_camp_date : '';
 	$proposed_camp_location = (isset($CRM_NAF_CAMP_LETTER_DATA[0]->proposed_camp_location)) ? $CRM_NAF_CAMP_LETTER_DATA[0]->proposed_camp_location : '';
@@ -144,28 +142,8 @@ $HCP_UNIVERSAL_ID = GetXArrFromYID("select contactid,masterid from contactdetail
 							<div class="wide-block pt-2 pb-2">
 
 
-							<div class="row">
-
-
-
-									<div class="col-3">
-										<b>Name of HCP:<span style="color:#ff0000"></span></b>
-									</div>
-
-									<div class="col-9">
-										<div class="input-wrapper">
-											<input type="text" class="form-control" id="hcp_name" value="<?php echo $hcp_name; ?>"  readonly>
-										</div>
-									</div>
-								</div>
-
-								<br>
-
-
-
 
 								<div class="row">
-
 
 
 

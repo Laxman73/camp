@@ -14,6 +14,8 @@ $prid = (isset($_GET['prid'])) ? $_GET['prid'] : ''; //pma id
 $USER_ID = (isset($_GET['userid'])) ? $_GET['userid'] : '';
 $display_all = (isset($_GET['display_all'])) ? $_GET['display_all'] : '0';
 
+$user_name = GetXFromYID("select user_name from users where id='" . $USER_ID . "'");
+
 if (empty($USER_ID) || (!empty($USER_ID) && !is_numeric($USER_ID))) {
 	echo 'Invalid Access Detected!!!';
 	exit;
@@ -125,8 +127,10 @@ if ($is_report_submitted > 0) {
 	$mode = 'A';
 }
 
+$sign_edit = $sign_display = $hcp_sign = '';
 
 if ($mode == 'A') {
+	$sign_display= 'display:none';
 	$readonly = '';
 	$objective = '';
 	$camp_duration = '';
@@ -137,6 +141,7 @@ if ($mode == 'A') {
 	$camp_received = '';
 	$remarks = '';
 } elseif ($mode == 'E') {
+	$sign_edit= 'display:none';
 	$DATA = GetDataFromID('crm_naf_camp_report', 'crm_request_id', $pid);
 	//DFA($DATA);
 	$readonly = 'readonly';
@@ -148,6 +153,7 @@ if ($mode == 'A') {
 	$camp_organised = db_output2($DATA[0]->camp_organised);
 	$camp_received = db_output2($DATA[0]->camp_received);
 	$remarks = db_output2($DATA[0]->remarks);
+	$hcp_sign = GetXFromYID("select e_sign_doctor from crm_request_main where id='$pid' and deleted=0 ");
 }
 
 $CHECKBOXES = array('1' => 'Excellent', '2' => 'Good', '3' => 'Average', '4' => 'Poor');
@@ -166,6 +172,67 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 ?>
 <!doctype html>
 <html lang="en">
+<style>
+	.custom-signature-upload {
+		position: relative;
+		display: flex;
+		width: 100%;
+		height: 200px;
+	}
+
+
+	.wrapper {
+		border: 2px solid #e2e2e2;
+		border-right: 0;
+		border-radius: 8px 0 0 8px;
+		padding: 5px;
+	}
+
+	canvas {
+		background: #fff;
+		width: 100%;
+		height: 100%;
+		cursor: crosshair;
+	}
+
+	button#clear_sign {
+		height: 100%;
+		background: #4b00ff;
+		border: 1px solid transparent;
+		border-left: 0;
+		border-radius: 0 8px 8px 0;
+		color: #fff;
+		font-weight: 600;
+		cursor: pointer;
+	}
+
+	button#clear_sign span {
+		transform: rotate(90deg);
+		display: block;
+	}
+
+	button#clear_sign1 {
+		height: 100%;
+		background: #4b00ff;
+		border: 1px solid transparent;
+		border-left: 0;
+		border-radius: 0 8px 8px 0;
+		color: #fff;
+		font-weight: 600;
+		cursor: pointer;
+	}
+
+	button#clear_sign1 span {
+		transform: rotate(90deg);
+		display: block;
+	}
+
+	.wrapper1 {
+		border: 2px solid #e2e2e2;
+		border-radius: 8px;
+		padding: 5px;
+	}
+</style>
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -221,8 +288,9 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 		<form action="save_camp_report.php" method="post" id="camp_report">
 			<input type="hidden" name="userid" value="<?php echo $USER_ID; ?>">
 			<input type="hidden" name="pid" value="<?php echo $pid; ?>">
-			<input type="hidden" name="rid" value="<?php echo $rid; ?>">
+			<input type="hidden" name="rid" id="rid" value="<?php echo $rid; ?>">
 			<input type="hidden" name="prid" value="<?php echo $prid; ?>">
+			<textarea id="signature1" name="signature1" style="display: none"></textarea>
 
 
 
@@ -504,7 +572,7 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 									</div>
 
 									<div class="col-9">
-										<div class="input-wrapper"><input type="number" value="<?php echo $total_no_ind;?>" class="form-control" name="total_no_of_ind" id="total_no_of_ind" required></div>
+										<div class="input-wrapper"><input type="number" value="<?php echo $total_no_ind; ?>" class="form-control" name="total_no_of_ind" id="total_no_of_ind" required></div>
 									</div>
 
 								</div>
@@ -543,8 +611,8 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 								foreach ($CHECKBOXES as $key => $value) {
 									# code...
 									//echo '<div class="custom-control custom-radio mb-1">';
-									$checked=($camp_organised==$key)?'checked':'';
-									echo '<input type="radio" class="" name="camp_organised" value="' . $key . '" '.$checked.'> ' . $value . '<br>';
+									$checked = ($camp_organised == $key) ? 'checked' : '';
+									echo '<input type="radio" class="" name="camp_organised" value="' . $key . '" ' . $checked . '> ' . $value . '<br>';
 								}
 
 
@@ -576,11 +644,11 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 								<p><b>2) Was this camp well received i.e., attended by good audience?<span style="color:#ff0000">*</span></b></p>
 								<?php
 								foreach ($CHECKBOXES as $key => $value) {
-									$checked=($camp_received==$key)?'checked':'';
-									
+									$checked = ($camp_received == $key) ? 'checked' : '';
+
 									# code...
 									//echo '<div class="custom-control custom-radio mb-1">';
-									echo '<input type="radio" class="" name="camp_received" value="' . $key . '" '.$checked.'> ' . $value . '<br>';
+									echo '<input type="radio" class="" name="camp_received" value="' . $key . '" ' . $checked . '> ' . $value . '<br>';
 								}
 								?>
 
@@ -607,14 +675,14 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 
 
 							<div class="wide-block pt-2 pb-2">
-								<form>
-									<div class="form-group basic">
-										<div class="input-wrapper">
-											<label class="label" for="">HCP Comments/Suggestions (to be completed by HCP)</label>
-											<textarea id="remarks" name="remarks" rows="3" class="form-control"><?php echo $remarks;?></textarea>
-										</div>
+
+								<div class="form-group basic">
+									<div class="input-wrapper">
+										<label class="label" for="">HCP Comments/Suggestions (to be completed by HCP)</label>
+										<textarea id="remarks" name="remarks" rows="3" class="form-control"><?php echo $remarks; ?></textarea>
 									</div>
-								</form>
+								</div>
+
 							</div>
 
 						</div>
@@ -628,6 +696,64 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 				<br>
 
 				<br>
+				<div class="row mlm-150">
+					<div class="col-6">
+
+						SIGNED AND DELIVERED by <b></b>, acting
+						through its Authorised Signatory, Mr. <b>XX</b>, (XX) the within
+						named Party of the First Part.<br>
+						<b>DATE:<?php echo TODAY; ?></b>
+
+					</div>
+					<div class="col-6">
+
+
+						<center>
+
+							<div class="custom-signature-upload" style="<?php echo $sign_edit; ?>">
+								<div class="wrapper">
+									<canvas id="signature-pad"></canvas>
+
+								</div>
+								<div class="clear-btn">
+									<button id="clear_sign"><span> Clear </span></button>
+								</div>
+							</div>
+
+							<div class="custom-signature-upload" style="<?php echo $sign_display; ?>">
+								<div class="wrapper1">
+									<img src="" width="95%" height="95%" alt="Italian Trulli">
+								</div>
+							</div>
+
+						</center>
+					</div>
+				</div>
+
+				<div class="row mt-3" id="hideDiv" style="display:block;">
+					<input type="hidden" id="questionID" name="questionID" value="1">
+					<input type="hidden" name="user_name" id="user_name" value="<?php echo $user_name; ?>">
+
+					<label for="otpmobilenumber" class="col-sm-3 col-form-label"><b>Verify Your Phone Number</b></label>
+					<div class="col-sm-3">
+						<input type="number" class="form-control" id="otpmobilenumber" name="otpmobilenumber" placeholder="" required="">
+
+					</div>
+					<div class="col-sm-3">
+						<button type="button" class="btn btn-primary" onclick="createOTP()">Generate OTP</button>
+					</div>
+				</div>
+
+				<div class="row mt-3" id="enterOtp_div" style="display:block;">
+					<label for="enter_otp" class="col-sm-3 col-form-label"><b>Enter OTP</b></label>
+					<div class="col-sm-3">
+						<input type="number" class="form-control" id="enter_otp" name="enter_otp" placeholder="" required="">
+
+					</div>
+					<div class="col-sm-3">
+						<button type="button" class="btn btn-primary" onclick="validateOTP()">Confirm</button>
+					</div>
+				</div>
 
 
 
@@ -640,13 +766,7 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 							<!-- <div class="col"><button type="button" class="exampleBox btn btn-primary rounded me-1">Save</button>
                     </div> -->
 							<div class="col">
-								<?php
-								if ($mode!='E') { ?>
-								<button type="submit" class="exampleBox btn btn-primary rounded me-1">Submit</button>
-								
-							<?php	}
-
-								?>
+								<button type="submit" style="display: none;" id="submitbutton" class="exampleBox btn btn-primary rounded me-1">Submit</button>
 								<!-- <a href="delivery_service_form_camp.php"><button type="button" class="exampleBox btn btn-primary rounded me-1">Submit</button></a> -->
 							</div>
 							<!-- <div class="col">
@@ -677,7 +797,131 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 	<script src="assets/js/plugins/owl-carousel/owl.carousel.min.js"></script>
 	<!-- Base Js File -->
 	<script src="assets/js/base.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.3.5/signature_pad.min.js" integrity="sha512-kw/nRM/BMR2XGArXnOoxKOO5VBHLdITAW00aG8qK4zBzcLVZ4nzg7/oYCaoiwc8U9zrnsO9UHqpyljJ8+iqYiQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script>
+		var canvas = document.getElementById("signature-pad");
 
+		function resizeCanvas() {
+			var ratio = Math.max(window.devicePixelRatio || 1, 1);
+			canvas.width = canvas.offsetWidth * ratio;
+			canvas.height = canvas.offsetHeight * ratio;
+			canvas.getContext("2d").scale(ratio, ratio);
+
+			// canvas1.width = canvas1.offsetWidth * ratio;
+			// canvas1.height = canvas1.offsetHeight * ratio;
+			// canvas1.getContext("2d").scale(ratio, ratio);
+		}
+		window.onresize = resizeCanvas;
+		resizeCanvas();
+
+		var signaturePad = new SignaturePad(canvas, {
+			backgroundColor: 'rgb(250,250,250)'
+		});
+
+		document.getElementById("clear_sign").addEventListener('click', function() {
+			signaturePad.clear();
+		})
+
+		function validate() {
+			var canvas = document.getElementById("signature-pad");
+			var data1 = canvas.toDataURL('image/png');
+			document.getElementById('signature1').value = data1;
+
+			// var canvas1 = document.getElementById("signature-pad1");
+			// var data2 = canvas1.toDataURL('image/png');
+			// document.getElementById('signature2').value = data2;
+			return false;
+		}
+
+
+		function createOTP() {
+
+			var questionid = $("#questionID").val();
+			var mobileOTPnum = $("#otpmobilenumber").val();
+			var username = $("#user_name").val();
+			var rid = $("#rid").val();
+
+
+
+			if (mobileOTPnum == '' || mobileOTPnum == 0) {
+				//bootbox.dialog({message:'Please Enter Mobile Number', backdrop:false, onEscape:true});
+				alert('Please Enter Mobile Number');
+				//bootbox.dialog({message:'Please Enter Mobile Number', title:'<font style="font-size: 16px;color:red;"><b>Warning:<b></font>', backdrop:false, onEscape:true});			
+			} else {
+				jQuery.ajax({
+					url: '../../index.php?module=Users&action=Authenticate',
+					data: {
+						user_name: '.' + username,
+						user_password: 123456,
+						view_questionnaire: 1,
+						type: 14,
+						question_requestid: rid,
+						naf_request_id: rid,
+						docmobile: '+91' + mobileOTPnum,
+						plannedDoctor: true
+					},
+					success: function(response) {
+						result = JSON.parse(response);
+						//$("#shorturl").val(result.shourtURL);
+						//$("#shortcodeID").val(result.shourtURLId);
+						if (result.status) {
+							alert(result.message);
+							//bootbox.dialog({message:result.message, title:'<font style="font-size: 16px;color:green;"><b>Success:<b></font>', backdrop:false, onEscape:true});
+							//location.reload();
+							$("#enterOtp_div").show();
+						} else {
+							alert(result.message);
+							//bootbox.dialog({message:result.message, title:'<font style="font-size: 16px;color:red;"><b>Warning:<b></font>', backdrop:false, onEscape:true});
+							//$("#btnsubmit").val('Submit');
+							//$("#btnsubmit").prop('disabled', false);
+						}
+
+					}
+				});
+			}
+		}
+
+		function validateOTP() {
+
+			var questionid = $("#questionID").val();
+			var enter_otp = $("#enter_otp").val();
+			var username = $("#user_name").val();
+			var rid = $("#rid").val();
+
+			if (enter_otp == '' || enter_otp == 0) {
+				//bootbox.dialog({message:'Please Enter Mobile Number', backdrop:false, onEscape:true});	
+				alert('Please Enter Mobile Number');
+				//bootbox.dialog({message:'Please Enter Mobile Number', title:'<font style="font-size: 16px;color:red;"><b>Warning:<b></font>', backdrop:false, onEscape:true});			
+			} else {
+
+				jQuery.ajax({
+					url: '../../index.php?module=Users&action=Authenticate',
+					data: {
+						user_name: '.' + username,
+						user_password: 123456,
+						view_questionnaire: 1,
+						type: 15,
+						question_requestid: rid,
+						mobileOTP: enter_otp,
+						plannedDoctor: true
+					},
+					success: function(response) {
+						result = JSON.parse(response);
+
+						if (result.status) {
+							alert(result.message);
+							$("#submitbutton").show();
+							//bootbox.dialog({message:result.message, title:'<font style="font-size: 16px;color:green;"><b>Success:<b></font>', backdrop:false, onEscape:true});										
+						} else {
+							alert(result.message);
+							//bootbox.dialog({message:result.message, title:'<font style="font-size: 16px;color:red;"><b>Warning:Invalid OTP<b></font>', backdrop:false, onEscape:true});											
+						}
+
+					}
+				});
+			}
+		}
+	</script>
 
 </body>
 

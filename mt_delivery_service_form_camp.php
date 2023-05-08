@@ -9,6 +9,7 @@ $TITLE = SITE_NAME . ' | ' . $page_title;
 
 $rid = (isset($_GET['rid'])) ? $_GET['rid'] : '';
 $pid = (isset($_GET['pid'])) ? $_GET['pid'] : '';
+$category = (isset($_GET['category'])) ? $_GET['category'] : '';
 $USER_ID = (isset($_GET['userid'])) ? $_GET['userid'] : '';
 $display_all = (isset($_GET['display_all'])) ? $_GET['display_all'] : '0';
 
@@ -27,7 +28,13 @@ $employee_name = GetXFromYID("select concat(first_name,' ',last_name) from users
 
 $readonly = $disabled = '';
 $employee_id = $type_of_activity = $comment = $mode = $vendor_services = $vendor_name = $vendor_description = $actual_vendor_cost = $naf_travel_flight_cost = $naf_insurance_cost = $naf_flight_cost = $naf_travel_cab_cost = $naf_visa_cost = $naf_stay_hotel_cost = $naf_audio_visual_cost = $naf_meal_snack_cost = $naf_banners_pamphlets_cost = $naf_other_additonal_cost = $MODE = '';
-$Delivery_form_count = GetXFromYID("select count(*) from crm_naf_delivery_form where crm_naf_main_id='$rid' and deleted=0 ");
+$PARENT_ID_NAF = GetXFromYID("select naf_no from crm_naf_main where id='$rid' and deleted=0 ");
+$PARENT_ID = GetXFromYID("select id from crm_naf_main where parent_id='$PARENT_ID_NAF' and deleted=0 ");
+$Delivery_form_count = GetXFromYID("select count(*) from crm_naf_delivery_form where crm_naf_main_id='$PARENT_ID' and deleted=0 ");
+
+
+
+
 if ($Delivery_form_count > 0) {
 	$MODE = 'R';
 	$readonly = 'readonly';
@@ -36,7 +43,7 @@ if ($Delivery_form_count > 0) {
 	$MODE = 'A';
 }
 if ($MODE == 'R' || $MODE == 'E') {
-	$DELIVERY_FORM_DATA = GetDataFromID('crm_naf_delivery_form', 'crm_naf_main_id', $rid, "and deleted=0 ");
+	$DELIVERY_FORM_DATA = GetDataFromID('crm_naf_delivery_form', 'crm_naf_main_id', $PARENT_ID, "and deleted=0 ");
 
 	$naf_delivery_form_id = $DELIVERY_FORM_DATA[0]->id;
 	$type_of_activity = $DELIVERY_FORM_DATA[0]->type_of_activity;
@@ -77,7 +84,10 @@ if ($MODE == 'E') {
 }
 
 $naf_no = GetXFromYID("select naf_no from crm_naf_main where id='$rid'");
-$TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_request_main t1 inner join crm_request_details t2 on t1.id=t2.crm_request_main_id where t1.naf_no='$naf_no' and t1.deleted=0 and t2.deleted=0  and t1.authorise=3 and t1.level=5 ");
+$NAF_IDS = GetXArrFromYID(" select id from crm_naf_main where parent_id='QCAMDTF0162'");
+$TOTAL_HONORIUM_AMT = GetXFromYID("select sum(honorarium_amount) from crm_naf_hcp_details  where naf_main_id in (" . implode(", ", $NAF_IDS) . ") ");
+$pending_with_id=GetXFromYID("select pendingwithid from crm_naf_main where id='$rid' and deleted=0 ");
+
 ?>
 
 
@@ -141,7 +151,7 @@ $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_req
         </div>-->
 
 
-<?php include '_tabscamp.php';?>
+	<?php include '_tabscamp.php'; ?>
 
 	<div id="appCapsule">
 
@@ -434,7 +444,7 @@ $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_req
 
 										<div class="col-9">
 											<div class="input-wrapper">
-												<input type="number" class="form-control" id="total_AMT" readonly>
+												<input type="number" class="form-control" value="<?php echo $TOTAL_HONORIUM_AMT; ?>" id="total_AMT" readonly>
 											</div>
 										</div>
 
@@ -484,15 +494,41 @@ $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(t2.honorarium_amount) from crm_req
 				</div>
 
 
+				<?php
+				if ($MODE == 'R' && $pending_with_id==$USER_ID ) { ?>
+					<div class="section full mt-2">
+						<div class="wide-block pt-2 pb-2 text-center">
+							<!--	<a href="approve.php?rid=<?php echo $rid; ?>&userid=<?php echo $USER_ID; ?>&pid=<?php echo $pid; ?>&mode=A"><button type="button" class="btn btn-success mr-1 mb-1 pd-sr">Approve</button></a>
+							<a href="approve.php?rid=<?php echo $rid; ?>&userid=<?php echo $USER_ID; ?>&pid=<?php echo $pid; ?>&mode=R"><button type="button" class="btn btn-danger mr-1 mb-1 pd-sr">Reject</button></a>
+						 -->
+
+							<a href="<?php echo '_approve_dos_camp.php?userid=' . $USER_ID . '&mode=A&rid=' . $rid; ?>"><button type="button" class="btn btn-success mr-1 mb-1 pd-sr">Approve</button></a>
+
+							<a href="<?php echo '_approve_dos_camp.php?userid=' . $USER_ID . '&mode=R&rid=' . $rid; ?>"><button type="button" class="btn btn-danger mr-1 mb-1 pd-sr">Reject</button></a>
+
+
+
+						</div>
+					</div>
+
+
+				<?php   }
+				?>
+
+
+
 				<div class="section full mt-2">
 					<div class="wide-block pt-2 pb-2">
 
 						<div class="row">
 							<!-- <div class="col"><button type="button" class="exampleBox btn btn-primary rounded me-1">Save</button>
 						</div> -->
-							<div class="col">
-								<button type="submit" class="exampleBox btn btn-primary rounded me-1">Submit</button>
-							</div>
+							
+								<div class="col">
+									<button type="submit" class="exampleBox btn btn-primary rounded me-1">Submit</button>
+								</div>
+
+							
 							<!-- <div class="col">
 							<a href="#"><button type="button" class="exampleBox btn btn-primary rounded me-1">Cancel</button></a>
 						</div> -->
