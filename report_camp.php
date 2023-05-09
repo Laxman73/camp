@@ -419,7 +419,7 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<input type="date" class="form-control" name="camp_duration" value="<?php echo $camp_duration; ?>" id="camp_duration" placeholder="" required>
+											<input type="text" class="form-control" name="camp_duration" value="<?php echo $camp_duration; ?>" id="camp_duration" placeholder="" required>
 										</div>
 									</div>
 

@@ -96,7 +96,7 @@ if ($mode == 'A') {
 	$naf_activity_name = '';
 	$naf_city = '';
 	$naf_proposed_venue = '';
-	$naf_estimate_no_participents = '';
+	$naf_estimate_no_participents = '1';
 	$naf_start_date = '';
 	$naf_end_date = '';
 	$naf_objective_rational = '';
@@ -833,7 +833,7 @@ $_r = sql_query($_q, "");
 
 									<br>
 									<label for="amount">Enter amount:</label>
-									<input type="number" class="form-control" id="advance_payment" name="advance_payment">
+									<input type="number" value="<?php echo $advance_payment;?>" class="form-control" id="advance_payment" name="advance_payment">
 								</div>
 
 
@@ -939,6 +939,7 @@ $_r = sql_query($_q, "");
 										<th>Nature of Camps</th>
 										<th>Proposed Date</th>
 										<th>Venue</th>
+										<th>HCP</th>
 										<th>Estimated Cost, if any</th>
 										<th>Diagnostic labs collaboration</th>
 									</tr>
@@ -1276,7 +1277,7 @@ $_r = sql_query($_q, "");
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title">Add Request Letter</h5>
+						<h5 class="modal-title">Camp Details</h5>
 					</div>
 					<div class="modal-body">
 						<div class="wide-block pt-2 pb-2">
@@ -1469,15 +1470,21 @@ $_r = sql_query($_q, "");
 			$('#estimated_cost').val('');
 			$('#diagnostic_lab').val('');
 
-			for (var i = 0; i < addeddocarray.length; i++) {
-				if (addeddocarray[i].honorarium_amount + estimated_cost > total) {
-					alert("The estimate amount should be less than total amount");
-					return false;
-					ret = false;
-				}
-			}
+			//for (var i = 0; i < addeddocarray.length; i++) {
+			var honorariumAmount = parseFloat(addeddocarray[0].honorarium_amount);
+			var estimatedCost = parseFloat(estimated_cost);
 
-			if (added_request_letter.length == 0 && ret ) {
+			// Perform addition
+			var result = honorariumAmount + estimatedCost;
+			//console.log(result);
+			if (result > total) {
+				alert("The estimate amount should be less than total amount");
+				return false;
+				ret = false;
+			}
+			//}
+
+			if (added_request_letter.length == 0 && ret) {
 				added_request_letter.push(saveDataObj);
 				closeRequestletter();
 				selected_request_letter();
@@ -1509,6 +1516,7 @@ $_r = sql_query($_q, "");
 			var honorarium = document.getElementById("Honorarium").value;
 			var total = document.getElementById("total").value;
 			console.log(total);
+			console.log(honorarium);
 			var role_of_hcp = document.getElementById("role_of_hcp").value;
 
 

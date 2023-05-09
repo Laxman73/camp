@@ -51,47 +51,50 @@ if ($PROFILE_ID == 6 || $PROFILE_ID == 7) {
 
 	//if (($NAF_level==3 && $NAF_isAuthorise==3) || ($NAF_level >1 && $NAF_isAuthorise == 2)) { // Sujjo 02042023
 	if (($NAF_level == 4 && $NAF_isAuthorise == 2) || ($NAF_level >= 4)) {
-
-		$_qr = sql_query("select level,authorise from crm_request_main where id = $pid ");
-		list($level, $isAuthorise) = sql_fetch_row($_qr);
-
-		if ($NAF_level >= 4 && $NAF_isAuthorise != 4) {
-			array_push($user_tabs, 3);
-		}
-
-		$is_request_letter = GetXFromYID("select count(*) from crm_request_camp_letter where crm_request_main_id='$pid'");
-		// checking if request letter form is submitted
-		if ($is_request_letter > 0) {
-			array_push($user_tabs, 4); //remove 4
-		}
-
-		$hcp_info = GetXFromYID("select id from crm_hcp_information where crm_request_main_id = $pid and deleted=0 ");
-
-		if (!empty($hcp_info)) {
-			//hcp info is submitted
-			array_push($user_tabs, 5);
-			$hcp_agreement = GetXFromYID("select count(*) from crm_hcp_agreement where crm_hcp_information_id = $hcp_info and deleted=0 ");
-			// checking if hcp agreement is submitted		
-			if ($hcp_agreement > 0) {
-				array_push($user_tabs, 6);
+		if (!empty($pid)) {
+			
+			$_qr = sql_query("select level,authorise from crm_request_main where id = $pid ");
+			list($level, $isAuthorise) = sql_fetch_row($_qr);
+	
+			if ($NAF_level >= 4 && $NAF_isAuthorise != 4) {
+				array_push($user_tabs, 3);
+			}
+	
+			$is_request_letter = GetXFromYID("select count(*) from crm_request_camp_letter where crm_request_main_id='$pid'");
+			// checking if request letter form is submitted
+			if ($is_request_letter > 0) {
+				array_push($user_tabs, 4); //remove 4
+			}
+	
+			$hcp_info = GetXFromYID("select id from crm_hcp_information where crm_request_main_id = $pid and deleted=0 ");
+	
+			if (!empty($hcp_info)) {
+				//hcp info is submitted
+				array_push($user_tabs, 5);
+				$hcp_agreement = GetXFromYID("select count(*) from crm_hcp_agreement where crm_hcp_information_id = $hcp_info and deleted=0 ");
+				// checking if hcp agreement is submitted		
+				if ($hcp_agreement > 0) {
+					array_push($user_tabs, 6);
+				}
+			}
+	
+	
+	
+			// 	//checking if documents are uploaded
+			$uploaded = GetXFromYID("select count(*) from crm_naf_document_upload where crm_request_main_id = $pid and deleted = 0 ");
+	
+			if ($uploaded > 0) {
+				// 		// if (($level == 4 && $isAuthorise == 2) || ($level > 4)) { //Sujjo 020420203
+				array_push($user_tabs,8);
+			}
+	
+	
+			$is_camp_report_submitted=GetXFromYID("select count(*) from crm_naf_camp_report where crm_request_id=$pid ");
+			if ($is_camp_report_submitted>0) {
+				array_push($user_tabs,9);
 			}
 		}
 
-
-
-		// 	//checking if documents are uploaded
-		$uploaded = GetXFromYID("select count(*) from crm_naf_document_upload where crm_request_main_id = $pid and deleted = 0 ");
-
-		if ($uploaded > 0) {
-			// 		// if (($level == 4 && $isAuthorise == 2) || ($level > 4)) { //Sujjo 020420203
-			array_push($user_tabs,8);
-		}
-
-
-		$is_camp_report_submitted=GetXFromYID("select count(*) from crm_naf_camp_report where crm_request_id=$pid ");
-		if ($is_camp_report_submitted>0) {
-			array_push($user_tabs,9);
-		}
 
 
 
@@ -112,6 +115,8 @@ if ($PROFILE_ID == 15) {
 	//if (($NAF_level==3 && $NAF_isAuthorise==3) || ($NAF_level >1 && $NAF_isAuthorise == 2)) { // Sujjo 02042023
 	if (($NAF_level == 4 && $NAF_isAuthorise == 2) || ($NAF_level >= 4)) {
 
+		if (!empty($pid)) {
+
 		$_qr = sql_query("select level,authorise from crm_request_main where id = $pid ");
 		list($level, $isAuthorise) = sql_fetch_row($_qr);
 
@@ -155,7 +160,7 @@ if ($PROFILE_ID == 15) {
 
 
 
-
+	}
 
 	}//end of main loop
 	//}

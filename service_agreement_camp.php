@@ -395,14 +395,14 @@ $get_amount= AmountInWords($Honorium);
                                     <ul class="agg-text">
 
                                         This <b>DISEASE AWARENESS / DIAGNOSTIC CAMP AGREEMENT (‘Agreement’)</b>shall become
-                                        effective as on the date of last signature of the parties <b><?php echo FormatDate(TODAY, 'H'); ?></b> by and between:
+                                        effective as on the date of last signature of the parties <b><?php echo FormatDate(TODAY, 'H'); ?></b> by and between:<?php echo date('Y-m-d', strtotime(date('Y-m-d'). ' + 90 days')); ?>
                                         <br><br>
                                         <b>Micro Labs Limited</b>, a company existing under the laws of India, having its registered office at 31,
                                         Race Course Road, Bangalore - 560 001 (hereinafter referred to as <b>‘Company’</b> and/or <b>‘Micro labs’</b>)
                                         of the <b>ONE PART</b><br><br>
                                         <b>AND</b><br><br>
 
-                                        <b>Dr.</b><?php echo $firstname . ' ' . $lastname; ?>, a healthcare professional, an Indian citizen having his/her address at <?php echo $hcp_address; ?>, bearing PAN <?php echo $hcp_pan; ?> (hereinafter referred to as the <b>‘Recipient-HCP’)</b> of the <b>OTHER PART</b>.
+                                        <b>Dr.</b><?php echo $hcp_name; ?>, a healthcare professional, an Indian citizen having his/her address at <?php echo $hcp_address; ?>, bearing PAN <?php echo $hcp_pan; ?> (hereinafter referred to as the <b>‘Recipient-HCP’)</b> of the <b>OTHER PART</b>.
                                         <br><br>
                                         <i>The Company and the Recipient-HCP are hereinafter individually referred as ‘Party’ and collectively as ‘Parties’.</i>
                                         <br><br>
@@ -411,11 +411,11 @@ $get_amount= AmountInWords($Honorium);
                                         The purpose of this written agreement is to sign off further to an oral agreement between the Parties – for the Recipient-HCP to support in organizing/conducting a Micro Labs initiated awareness, counselling and/or diagnostic camp (hereinafter referred to as <b>‘camp’</b>), as titled hereinunder:
                                         <br>
                                         <br>
-                                        <b>TITLE OF THE CAMP:</b><br>
-                                        <b>DATE:</b><br>
-                                        <b>VENUE:</b><br>
+                                        <b>TITLE OF THE CAMP: <input type="text" name="title" value="<?php echo $topic;?>" id="title"> </b><br>
+                                        <b>DATE: <input type="date" name="mdate" id="mdate" value="<?php echo $meeting_date;?>"></b><br>
+                                        <b>VENUE: <input type="text" name="venue" id="venue" value="<?php echo $venue;?>"></b><br>
                                         <br>
-                                        As compensation of the Recipient-HCP’s time and efforts devoted in conducting the above-mentioned camp and/or sharing his/her advice with patients in the above-mentioned camp, the Parties have mutually agreed to an amount of INR <?php echo $Honorium; ?>.
+                                        As compensation of the Recipient-HCP’s time and efforts devoted in conducting the above-mentioned camp and/or sharing his/her advice with patients in the above-mentioned camp, the Parties have mutually agreed to an amount of INR <?php echo $Honorium;?></b>(Rupees <b><?php echo $get_amount;?></b>).
                                         <br><br>
                                         <b>MUTUAL INTEREST OF THE PARTIES</b>: This Camp is of mutual interest to the parties because it:<br>
                                         • creates awareness to general public or provide counsel on various disease, treatment options, mental/physical wellbeing, dietary, etc. and/or <br>
@@ -444,7 +444,7 @@ $get_amount= AmountInWords($Honorium);
 
                                         • <b>Personal Data:</b> Recipient-HCP shall ensure there is no transfer of patient’s personal identifiable information such as name, contact number or email address, etc. to Micro Labs.<br><br>
 
-                                        • <b>Term & Termination</b> - This Agreement shall be effective until 31 March 20XX and can be terminated by either Party by giving a prior written notice of one (1) week to the other Party.<br><br>
+                                        • <b>Term & Termination</b> - This Agreement shall be effective until <b><?php echo date('d-m-Y', strtotime($sign_date. ' + 90 days')); ?></b> and can be terminated by either Party by giving a prior written notice of one (1) week to the other Party.<br><br>
 
                                         • <b>Representations and Warranties</b> - The Recipient-HCP hereby confirms that (a) the services provided by the him/her, and the compensation received by him/her under this Agreement follow the requirements of the Recipient-HCP’s employer or any Central or State government health care authority/body and (b) the performance of the Recipient-HCP’s obligation under this Agreement does not conflict with the performance of his/her other obligations under any other agreement.<br><br>
 
@@ -504,7 +504,7 @@ $get_amount= AmountInWords($Honorium);
                             <div class="row mlm-150">
                                 <div class="col-6">
 
-                                    <span>Signed and Delivered by <b>Recipient-HCP</b>, the within named Party of the Second Part.
+                                    <span>Signed and Delivered by <b><?php echo $hcp_name;?></b>, the within named Party of the Second Part.
                                         Part.<br>
                                         <b>DATE:</b><?php echo $sign_date; ?>
 
@@ -560,12 +560,20 @@ $get_amount= AmountInWords($Honorium);
                             <input type="hidden" name="shortcodemode" id="shortcodemode" value="<?php echo $shortcodemode; ?>">
                             <input type="hidden" name="shortcodeID" id="shortcodeID" value="0">
                             <input type="hidden" name="user_name" id="user_name" value="<?php echo $user_name; ?>">
+                            <input type="hidden" name="Atitle" id="Atitle">
+                            <input type="hidden" name="Adate" id="Adate">
+                            <input type="hidden" name="Avenue" id="Avenue">
 
                             <div class="row">
                                 <!-- <div class="col"><button type="button" class="exampleBox btn btn-primary rounded me-1">Save</button>
 								</div> -->
                                 <div class="col">
-                                    <button type="submit" id="submitbutton" class="exampleBox btn btn-primary rounded me-1" onclick="validate();">Submit</button>
+                                    <?php
+                                    if ($READ_MODE!='E') { ?>
+                                        <button type="submit" id="submitbutton" class="exampleBox btn btn-primary rounded me-1" onclick="validate();">Submit</button>
+                                 <?php   }
+
+                                    ?>
                                 </div>
                                 <!-- <div class="col">
 									<a href="#"><button type="button" class="exampleBox btn btn-primary rounded me-1">Cancel</button></a>
@@ -632,6 +640,9 @@ $get_amount= AmountInWords($Honorium);
             })
 
             function validate() {
+                var title=$('#title').val();
+                var mdate=$('#mdate').val();
+                var venue=$('#venue').val();
                 var canvas = document.getElementById("signature-pad");
                 var data1 = canvas.toDataURL('image/png');
                 document.getElementById('signature1').value = data1;
@@ -639,6 +650,10 @@ $get_amount= AmountInWords($Honorium);
                 var canvas1 = document.getElementById("signature-pad1");
                 var data2 = canvas1.toDataURL('image/png');
                 document.getElementById('signature2').value = data2;
+
+                $('#Atitle').val(title);
+                $('#Adate').val(mdate);
+                $('#Avenue').val(venue);
                 return false;
             }
 
