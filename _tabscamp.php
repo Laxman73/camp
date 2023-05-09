@@ -104,55 +104,61 @@ if ($PROFILE_ID == 6 || $PROFILE_ID == 7) {
 //State Head	24676
 if ($PROFILE_ID == 15) {
 
+	$user_tabs = array(2);
+
 	$_Qnafmain = sql_query("select level,authorise from crm_naf_main where id='$rid' ");
 	list($NAF_level, $NAF_isAuthorise) = sql_fetch_row($_Qnafmain);
 
-	//if ($NAF_level>=2) { //Sujjo 02042023
-	if (($NAF_level == 4 && $NAF_isAuthorise == 2) || ($NAF_level > 4)) {
-		if (!empty($pid)) {
+	//if (($NAF_level==3 && $NAF_isAuthorise==3) || ($NAF_level >1 && $NAF_isAuthorise == 2)) { // Sujjo 02042023
+	if (($NAF_level == 4 && $NAF_isAuthorise == 2) || ($NAF_level >= 4)) {
 
-			$user_tabs = array(1);
+		$_qr = sql_query("select level,authorise from crm_request_main where id = $pid ");
+		list($level, $isAuthorise) = sql_fetch_row($_qr);
 
-			$_qr = sql_query("select level,authorise from crm_request_main where id = $pid");
-			list($level, $isAuthorise) = sql_fetch_row($_qr);
+		if ($NAF_level >= 4 && $NAF_isAuthorise != 4) {
+			array_push($user_tabs, 3);
+		}
 
+		$is_request_letter = GetXFromYID("select count(*) from crm_request_camp_letter where crm_request_main_id='$pid'");
+		// checking if request letter form is submitted
+		if ($is_request_letter > 0) {
+			array_push($user_tabs, 4); //remove 4
+		}
 
-			if ($level >= 3) {
-				array_push($user_tabs, 2);
-			}
+		$hcp_info = GetXFromYID("select id from crm_hcp_information where crm_request_main_id = $pid and deleted=0 ");
 
-			// checking if hcp info form is submitted
-			$hcp_info = GetXFromYID("select id from crm_hcp_information where crm_request_main_id = $pid");
-			if (!empty($hcp_info)) {
-				array_push($user_tabs, 3);
-			}
-
-			// checking if hcp agreement is submitted			
-			if (!empty($hcp_info)) {
-				$hcp_agreement = GetXFromYID("select count(*) from crm_hcp_agreement where crm_hcp_information_id = $hcp_info");
-				if (!empty($hcp_agreement)) {
-					array_push($user_tabs, 4);
-				}
-			}
-
-			// checking if questioneer is submitted
-			if (!empty($pid)) {
-				$ques_submitted = GetXFromYID("select count(*) from crm_questionnaire where crm_request_main_id = $pid");
-				if (!empty($ques_submitted)) {
-					array_push($user_tabs, 5);
-				}
-			}
-
-			//checking if documents are uploaded
-			$uploaded = GetXFromYID("select count(*) from crm_naf_document_upload where crm_request_main_id = $pid and deleted = 0");
-
-			if ($uploaded > 0) {
-				if ($level == 5) {
-					array_push($user_tabs, 6);
-				}
+		if (!empty($hcp_info)) {
+			//hcp info is submitted
+			array_push($user_tabs, 5);
+			$hcp_agreement = GetXFromYID("select count(*) from crm_hcp_agreement where crm_hcp_information_id = $hcp_info and deleted=0 ");
+			// checking if hcp agreement is submitted		
+			if ($hcp_agreement > 0) {
+				array_push($user_tabs, 6);
 			}
 		}
-	}
+
+
+
+		// 	//checking if documents are uploaded
+		$uploaded = GetXFromYID("select count(*) from crm_naf_document_upload where crm_request_main_id = $pid and deleted = 0 ");
+
+		if ($uploaded > 0) {
+			// 		// if (($level == 4 && $isAuthorise == 2) || ($level > 4)) { //Sujjo 020420203
+			array_push($user_tabs,8);
+		}
+
+
+		$is_camp_report_submitted=GetXFromYID("select count(*) from crm_naf_camp_report where crm_request_id=$pid ");
+		if ($is_camp_report_submitted>0) {
+			array_push($user_tabs,9);
+		}
+
+
+
+
+
+	}//end of main loop
+	//}
 }
 
 //Marketing Head 
