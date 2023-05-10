@@ -52,13 +52,13 @@ if ($PROFILE_ID == 6 || $PROFILE_ID == 7) {
 	//if (($NAF_level==3 && $NAF_isAuthorise==3) || ($NAF_level >1 && $NAF_isAuthorise == 2)) { // Sujjo 02042023
 	if (($NAF_level == 4 && $NAF_isAuthorise == 2) || ($NAF_level >= 4)) {
 		if (!empty($pid)) {
-			if ($NAF_level >= 4 && $NAF_isAuthorise != 4) {
-				array_push($user_tabs, 3);
-			}
 			
 			$_qr = sql_query("select level,authorise from crm_request_main where id = $pid ");
 			list($level, $isAuthorise) = sql_fetch_row($_qr);
 	
+			if ($NAF_level >= 4 && $NAF_isAuthorise != 4) {
+				array_push($user_tabs, 3);
+			}
 	
 			$is_request_letter = GetXFromYID("select count(*) from crm_request_camp_letter where crm_request_main_id='$pid'");
 			// checking if request letter form is submitted
@@ -104,9 +104,9 @@ if ($PROFILE_ID == 6 || $PROFILE_ID == 7) {
 	//}
 }
 
-//State Head	24676   \\\\\ Compliance Head 	324
+//State Head	24676
 if ($PROFILE_ID == 15) {
-	
+
 	$user_tabs = array(2);
 
 	$_Qnafmain = sql_query("select level,authorise from crm_naf_main where id='$rid' ");
@@ -169,7 +169,15 @@ if ($PROFILE_ID == 15) {
 //Marketing Head 
 if ($PROFILE_ID == 22) {
 	$user_tabs = array(1);
+
+	//echo "$no_of_participants /  $NUm_of_PMAraised"; 
+	//exit;
+
 	if (!empty($rid)) {
+		// $naf_no = GetXFromYID("select naf_no from crm_naf_main where id='$rid'");
+		// $no_of_participants=GetXFromYID("select naf_estimate_no_participents from crm_naf_main where id=$rid ");
+		// $NUm_of_PMAraised = GetXFromYID("select count(*) from crm_request_main t1 inner join crm_request_details t2 on t1.id=t2.crm_request_main_id where  t1.naf_no='$naf_no' and (t1.level=5   and t1.authorise=3 )"); 
+		// if ($no_of_participants==$NUm_of_PMAraised) {
 		$level = GetXFromYID("select level from crm_naf_main where id='$rid' and deleted=0 ");
 		$Authorise = GetXFromYID("select authorise from crm_naf_main where id='$rid' and deleted=0 ");
 		$Delivery_form_count = GetXFromYID("select count(*) from crm_naf_delivery_form where crm_naf_main_id='$rid' and deleted=0 ");
@@ -177,36 +185,42 @@ if ($PROFILE_ID == 22) {
 		if (($level == 4 && $Authorise != 4) || ($level > 3)) { // Darshan 20230608
 			array_push($user_tabs, 10);
 		}
-		
+		// if ($Delivery_form_count > 0) {
+		// 	array_push($user_tabs, 8);
+		// }
+
+		//}
 	}
 }
 
 //BU Team 	124621
 if ($PROFILE_ID == 27) {
-	$user_tabs = array(1);
-	if (!empty($rid)) {
-		$level = GetXFromYID("select level from crm_naf_main where id='$rid' and deleted=0 ");
-		$Authorise = GetXFromYID("select authorise from crm_naf_main where id='$rid' and deleted=0 ");
-		$Delivery_form_count = GetXFromYID("select count(*) from crm_naf_delivery_form where crm_naf_main_id='$rid' and deleted=0 ");
 
-		if (($level == 4 && $Authorise != 4) || ($level > 3)) { // Darshan 20230608
-			array_push($user_tabs, 10);
-		}
-		
+	$user_tabs = array(1);
+
+	$level = GetXFromYID("select level from crm_naf_main where id='$rid' ");
+	$Authorise = GetXFromYID("select authorise from crm_naf_main where id='$rid' ");
+	$Delivery_form_count = GetXFromYID("select count(*) from crm_naf_delivery_form where crm_naf_main_id='$rid' and deleted=0 ");
+
+	if ($level >= 5) { // Sujjo 02042023
+		array_push($user_tabs, 7);
+	}
+	if ($Delivery_form_count > 0) {
+		array_push($user_tabs, 8);
 	}
 }
 
 //Compliance Head 	324
-// if ($PROFILE_ID == 15) {
+if ($PROFILE_ID == 15) {
 
-// 	$level = GetXFromYID("select level from crm_naf_main where id='$rid' ");
-// 	$Authorise = GetXFromYID("select authorise from crm_naf_main where id='$rid' ");
+	$level = GetXFromYID("select level from crm_naf_main where id='$rid' ");
+	$Authorise = GetXFromYID("select authorise from crm_naf_main where id='$rid' ");
 
-// 	if (($level >= 6) && ($Authorise != 4)) {	//Sujjo 02042023
-// 		$user_tabs = array(1);
-// 		array_push($user_tabs, 7, 8);
-// 	}
-// }
+	if (($level >= 6) && ($Authorise != 4)) {	//Sujjo 02042023
+		$user_tabs = array(1);
+		array_push($user_tabs, 7, 8);
+	}
+}
 
 //Medical Head
 if ($PROFILE_ID == 11) {

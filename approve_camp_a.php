@@ -23,6 +23,15 @@ if (empty($rid) || (!empty($rid) && !is_numeric($rid))) {
 }
 
 
+$display_other_textbox_style = 'display:none';
+$Other_textbox = '';
+
+$o_product_id = GetXFromYID("select product_id from crm_naf_product_details Where naf_request_id=$rid ");
+if ($o_product_id == 0) {
+    $display_other_textbox_style = '';
+    $Other_textbox = GetXFromYID("select  naf_product_therapy_others from crm_naf_product_details Where naf_request_id=$rid ");
+}
+
 $ADVANCE_PAYMENT_ARRAY = array('Yes' => 'Yes', 'No' => 'NO');
 
 // getting role and profile id of user
@@ -246,7 +255,7 @@ $REQUEST_LETTER = GetDataFromID('crm_naf_camp_letter', 'crm_naf_hcp_details_id',
                                             </select>
                                         </div>
                                         <br>
-                                        <input type="text" class="form-control" id="others" size="70" value="<?php echo $naf_product_therapy_others; ?>" placeholder="Enter product here " name="others" style="<?php $product_display_style; ?>" <?php echo $readonly; ?>>
+                                        <input type="text" class="form-control" id="others" size="70" value="<?php echo $naf_product_therapy_others; ?>" placeholder="Enter product here " name="others" style="<?php echo  $display_other_textbox_style; ?>" <?php echo $readonly; ?>>
                                     </div>
                                 </div>
 
@@ -708,11 +717,9 @@ $REQUEST_LETTER = GetDataFromID('crm_naf_camp_letter', 'crm_naf_hcp_details_id',
                                     <label for="file">Upload file:</label>
                                     <?php if (!empty($doc_upload_path)) {
                                         echo '<a href="' . $doc_upload_path . '" > view file</a></div>';
-
-
                                     } ?>
 
-                                  
+
                                     <br>
                                     <label for="amount">Enter amount:</label>
                                     <input type="number" class="form-control" value="<?php echo $advance_payment; ?>" id="advance_payment" name="advance_payment" readonly>
@@ -763,7 +770,7 @@ $REQUEST_LETTER = GetDataFromID('crm_naf_camp_letter', 'crm_naf_hcp_details_id',
                                             $k = $i + 1;
                                             $hcp_id = $HCP_DATA[$i]->hcp_id;
                                             $masterid = GetXFromYID("select masterid from contactdetails where contactid='$hcp_id' ");
-                                            $hcp_name = GetXFromYID("SELECT CONCAT(firstname, ' ', lastname) AS full_name FROM contactdetails where contactid='$hcp_id' ");
+                                            $hcp_name = GetXFromYID("SELECT CONCAT(firstname, ' ', lastname) AS full_name FROM contactmaster where id='$hcp_id' ");
                                             $hcp_address = $HCP_DATA[$i]->hcp_address;
                                             $hcp_pan = $HCP_DATA[$i]->hcp_pan;
                                             $hcp_qualification = $HCP_DATA[$i]->hcp_qualification;
@@ -817,6 +824,7 @@ $REQUEST_LETTER = GetDataFromID('crm_naf_camp_letter', 'crm_naf_hcp_details_id',
                                         <th>Nature of Camps</th>
                                         <th>Proposed Date</th>
                                         <th>Venue</th>
+                                        <th>HCP</th>
                                         <th>Estimated Cost, if any</th>
                                         <th>Diagnostic labs collaboration</th>
                                     </tr>
@@ -826,8 +834,11 @@ $REQUEST_LETTER = GetDataFromID('crm_naf_camp_letter', 'crm_naf_hcp_details_id',
                                     if (!empty($REQUEST_LETTER)) {
                                         for ($i = 0; $i < count($REQUEST_LETTER); $i++) {
                                             $k = $i + 1;
+                                            $hcp_id = $HCP_DATA[$i]->hcp_id;
+											$hcp_name = GetXFromYID("SELECT CONCAT(firstname, ' ', lastname) AS full_name FROM contactmaster where id='$hcp_id' ");
                                             $nature_of_camp = $REQUEST_LETTER[$i]->nature_of_camp;
                                             $proposed_camp_date = $REQUEST_LETTER[$i]->proposed_camp_date;
+                                            
                                             $proposed_camp_location = $REQUEST_LETTER[$i]->proposed_camp_location;
                                             $estimated_cost = $REQUEST_LETTER[$i]->estimated_cost;
                                             $diagnostic_lab = $REQUEST_LETTER[$i]->diagnostic_lab; ?>
@@ -837,6 +848,7 @@ $REQUEST_LETTER = GetDataFromID('crm_naf_camp_letter', 'crm_naf_hcp_details_id',
                                                 <td><?php echo $nature_of_camp; ?></td>
                                                 <td><?php echo $proposed_camp_date; ?></td>
                                                 <td><?php echo $proposed_camp_location; ?></td>
+                                                <td><?php echo $hcp_name; ?></td>
                                                 <td><?php echo $estimated_cost; ?></td>
                                                 <td><?php echo $diagnostic_lab; ?></td>
                                             </tr>

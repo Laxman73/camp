@@ -31,6 +31,7 @@ $camp_organised = (isset($_POST['camp_organised'])) ? db_input($_POST['camp_orga
 $camp_received = (isset($_POST['camp_received'])) ? db_input($_POST['camp_received']) : '';
 $remarks = (isset($_POST['remarks'])) ? db_input($_POST['remarks']) : '';
 $total_no_of_ind = (isset($_POST['total_no_of_ind'])) ? db_input($_POST['total_no_of_ind']) : '';
+$registration_number = (isset($_POST['registration_number'])) ? db_input($_POST['registration_number']) : '';
 
 $folderPath = "upload/";
 	// Upload Signature 
@@ -56,7 +57,7 @@ $pdo->prepare("update crm_request_main set e_sign_doctor=?,e_sign_cheque_date=? 
 
 
 $ID=NextID('pid','crm_naf_camp_report');
-$pdo->prepare("insert crm_naf_camp_report values(?,?,?,?,?,?,?,?,?,?)")->execute(array($ID,$pid,$camp_objective,$camp_duration,$type_of_diagnostic,$diagnostic_charges,$total_no_of_ind,$camp_organised,$camp_received,$remarks));
+$pdo->prepare("insert crm_naf_camp_report values(?,?,?,?,?,?,?,?,?,?,?)")->execute(array($ID,$pid,$camp_objective,$camp_duration,$type_of_diagnostic,$diagnostic_charges,$total_no_of_ind,$camp_organised,$camp_received,$registration_number,$remarks));
 
 header('location:delivery_service_form_camp.php?rid='.$rid.'&userid='.$USER_ID.'&pid='.$pid);
 // echo 'success';

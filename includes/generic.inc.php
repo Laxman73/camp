@@ -4568,6 +4568,8 @@ function SendBookindDetailstoHotelMail($booking_id, $userID)
 	return $str;
 }
 
+
+
 // function GetParentIDS($rid,$category){
 // $parentid=GetXFromYID("select ")
 // }

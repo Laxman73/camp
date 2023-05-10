@@ -70,6 +70,9 @@ if (!empty($User_division) && (isset($User_division))) {
 }
 
 
+$display_other_textbox_style = 'display:none';
+$Other_textbox = '';
+
 $SPECILITY_ARR = GetXArrFromYID("select specialityid as id,specialityname as name from speciality where  in_use=0 AND fyear='$curr_fyear'   " . $cond, '3');
 
 $PRODUCTS_ARR = GetXArrFromYID("select productbrandtypeid as id ,productbrandtype as name from productbrandtype where presence=1 " . $cond . " order by productbrandtype ASC", '3');
@@ -171,6 +174,9 @@ if ($mode == 'A') {
 	$status = db_output2($DATA[0]->status);
 	$advance_payment = db_output2($DATA[0]->advance_payment);
 	$advance_payment_type = db_output2($DATA[0]->advance_payment_type);
+	if ($advance_payment_type=='Yes') {
+		$display_style='';
+	}
 	$productID = GetXFromYID("select product_id from crm_naf_product_details where naf_request_id='$rid' ");
 
 	$curr_dt = date('Y-m-d', strtotime($submitted_on));
@@ -234,6 +240,12 @@ if ($mode == 'A') {
 	$hcp_details_ID = GetXFromYID("select id from crm_naf_hcp_details where naf_main_id='$rid' and deleted=0 ");
 
 	$REQUEST_LETTER = GetDataFromID('crm_naf_camp_letter', 'crm_naf_hcp_details_id', $hcp_details_ID);
+
+	$o_product_id = GetXFromYID("select product_id from crm_naf_product_details Where naf_request_id=$rid ");
+if ($o_product_id == 0) {
+    $display_other_textbox_style = '';
+    $Other_textbox = GetXFromYID("select  naf_product_therapy_others from crm_naf_product_details Where naf_request_id=$rid ");
+}
 
 
 	//DFA($S_ARRA);
@@ -336,13 +348,13 @@ $_r = sql_query($_q, "");
 												}
 												$k = 0;
 												$selected =    ($productID == $k) ? 'selected' : '';
-												echo '<option value="' . $k . '" > Others </option>';
+												echo '<option value="' . $k . '" '.$selected.'> Others </option>';
 
 												?>
 											</select>
 										</div>
 										<br>
-										<input type="text" class="form-control" id="others" size="70" value="" placeholder="Enter product here " name="others" style="display: none;" <?php echo $readonly; ?>>
+										<input type="text" class="form-control" id="others" size="70" value="<?php echo $Other_textbox; ?>" placeholder="Enter product here " name="others" style="<?php echo  $display_other_textbox_style; ?>" <?php echo $readonly; ?>>
 									</div>
 								</div>
 
@@ -791,7 +803,7 @@ $_r = sql_query($_q, "");
 								<div class="row">
 
 									<div class="col-3">
-										<b>Is this an Advance Payment? If yes,please mention the advance amount:</b>
+										<b>Is this an Advance Payment? If yes,please mention the advance amount:<span style="color:#ff0000">*</span></b>
 									</div>
 
 									<div class="col-9">
@@ -799,14 +811,24 @@ $_r = sql_query($_q, "");
 											<?php
 
 											if ($mode == 'E') { ?>
-												<div id="advance_SRC"><img src="<?php echo $doc_upload_path; ?>" alt="PAN Image" style="width:30%;height:auto;"></div>
+												<select class="form-control custom-select" name="advance_payment_type" id="dropdown" required="">
+													<option selected="" disabled="" value="">Choose...</option>
+													<?php
+													foreach ($ADVANCE_PAYMENT_ARRAY as $key => $value) {
+														$selected = ($advance_payment_type == $key) ? 'selected' : '';
+														echo '<option value="' . $key . '" ' . $selected . ' >' . $value . '</option>';
+													}
+													?>
+												</select>
+												
 
 											<?php	} elseif ($mode == 'A') { ?>
 												<select class="form-control custom-select" name="advance_payment_type" id="dropdown" required="">
 													<option selected="" disabled="" value="">Choose...</option>
 													<?php
 													foreach ($ADVANCE_PAYMENT_ARRAY as $key => $value) {
-														echo '<option value="' . $key . '" >' . $value . '</option>';
+														$selected = ($advance_payment_type == $key) ? 'selected' : '';
+														echo '<option value="' . $key . '" ' . $selected . ' >' . $value . '</option>';
 													}
 													?>
 												</select>
@@ -820,13 +842,13 @@ $_r = sql_query($_q, "");
 								</div>
 
 
-								<div id="form" style="display: none;">
+								<div id="form" style="<?php echo $display_style;?>">
 									<label for="file">Upload file:</label>
 									<?php
 									if ($mode == 'A') {
 										echo '<input type="file" id="advance_file" name="advance_file">';
-									} elseif ($mode == 'E') {
-										echo '<a href="' . $doc_upload_path . '" > view file</a></div>';
+									} elseif ($mode == 'E' && $advance_payment_type=='Yes') {
+										echo '<a href="' . $doc_upload_path . '" > view file</a>';
 									}
 
 									?>
@@ -885,7 +907,7 @@ $_r = sql_query($_q, "");
 											$k = $i + 1;
 											$hcp_id = $HCP_DATA[$i]->hcp_id;
 											$masterid = GetXFromYID("select masterid from contactdetails where contactid='$hcp_id' ");
-											$hcp_name = GetXFromYID("SELECT CONCAT(firstname, ' ', lastname) AS full_name FROM contactdetails where contactid='$hcp_id' ");
+											$hcp_name = GetXFromYID("SELECT CONCAT(firstname, ' ', lastname) AS full_name FROM contactmaster where id='$hcp_id' ");
 											$hcp_address = $HCP_DATA[$i]->hcp_address;
 											$hcp_pan = $HCP_DATA[$i]->hcp_pan;
 											$hcp_qualification = $HCP_DATA[$i]->hcp_qualification;
@@ -949,6 +971,8 @@ $_r = sql_query($_q, "");
 									if (!empty($REQUEST_LETTER)) {
 										for ($i = 0; $i < count($REQUEST_LETTER); $i++) {
 											$k = $i + 1;
+											$hcp_id = $HCP_DATA[$i]->hcp_id;
+											$hcp_name = GetXFromYID("SELECT CONCAT(firstname, ' ', lastname) AS full_name FROM contactmaster where id='$hcp_id' ");
 											$nature_of_camp = $REQUEST_LETTER[$i]->nature_of_camp;
 											$proposed_camp_date = $REQUEST_LETTER[$i]->proposed_camp_date;
 											$proposed_camp_location = $REQUEST_LETTER[$i]->proposed_camp_location;
@@ -960,6 +984,7 @@ $_r = sql_query($_q, "");
 												<td><?php echo $nature_of_camp; ?></td>
 												<td><?php echo $proposed_camp_date; ?></td>
 												<td><?php echo $proposed_camp_location; ?></td>
+												<td><?php echo $hcp_name; ?></td>
 												<td><?php echo $estimated_cost; ?></td>
 												<td><?php echo $diagnostic_lab; ?></td>
 											</tr>
@@ -1464,11 +1489,11 @@ $_r = sql_query($_q, "");
 				'diagnostic_lab': diagnostic_lab
 			}
 
-			$('#nature_of_camp').val('');
-			$('#proposed_camp_date').val('');
-			$('#proposed_camp_location').val('');
-			$('#estimated_cost').val('');
-			$('#diagnostic_lab').val('');
+			// $('#nature_of_camp').val('');
+			// $('#proposed_camp_date').val('');
+			// $('#proposed_camp_location').val('');
+			// $('#estimated_cost').val('');
+			// $('#diagnostic_lab').val('');
 
 			//for (var i = 0; i < addeddocarray.length; i++) {
 			var honorariumAmount = parseFloat(addeddocarray[0].honorarium_amount);
@@ -1738,7 +1763,7 @@ $_r = sql_query($_q, "");
 				var htmltable = '';
 				for (var k = 0; k < added_request_letter.length; k++) {
 					htmltable += '<tr>';
-					htmltable += '<th></th><td>' + m + '</td><td>' + added_request_letter[k].nature_of_camp + '</td><td>' + added_request_letter[k].proposed_camp_date + '</td><td>' + added_request_letter[k].proposed_camp_location + '</td><td>' + added_request_letter[k].estimated_cost + '</td><td>' + added_request_letter[k].diagnostic_lab + '</td>';
+					htmltable += '<th></th><td>' + m + '</td><td>' + added_request_letter[k].nature_of_camp + '</td><td>' + added_request_letter[k].proposed_camp_date + '</td><td>' + added_request_letter[k].proposed_camp_location + '</td><td>'+addeddocarray[k].hcp_name +'</td><td>' + added_request_letter[k].estimated_cost + '</td><td>' + added_request_letter[k].diagnostic_lab + '</td>';
 					htmltable += '<td><button type="button" onclick="removeRq(' + k + ')" id="del_link">Delete</button></td>';
 					htmltable += '</tr>';
 					m++;

@@ -127,7 +127,7 @@ if ($is_report_submitted > 0) {
 	$mode = 'A';
 }
 
-$sign_edit = $sign_display =$sign_date= $hcp_sign =$otp_verify_div= '';
+$sign_edit = $sign_display =$sign_date= $hcp_sign =$otp_verify_div=$registration_number= '';
 
 if ($mode == 'A') {
 	$otp_verify_div='display:block';
@@ -135,13 +135,14 @@ if ($mode == 'A') {
 	$readonly = '';
 	$sign_date=TODAY;
 	$objective = '';
-	$camp_duration = '';
+	$camp_duration = GetXFromYID("select proposed_camp_duration from crm_request_camp_letter where crm_request_main_id='$pid' ");
 	$type_of_diagnostic = '';
 	$diagnostic_charges = '';
 	$total_no_ind = '';
 	$camp_organised = '';
 	$camp_received = '';
 	$remarks = '';
+	$registration_number=GetXFromYID("select registration_no from contactmaster where id='$hcp_id' ");
 } elseif ($mode == 'E') {
 	$otp_verify_div='display:none';
 	$sign_edit= 'display:none';
@@ -156,6 +157,7 @@ if ($mode == 'A') {
 	$diagnostic_charges = db_output2($DATA[0]->diagnostic_charges);
 	$total_no_ind = db_output2($DATA[0]->total_no_ind);
 	$camp_organised = db_output2($DATA[0]->camp_organised);
+	$registration_number=db_output2($DATA[0]->hcp_reg_no);
 	$camp_received = db_output2($DATA[0]->camp_received);
 	$remarks = db_output2($DATA[0]->remarks);
 	$hcp_sign = GetXFromYID("select e_sign_doctor from crm_request_main where id='$pid' and deleted=0 ");
@@ -166,11 +168,10 @@ $CHECKBOXES = array('1' => 'Excellent', '2' => 'Good', '3' => 'Average', '4' => 
 
 $HCP_NAF_DETAILS=GetDataFromID('crm_naf_hcp_details','naf_main_id',$rid,"");
 $hcp_id=$HCP_NAF_DETAILS[0]->hcp_id;
-$hcp_name=GetXFromYID("SELECT CONCAT(firstname, ' ', lastname) AS full_name FROM contactdetails where  contactid='$hcp_id' ");
+$hcp_name=GetXFromYID("SELECT CONCAT(firstname, ' ', lastname) AS full_name FROM contactmaster where  id='$hcp_id' ");
 $hcp_address=$HCP_NAF_DETAILS[0]->hcp_address;
 $hcp_associated_hospital_id=$HCP_NAF_DETAILS[0]->hcp_associated_hospital_id;
 $crm_naf_hcp_details_id=$HCP_NAF_DETAILS[0]->id;
-$registration_number=GetXFromYID("select registration_no from contactmaster where id='$hcp_id' ");
 $collaboration_with_diag=GetXFromYID("select diagnostic_lab from crm_naf_camp_letter where crm_naf_hcp_details_id='$crm_naf_hcp_details_id' ");
 $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where naf_field_id=24 and naf_request_id='$rid' ");
 
@@ -308,6 +309,17 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 						<div class="card-body">
 
 							<div class="wide-block pt-2 pb-2">
+
+							
+
+								<?php if ($mode=='E') { ?>
+									<a href="pdf_camp.php?rid=<?php echo $rid;?>&pid=<?php echo $pid;?>" class="btn btn-success" target="_blank" rel="noopener noreferrer" style="float: right;"> view Pdf</a>
+									<br><br>
+
+									
+							<?php	}  ?>
+
+							
 
 
 
@@ -488,7 +500,7 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 									</div>
 
 									<div class="col-9">
-										<div class="input-wrapper"><input type="text" value="<?php echo $registration_number;?>" class="form-control" id=""></div>
+										<div class="input-wrapper"><input type="text" value="<?php echo $registration_number;?>" name="registration_number" class="form-control" id="registration_number"></div>
 									</div>
 
 								</div>
@@ -705,7 +717,7 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 					<div class="col-6">
 
 						SIGNED AND DELIVERED by <b></b>, acting
-						through its Authorised Signatory, Mr. <b>XX</b>, (XX) the within
+						through its Authorised Signatory, Mr. <b><?php echo $hcp_name;?></b>, the within
 						named Party of the First Part.<br>
 						<b>DATE:<?php echo $sign_date; ?></b>
 

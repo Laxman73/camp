@@ -59,7 +59,7 @@ if ($mode == 'A') {
 	$crm_naf_hcp_id = GetXFromYID("select id from crm_naf_hcp_details where naf_main_id='$rid' and deleted=0 ");
 	$CRM_NAF_CAMP_LETTER_DATA = GetDataFromID('crm_naf_camp_letter', 'crm_naf_hcp_details_id', $crm_naf_hcp_id);
 
-	$hcp_id = (isset($CRM_NAF_CAMP_LETTER_DATA[0]->crm_naf_hcp_details_id)) ? $CRM_NAF_CAMP_LETTER_DATA[0]->crm_naf_hcp_details_id : '';
+	$hcp_id = GetXFromYID("select hcp_id from crm_naf_hcp_details where naf_main_id='$rid' and deleted=0");
 	$nature_of_camp = (isset($CRM_NAF_CAMP_LETTER_DATA[0]->nature_of_camp)) ? $CRM_NAF_CAMP_LETTER_DATA[0]->nature_of_camp : '';
 	$proposed_camp_date = (isset($CRM_NAF_CAMP_LETTER_DATA[0]->proposed_camp_date)) ? $CRM_NAF_CAMP_LETTER_DATA[0]->proposed_camp_date : '';
 	$proposed_camp_location = (isset($CRM_NAF_CAMP_LETTER_DATA[0]->proposed_camp_location)) ? $CRM_NAF_CAMP_LETTER_DATA[0]->proposed_camp_location : '';
@@ -73,14 +73,15 @@ if ($mode == 'A') {
 	$proposed_camp_duration = db_output2($CRM_CAMP_LETTER[0]->proposed_camp_duration);
 }
 
-
-$hcp_name=GetXFromYID("SELECT CONCAT(firstname, ' ', lastname) AS full_name FROM contactdetails where  contactid='$hcp_id' ");
+// echo $hcp_id;
+// exit;
+$hcp_name=GetXFromYID("SELECT CONCAT(firstname, ' ', lastname) AS full_name FROM contactmaster where  id='$hcp_id' ");
 // getting role and profile id of user
 $ROLE_ID = GetXFromYID("select roleid from user2role where userid='" . $USER_ID . "'");
 $PROFILE_ID = GetXFromYID("select profileid from role2profile where roleid='" . $ROLE_ID . "'");
 
 
-$HCP_UNIVERSAL_ID = GetXArrFromYID("select contactid,masterid from contactdetails order by contactid LIMIT 500 ", "3");
+$HCP_UNIVERSAL_ID = GetXArrFromYID("select contactid,masterid from contactdetails order by contactid LIMIT 100 ", "3");
 
 ?>
 <!doctype html>
@@ -167,6 +168,22 @@ $HCP_UNIVERSAL_ID = GetXArrFromYID("select contactid,masterid from contactdetail
 									</div>
 								</div>
 
+								<br>
+
+								<div class="row">
+
+
+
+									<div class="col-3">
+										<b>HCP Name:</b>
+									</div>
+
+									<div class="col-9">
+										<div class="input-wrapper">
+											<input type="text" class="form-control" id="hcp_name" value="<?php echo $hcp_name; ?>" name="hcp_name" placeholder="" required>
+										</div>
+									</div>
+								</div>
 								<br>
 
 								<div class="row">

@@ -35,7 +35,7 @@ $Delivery_form_count = GetXFromYID("select count(*) from crm_naf_delivery_form w
 $CRM_MAIN_DATA = GetDataFromID('crm_naf_main', 'id', $rid, "and deleted=0 and category_id=5 ");
 
 $activity_name = db_output2($CRM_MAIN_DATA[0]->naf_activity_name);
-$type_of_activity = db_output2($CRM_MAIN_DATA[0]->naf_activity_name);
+$type_of_activity = db_output2($CRM_MAIN_DATA[0]->proposed_activity);
 $pending_with_id = db_output2($CRM_MAIN_DATA[0]->pendingwithid);
 
 if ($Delivery_form_count > 0) {
@@ -759,7 +759,7 @@ $HCP_DATA = GetDataFromID('crm_naf_hcp_details', 'naf_main_id', $rid, "and delet
 										$k = $i + 1;
 										$hcp_id = $HCP_DATA[$i]->hcp_id;
 										$masterid = GetXFromYID("select masterid from contactdetails where contactid='$hcp_id' ");
-										$hcp_name = GetXFromYID("SELECT CONCAT(firstname, ' ', lastname) AS full_name FROM contactdetails where contactid='$hcp_id' ");
+										$hcp_name = GetXFromYID("SELECT CONCAT(firstname, ' ', lastname) AS full_name FROM contactmaster where id='$hcp_id' ");
 										$hcp_address = $HCP_DATA[$i]->hcp_address;
 										$hcp_pan = $HCP_DATA[$i]->hcp_pan;
 										$hcp_qualification = $HCP_DATA[$i]->hcp_qualification;

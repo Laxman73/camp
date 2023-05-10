@@ -78,10 +78,13 @@ if ($MODE == 'R' || $MODE == 'E') {
 
 
 $ACTIVITY_ARR = GetXArrFromYID('SELECT id as id,activityname  as name FROM crm_naf_activitymaster where deleted=0', '3');
-if ($MODE == 'E') {
-	$activity_ID = GetXFromYID("select activity_id from crm_naf_activity_details where naf_request_id='$rid' ");
-	$type_of_activity = $ACTIVITY_ARR[$activity_ID];
+if ($MODE == 'A') {
+	// $activity_ID = GetXFromYID("select activity_id from crm_naf_activity_details where naf_request_id='$rid' ");
+	$type_of_activity = GetXFromYID("select proposed_activity from crm_naf_main where id='$rid' and deleted=0 ");
 }
+
+
+
 
 $naf_no = GetXFromYID("select naf_no from crm_naf_main where id='$rid'");
 $NAF_IDS = GetXArrFromYID(" select id from crm_naf_main where parent_id='QCAMDTF0162'");
@@ -211,7 +214,7 @@ $_r=sql_query($_q,"");
 												foreach ($ACTIVITY_ARR as $key => $value) {
 													//echo $value[$key]['iModID'];
 													$selected =    ($type_of_activity == $key) ? 'selected' : '';
-													echo '<option value="' . $key . '" >' . $value . '</option>';
+													echo '<option value="' . $key . '" '.$selected.' >' . $value . '</option>';
 												}
 												?>
 											</select>
@@ -525,10 +528,19 @@ $_r=sql_query($_q,"");
 						<div class="row">
 							<!-- <div class="col"><button type="button" class="exampleBox btn btn-primary rounded me-1">Save</button>
 						</div> -->
+						<button type="button" class="btn btn-primary rounded me-1 " onclick="showAllHCP()"><b>View all HCP</b></button>
 
-							<div class="col">
-								<button type="submit" class="exampleBox btn btn-primary rounded me-1">Submit</button>
-							</div>
+						<?php
+
+if ($MODE != 'R') { ?>
+	<div class="col-4">
+		<button type="submit" class="exampleBox btn btn-primary rounded me-1">Submit</button>
+	</div>
+							
+					<?php	}
+
+						?>
+
 
 
 							<!-- <div class="col">
@@ -548,7 +560,7 @@ $_r=sql_query($_q,"");
 			<div class="card">
 				<div class="card-body">
 
-					<div class="wide-block pt-2 pb-2">
+					<div class="wide-block pt-2 pb-2 showhcp" style="display: none;">
 
 						<table id="example" class="display mt-2" style="width:100%">
 
@@ -578,7 +590,7 @@ $_r=sql_query($_q,"");
 										$k = $i + 1;
 										$hcp_id = $o->hcp_id;
 										$masterid = GetXFromYID("select masterid from contactdetails where contactid='$hcp_id' ");
-										$hcp_name = GetXFromYID("SELECT CONCAT(firstname, ' ', lastname) AS full_name FROM contactdetails where contactid='$hcp_id' ");
+										$hcp_name = GetXFromYID("SELECT CONCAT(firstname, ' ', lastname) AS full_name FROM contactmaster where id='$hcp_id' ");
 										$hcp_address = $o->hcp_address;
 										$hcp_pan = $o->hcp_pan;
 										$hcp_qualification = $o->hcp_qualification;
@@ -647,6 +659,9 @@ $_r=sql_query($_q,"");
 	<script src="assets/js/base.js"></script>
 
 	<script>
+		function showAllHCP() {
+			document.getElementsByClassName("showhcp")[0].style.display = "block";
+		}
 		$(document).ready(function() {
 			var table = $('#example').DataTable({
 				rowReorder: {

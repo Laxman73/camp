@@ -115,7 +115,7 @@ if ($mode == 'A') {
 	$emp_sign_date = db_output2($HCP_DATA[0]->emp_sign_date);
 	$submitted_on = db_output2($HCP_DATA[0]->submitted_on);
 }
-$hcp_name=GetXFromYID("SELECT CONCAT(firstname, ' ', lastname) AS full_name FROM contactdetails where  contactid='$hcp_id' ");
+$hcp_name=GetXFromYID("SELECT CONCAT(firstname, ' ', lastname) AS full_name FROM contactmaster where  id='$hcp_id' ");
 $hcp_address=$HCP_NAF_DETAILS[0]->hcp_address;
 
 ?>

@@ -12,7 +12,7 @@ $ishtml=(isset($_GET['html']))?$_GET['html']:'';
 $HCP_UNIVERSAL_ID = GetXArrFromYID("select contactid,masterid from contactdetails order by contactid LIMIT 500 ", "3");
 
 
-$data = GetDataFromID('crm_naf_hcp_details', 'naf_main_id', $pid,'and deleted=0 ');
+$data = GetDataFromID('crm_naf_hcp_details', 'naf_main_id', $rid,'and deleted=0 ');
 
 $CRM_NAF_MAIN=GetDataFromID('crm_naf_main','id',$rid,"and deleted=0 ");
 $comment=$CRM_NAF_MAIN[0]->post_comment;
@@ -28,6 +28,7 @@ $hcp_qualification = $data[0]->hcp_qualification;
 $Honorium=$data[0]->honorarium_amount;
 $hcp_address=$data[0]->hcp_address;
 $mobile=$data[0]->mobile;
+
 
 
 

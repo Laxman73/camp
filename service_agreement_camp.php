@@ -142,7 +142,7 @@ $naf_activity_name = GetXFromYID("select naf_activity_name from crm_naf_main whe
 
 $HCP_NAF_DETAILS=GetDataFromID('crm_naf_hcp_details','naf_main_id',$rid,"");
 $hcp_id=$HCP_NAF_DETAILS[0]->hcp_id;
-$hcp_name=GetXFromYID("SELECT CONCAT(firstname, ' ', lastname) AS full_name FROM contactdetails where  contactid='$hcp_id' ");
+$hcp_name=GetXFromYID("SELECT CONCAT(firstname, ' ', lastname) AS full_name FROM contactmaster where  id='$hcp_id' ");
 $hcp_address=$HCP_NAF_DETAILS[0]->hcp_address;
 // $sql_res=$adb->query($sql);
 // $naf_activity_name=$adb->query_result($sql_res,0,'naf_activity_name');
@@ -411,9 +411,9 @@ $get_amount= AmountInWords($Honorium);
                                         The purpose of this written agreement is to sign off further to an oral agreement between the Parties – for the Recipient-HCP to support in organizing/conducting a Micro Labs initiated awareness, counselling and/or diagnostic camp (hereinafter referred to as <b>‘camp’</b>), as titled hereinunder:
                                         <br>
                                         <br>
-                                        <b>TITLE OF THE CAMP: <input type="text" name="title" value="<?php echo $topic;?>" id="title"> </b><br>
-                                        <b>DATE: <input type="date" name="mdate" id="mdate" value="<?php echo $meeting_date;?>"></b><br>
-                                        <b>VENUE: <input type="text" name="venue" id="venue" value="<?php echo $venue;?>"></b><br>
+                                        <b>TITLE OF THE CAMP: <input type="text" name="title" value="<?php echo $topic;?>" id="title" style="border: none;border-bottom: 1px solid lightgrey;"> </b><br><br>
+                                        <b>DATE: <input type="date" name="mdate" id="mdate" value="<?php echo $meeting_date;?>" style="border: none;border-bottom: 1px solid lightgrey;"></b><br><br>
+                                        <b>VENUE: <input type="text" name="venue" id="venue" value="<?php echo $venue;?>" style="border: none;border-bottom: 1px solid lightgrey;"></b><br>
                                         <br>
                                         As compensation of the Recipient-HCP’s time and efforts devoted in conducting the above-mentioned camp and/or sharing his/her advice with patients in the above-mentioned camp, the Parties have mutually agreed to an amount of INR <?php echo $Honorium;?></b>(Rupees <b><?php echo $get_amount;?></b>).
                                         <br><br>
