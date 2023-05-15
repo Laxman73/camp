@@ -51,7 +51,7 @@ $advance_amt_display = '';
 $User_division = GetXFromYID("select division from users where id='$USER_ID' "); //Getting division
 $SPECILITY_ARR = $CRM_FILEDS = $SELECTED_SPECIALITIES = $S_ARRA = array();
 
-$ACTIVITY_ARR = GetXArrFromYID('SELECT id as id,`activityname`  as name FROM `crm_naf_activitymaster` where deleted=0', '3');
+$ACTIVITY_ARR = GetXArrFromYID("SELECT id as id,`activityname`  as name FROM `crm_naf_activitymaster` where deleted=0' and id='23' ", '3');
 
 // $division = GetXFromYID("select division from users where id='$USER_ID' ");
 $curr_dt = date('Y-m-d');
@@ -1542,7 +1542,10 @@ $_r = sql_query($_q, "");
 			var total = document.getElementById("total").value;
 			console.log(total);
 			console.log(honorarium);
+			console.log(parseFloat(honorarium) > parseFloat(total));
 			var role_of_hcp = document.getElementById("role_of_hcp").value;
+
+			
 
 
 			var DoctorID_value = $("#DoctorID option:selected").text();
@@ -1559,7 +1562,7 @@ $_r = sql_query($_q, "");
 				return false;
 			}
 
-			if (honorarium > total) {
+			if (parseFloat(honorarium) > parseFloat(total)) {
 				alert("Honorarium amount should be less than total amount!!");
 				return false;
 			}

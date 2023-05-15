@@ -173,9 +173,14 @@ if ($PROFILE_ID == 22) {
 		$level = GetXFromYID("select level from crm_naf_main where id='$rid' and deleted=0 ");
 		$Authorise = GetXFromYID("select authorise from crm_naf_main where id='$rid' and deleted=0 ");
 		$Delivery_form_count = GetXFromYID("select count(*) from crm_naf_delivery_form where crm_naf_main_id='$rid' and deleted=0 ");
+		$activity_count=GetXFromYID("select proposed_activity_count from crm_naf_main where id='$rid' and deleted=0 ");
+		$raised_count=GetXFromYID("select count(t2.id) from crm_naf_main t1 inner join crm_naf_main t2 on t1.naf_no=t2.parent_id where t1.id='$rid' and t1.deleted=0");
 
 		if (($level == 4 && $Authorise != 4) || ($level > 3)) { // Darshan 20230608
-			array_push($user_tabs, 10);
+			if ($activity_count==$raised_count) {
+				
+				array_push($user_tabs, 10);
+			}
 		}
 		
 	}
@@ -313,3 +318,5 @@ $TABS_DATA[10] = '<div class="col-2 py-2">
 
 	</div>
 </div>
+
+

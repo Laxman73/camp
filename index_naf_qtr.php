@@ -28,7 +28,7 @@ $PROFILE_ID = GetXFromYID("select profileid from role2profile where roleid='" . 
 //$User_division = GetXFromYID("select division from users where id='$USER_ID' "); //Getting division
 $SPECILITY_ARR = $SELECTED_SPECIALITIES = $S_ARRA = array();
 
-$ACTIVITY_ARR = GetXArrFromYID('SELECT id as id,`activityname`  as name FROM `crm_naf_activitymaster` where deleted=0', '3');
+$ACTIVITY_ARR = GetXArrFromYID("SELECT id as id,`activityname`  as name FROM `crm_naf_activitymaster` where deleted=0 and id='23' ", '3');
 
 $division = GetXFromYID("select division from users where id='$USER_ID' ");
 $curr_dt = date('Y-m-d');

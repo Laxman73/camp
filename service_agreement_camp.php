@@ -415,7 +415,7 @@ $get_amount= AmountInWords($Honorium);
                                         <b>DATE: <input type="date" name="mdate" id="mdate" value="<?php echo $meeting_date;?>" style="border: none;border-bottom: 1px solid lightgrey;"></b><br><br>
                                         <b>VENUE: <input type="text" name="venue" id="venue" value="<?php echo $venue;?>" style="border: none;border-bottom: 1px solid lightgrey;"></b><br>
                                         <br>
-                                        As compensation of the Recipient-HCP’s time and efforts devoted in conducting the above-mentioned camp and/or sharing his/her advice with patients in the above-mentioned camp, the Parties have mutually agreed to an amount of INR <?php echo $Honorium;?></b>(Rupees <b><?php echo $get_amount;?></b>).
+                                        As compensation of the Recipient-HCP’s time and efforts devoted in conducting the above-mentioned camp and/or sharing his/her advice with patients in the above-mentioned camp, the Parties have mutually agreed to an amount of INR <b><?php echo $Honorium;?></b>(Rupees <b><?php echo $get_amount;?></b>).
                                         <br><br>
                                         <b>MUTUAL INTEREST OF THE PARTIES</b>: This Camp is of mutual interest to the parties because it:<br>
                                         • creates awareness to general public or provide counsel on various disease, treatment options, mental/physical wellbeing, dietary, etc. and/or <br>

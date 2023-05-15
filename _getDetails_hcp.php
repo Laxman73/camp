@@ -6,10 +6,9 @@ $HOSPITAL_ARR=GetXArrFromYID("select contactid,hosname from hospitalcontactdetai
 if(isset($_POST['cid'])){
     $cid=db_input($_POST['cid']);
     $rid=db_input($_POST['rid']);
-    $_q1="select contactmaster.firstname,contactmaster.lastname,contactmaster.qualification,contactmaster.mobile,contactmaster.otherstate,contactmaster.othercity, hcp_address, hcp_qualification from contactdetails  
-	INNER JOIN crm_naf_hcp_details ON contactdetails.contactid = crm_naf_hcp_details.hcp_id
-	INNER JOIN contactmaster ON contactdetails.masterid = contactmaster.id
-	where crm_naf_hcp_details.naf_main_id = '$rid' AND  contactdetails.contactid='$cid' ";
+    $_q1="select contactmaster.firstname,contactmaster.lastname,contactmaster.qualification,contactmaster.mobile,contactmaster.otherstate,contactmaster.othercity, hcp_address, hcp_qualification from contactmaster  
+	INNER JOIN crm_naf_hcp_details ON contactmaster.id = crm_naf_hcp_details.hcp_id	
+	where crm_naf_hcp_details.naf_main_id = '$rid' AND  contactmaster.id='$cid' ";
     $_r1=sql_query($_q1,"");
 
     list($firstname,$lastname,$qualificationid,$mobile,$otherstate,$othercity,$hcp_address,$hcp_qualification)=sql_fetch_row($_r1);

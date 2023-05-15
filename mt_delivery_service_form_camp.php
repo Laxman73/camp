@@ -27,7 +27,7 @@ $employee_name = GetXFromYID("select concat(first_name,' ',last_name) from users
 
 
 $readonly = $disabled = '';
-$employee_id = $type_of_activity = $comment = $mode = $vendor_services = $vendor_name = $vendor_description = $actual_vendor_cost = $naf_travel_flight_cost = $naf_insurance_cost = $naf_flight_cost = $naf_travel_cab_cost = $naf_visa_cost = $naf_stay_hotel_cost = $naf_audio_visual_cost = $naf_meal_snack_cost = $naf_banners_pamphlets_cost = $naf_other_additonal_cost = $MODE = '';
+$employee_id = $type_of_activity = $comment = $mode = $vendor_services = $vendor_name = $vendor_description = $actual_vendor_cost = $naf_travel_flight_cost = $naf_insurance_cost = $naf_flight_cost = $naf_travel_cab_cost = $naf_visa_cost = $naf_stay_hotel_cost = $naf_audio_visual_cost =$activity_name= $naf_meal_snack_cost = $naf_banners_pamphlets_cost = $naf_other_additonal_cost = $MODE = '';
 $PARENT_ID_NAF = GetXFromYID("select naf_no from crm_naf_main where id='$rid' and deleted=0 ");
 $PARENT_ID = GetXFromYID("select id from crm_naf_main where parent_id='$PARENT_ID_NAF' and deleted=0 ");
 $Delivery_form_count = GetXFromYID("select count(*) from crm_naf_delivery_form where crm_naf_main_id='$PARENT_ID' and deleted=0 ");
@@ -99,6 +99,8 @@ $HCP_DATA = GetDataFromID('crm_naf_hcp_details', 'naf_main_id', $rid, "and delet
 
 $_q="select * from crm_naf_hcp_details where naf_main_id in (".implode(",", $NAF_ARRAY).") and deleted=0 ";
 $_r=sql_query($_q,"");
+
+//echo $MODE;
 
 ?>
 
