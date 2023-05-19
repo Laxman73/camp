@@ -51,7 +51,7 @@ $advance_amt_display = '';
 $User_division = GetXFromYID("select division from users where id='$USER_ID' "); //Getting division
 $SPECILITY_ARR = $CRM_FILEDS = $SELECTED_SPECIALITIES = $S_ARRA = array();
 
-$ACTIVITY_ARR = GetXArrFromYID("SELECT id as id,`activityname`  as name FROM `crm_naf_activitymaster` where deleted=0' and id='23' ", '3');
+$ACTIVITY_ARR = GetXArrFromYID("SELECT id as id,`activityname`  as name FROM `crm_naf_activitymaster` where deleted=0 and id='23' ", '3');
 
 // $division = GetXFromYID("select division from users where id='$USER_ID' ");
 $curr_dt = date('Y-m-d');
@@ -96,7 +96,7 @@ if ($mode == 'A') {
 	$eventdate = TODAY;
 	$level = '';
 	$naf_no = '';
-	$naf_activity_name = '';
+	$naf_activity_name = GetXFromYID("select naf_activity_name from crm_naf_main where id='$prid' and deleted=0 ");
 	$naf_city = '';
 	$naf_proposed_venue = '';
 	$naf_estimate_no_participents = '1';
@@ -295,7 +295,7 @@ $_r = sql_query($_q, "");
 
 	<div id="appCapsule">
 
-		<form action="save_nafActivity.php" method="post" enctype="multipart/form-data">
+		<form action="save_nafActivity.php" id="naf_camp_form" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="userid" value="<?php echo $USER_ID; ?>">
 			<input type="hidden" name="prid" value="<?php echo $prid; ?>">
 			<input type="hidden" name="category" value="<?php echo $category; ?>">
@@ -338,7 +338,7 @@ $_r = sql_query($_q, "");
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<select class="form-control custom-select" id="Product" onchange="chkothers();" name="productID" required="" <?php echo $selectoption; ?>>
+											<select class="form-control custom-select" id="Product" onchange="chkothers();" name="productID" <?php echo $selectoption; ?> >
 												<option value="">Choose...</option>
 												<?php
 												foreach ($PRODUCTS_ARR as $key => $value) {
@@ -363,7 +363,7 @@ $_r = sql_query($_q, "");
 								<div class="row">
 
 									<div class="col-3">
-										<b>Event ID No<span style="color:#ff0000">*</span></b>
+										<b>Event ID No</b>
 									</div>
 
 									<div class="col-9">
@@ -442,8 +442,8 @@ $_r = sql_query($_q, "");
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<select class="form-control custom-select" id="city" name="city" <?php echo $selectoption; ?>>
-												<option selected="" value="">Choose...</option>
+											<select class="form-control custom-select" id="city" name="city" <?php echo $selectoption; ?> required>
+												<option  value="">Choose...</option>
 												<?php
 												foreach ($CITY_ARR as $key => $value) {
 													//echo $value[$key]['iModID'];
@@ -527,7 +527,7 @@ $_r = sql_query($_q, "");
 
 									<div class="col-9">
 										<div class="input-wrapper">
-											<textarea id="objective" name="objective" rows="3" class="form-control"><?php echo $proposed_objective; ?></textarea>
+											<textarea id="objective" name="objective" rows="3" class="form-control" required><?php echo $proposed_objective; ?></textarea>
 										</div>
 									</div>
 								</div>
@@ -559,8 +559,8 @@ $_r = sql_query($_q, "");
 
 								while ($row = sql_fetch_assoc($_r)) {
 									//DFA($row);
-									$compulsory = ($row['field_id'] == '1') ? 'required="" ' : '';
-									$compulsoryfield = ($row['field_id'] == '1') ? '<span style="color:#ff0000">*</span>' : '';
+									$compulsory = ($row['field_id'] == '14') ? 'required="" ' : '';
+									$compulsoryfield = ($row['field_id'] == '14') ? '<span style="color:#ff0000">*</span>' : '';
 									$value = (isset($CRM_FILEDS[$row['field_id']])) ? $CRM_FILEDS[$row['field_id']] : '';
 								?>
 
@@ -844,11 +844,12 @@ $_r = sql_query($_q, "");
 
 								<div id="form" style="<?php echo $display_style;?>">
 									<label for="file">Upload file:</label>
+									
 									<?php
 									if ($mode == 'A') {
 										echo '<input type="file" id="advance_file" name="advance_file">';
 									} elseif ($mode == 'E' && $advance_payment_type=='Yes') {
-										echo '<a href="' . $doc_upload_path . '" > view file</a>';
+										echo '<a href="' . $doc_upload_path . '" target="_blank"> view file</a>';
 									}
 
 									?>
@@ -875,11 +876,13 @@ $_r = sql_query($_q, "");
 				<div class="section mt-2">
 					<div class="card">
 						<div class="card-body pd-1">
+							<h3 class="text-center">HCP Details</h3>
 
-							<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#addhcp" style="<?php echo $display_style; ?>">ADD</button>
+
+							<button type="button" class="btn btn-secondary mb-4" data-toggle="modal" data-target="#addhcp" style="<?php echo $display_style; ?>">ADD</button>
 
 
-							<table id="example" class="display mt-2" style="width:100%">
+							<table id="example" class="display mt-4" style="width:100%">
 
 								<thead>
 
@@ -950,8 +953,10 @@ $_r = sql_query($_q, "");
 
 							<br><br><br><br>
 
-							<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#addrequestletterMODAL" style="<?php echo $display_style; ?>">ADD</button>
-							<table id="example1" class="display" style="width:100%">
+							<h3 class="text-center">Camp Details</h3>
+
+							<button type="button" class="btn btn-secondary mb-4" data-toggle="modal" data-target="#addrequestletterMODAL" style="<?php echo $display_style; ?>">ADD</button>
+							<table id="example1" class="display mt-4" style="width:100%">
 
 								<thead>
 
@@ -1015,7 +1020,7 @@ $_r = sql_query($_q, "");
 							<div class="form-group basic">
 								<div class="input-wrapper">
 									<label class="label" for="">rationale for selection:<span style="color:#ff0000">*</span></label>
-									<textarea id="rationale" name="rationale" rows="3" class="form-control"><?php echo $naf_objective_rational; ?></textarea>
+									<textarea id="rationale" name="rationale" rows="3" class="form-control" required><?php echo $naf_objective_rational; ?></textarea>
 								</div>
 							</div>
 						</div>
@@ -1286,11 +1291,11 @@ $_r = sql_query($_q, "");
 						</div>
 						<div class="row">
 							<div class="float-left py-5">
-								<button type="button" class="exampleBox btn btn-primary rounded me-1" onclick="addDoctor();">Add HCP</button>
+								<button type="button" class="exampleBox btn btn-primary  ml-4" onclick="addDoctor();">Add HCP</button>
 
 							</div>
 							<div class="float-right py-5">
-								<a href="#" class="btn btn-secondary btn-block btn-lg" data-dismiss="modal">Close</a>
+								<a href="#" class="btn btn-secondary btn-block btn-lg ml-5" data-dismiss="modal">Close</a>
 
 							</div>
 						</div>
@@ -1329,7 +1334,7 @@ $_r = sql_query($_q, "");
 							<div class="row">
 
 								<div class="col-3">
-									<b>Proposed camp date:</b>
+									<b>Proposed camp date:<span style="color:#ff0000">*</span></b>
 								</div>
 
 								<div class="col-9">
@@ -1393,11 +1398,11 @@ $_r = sql_query($_q, "");
 						</div>
 						<div class="row">
 							<div class="float-left py-5">
-								<button type="button" class="exampleBox btn btn-primary rounded me-1" onclick="addRequestLetter();">Add </button>
+								<button type="button" class="exampleBox btn btn-primary ml-4" onclick="addRequestLetter();">Add </button>
 
 							</div>
 							<div class="float-right py-5">
-								<a href="#" class="btn btn-secondary btn-block btn-lg" data-dismiss="modal">Close</a>
+								<a href="#" class="btn btn-secondary btn-block btn-lg ml-5" data-dismiss="modal">Close</a>
 
 							</div>
 						</div>
@@ -1423,6 +1428,7 @@ $_r = sql_query($_q, "");
 
 
 	<script>
+		
 		$(document).ready(function() {
 			$('#myselection').on('change', function() {
 				var demovalue = $(this).val();
@@ -1450,8 +1456,12 @@ $_r = sql_query($_q, "");
 		dropdown.addEventListener('change', (event) => {
 			if (event.target.value === 'Yes') {
 				form.style.display = 'block';
+				$("#advance_payment").prop('required', true);
+				$("#advance_file").prop('required', true);
 			} else {
 				form.style.display = 'none';
+				$("#advance_payment").prop('required', false);
+				$("#advance_file").prop('required', false);
 			}
 		});
 
@@ -1479,6 +1489,37 @@ $_r = sql_query($_q, "");
 			var total = $('#total').val();
 
 
+			if ($.trim(nature_of_camp)=='') {
+				alert('Please fill out the nature of camp field');
+				return false;
+				ret = false;
+			}
+
+			if (!(proposed_camp_date)) {
+				alert('Please pick date for the camp');
+				return false;
+				ret = false;
+			}
+
+			if ($.trim(proposed_camp_location)=='') {
+				alert('Please fill out the camp location');
+				return false;
+				ret = false;
+			}
+
+			if ($.trim(estimated_cost)=='') {
+				alert('Please fill out the camp estimate cost');
+				return false;
+				ret = false;
+			}
+
+			if ($.trim(diagnostic_lab)=='') {
+				alert('Please fill out the camp diagnostic lab field');
+				return false;
+				ret = false;
+			}
+
+
 			var saveDataObj = {};
 
 			saveDataObj = {
@@ -1503,7 +1544,7 @@ $_r = sql_query($_q, "");
 			var result = honorariumAmount + estimatedCost;
 			//console.log(result);
 			if (result > total) {
-				alert("The estimate amount should be less than total amount");
+				alert(`The estimate amount should be less than ${total} `);
 				return false;
 				ret = false;
 			}
@@ -1516,7 +1557,7 @@ $_r = sql_query($_q, "");
 
 			} else {
 				alert('You can add only one request letter at time');
-				closeRequestletter();
+				//closeRequestletter();
 			}
 
 
@@ -1889,6 +1930,31 @@ $_r = sql_query($_q, "");
 			var table = $('#example1').DataTable({
 				responsive: true
 			});
+		});
+		$('#naf_camp_form').submit(function(){
+			console.log(addeddocarray);
+			console.log(added_request_letter);
+			var ret_val=true;
+			
+			var targetspeciality=$('#targetedSpeciality');
+			if(($("select[name='targetedSpeciality[]'] option:selected").length)<1){
+				alert('Please select the specaility from the dropdown');
+				ret_val=false;
+			}
+
+			if (addeddocarray.length<1) {
+				alert("please add hcp details !");
+				ret_val=false;
+			}
+
+			if (added_request_letter.length<1) {
+				alert("please add camp details !");
+				ret_val=false;
+			}
+			
+			//return ret_val;
+			
+			return ret_val;
 		});
 	</script>
 

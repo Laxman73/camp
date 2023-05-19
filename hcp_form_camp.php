@@ -244,7 +244,7 @@ $hcp_address=$HCP_NAF_DETAILS[0]->hcp_address;
 									<div class="col-9">
 										<div class="input-wrapper">
 											<select name="yr_of_registration" class="form-control" required>
-												<option>Select Year</option>
+												<option value="">Select Year</option>
 												<?php foreach ($years as $year) {
 													$selected =  ($year==$yr_of_registration)?'selected':'';
 												?>
@@ -387,7 +387,7 @@ $hcp_address=$HCP_NAF_DETAILS[0]->hcp_address;
 									</div>
 
 									<div class="col-9">
-										<div class="input-wrapper"><input type="text" value="<?php echo $position;?>" class="form-control" name="position" id="position"></div>
+										<div class="input-wrapper"><input type="text" value="<?php echo $position;?>" class="form-control" name="position" id="position" required></div>
 									</div>
 
 								</div>
@@ -411,13 +411,6 @@ $hcp_address=$HCP_NAF_DETAILS[0]->hcp_address;
 
 
 							</div>
-
-
-
-
-
-
-
 
 						</div>
 					</div>

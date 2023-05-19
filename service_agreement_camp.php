@@ -65,14 +65,14 @@ $hcp_information_ID = $HCP_INFORMATION_DATA[0]->id;
 $hcp_sign = GetXFromYID("select hcp_sign from crm_hcp_agreement where deleted = 0 AND crm_hcp_information_id = $hcp_information_ID");
 $emp_sign = GetXFromYID("select company_sign from crm_hcp_agreement where deleted = 0 AND crm_hcp_information_id = $hcp_information_ID");
 $sign_date = GetXFromYID("select  DATE(sign_date) from crm_hcp_agreement where deleted = 0 AND crm_hcp_information_id = $hcp_information_ID");
-$topic=GetXFromYID("select  topic from crm_hcp_agreement where deleted = 0 AND crm_hcp_information_id = $hcp_information_ID");
-$venue=GetXFromYID("select  venue from crm_hcp_agreement where deleted = 0 AND crm_hcp_information_id = $hcp_information_ID");
-$meeting_date=GetXFromYID("select  meeting_date from crm_hcp_agreement where deleted = 0 AND crm_hcp_information_id = $hcp_information_ID");
+$topic = GetXFromYID("select  topic from crm_hcp_agreement where deleted = 0 AND crm_hcp_information_id = $hcp_information_ID");
+$venue = GetXFromYID("select  venue from crm_hcp_agreement where deleted = 0 AND crm_hcp_information_id = $hcp_information_ID");
+$meeting_date = GetXFromYID("select  meeting_date from crm_hcp_agreement where deleted = 0 AND crm_hcp_information_id = $hcp_information_ID");
 
-$READ_MODE='A';
-$is_agreement_submitted=GetXFromYID("select count(*)  from crm_hcp_agreement where deleted = 0 AND crm_hcp_information_id = $hcp_information_ID");
-if ($is_agreement_submitted>0) {
-    $READ_MODE='E';
+$READ_MODE = 'A';
+$is_agreement_submitted = GetXFromYID("select count(*)  from crm_hcp_agreement where deleted = 0 AND crm_hcp_information_id = $hcp_information_ID");
+if ($is_agreement_submitted > 0) {
+    $READ_MODE = 'E';
 }
 
 
@@ -140,53 +140,55 @@ $hidemsg = "Aggreement Link has been shared with the Doctor Through SMS";
 
 $naf_activity_name = GetXFromYID("select naf_activity_name from crm_naf_main where id=" . $rid . " and deleted=0 ");
 
-$HCP_NAF_DETAILS=GetDataFromID('crm_naf_hcp_details','naf_main_id',$rid,"");
-$hcp_id=$HCP_NAF_DETAILS[0]->hcp_id;
-$hcp_name=GetXFromYID("SELECT CONCAT(firstname, ' ', lastname) AS full_name FROM contactmaster where  id='$hcp_id' ");
-$hcp_address=$HCP_NAF_DETAILS[0]->hcp_address;
+$HCP_NAF_DETAILS = GetDataFromID('crm_naf_hcp_details', 'naf_main_id', $rid, "");
+$hcp_id = $HCP_NAF_DETAILS[0]->hcp_id;
+$hcp_name = GetXFromYID("SELECT CONCAT(firstname, ' ', lastname) AS full_name FROM contactmaster where  id='$hcp_id' ");
+$hcp_address = $HCP_NAF_DETAILS[0]->hcp_address;
 // $sql_res=$adb->query($sql);
 // $naf_activity_name=$adb->query_result($sql_res,0,'naf_activity_name');
 function AmountInWords($number)
 {
-   $no = floor($number);
-   $point = round($number - $no, 2) * 100;
-   $hundred = null;
-   $digits_1 = strlen($no);
-   $i = 0;
-   $str = array();
-   $words = array('0' => '', '1' => 'one', '2' => 'two',
-    '3' => 'three', '4' => 'four', '5' => 'five', '6' => 'six',
-    '7' => 'seven', '8' => 'eight', '9' => 'nine',
-    '10' => 'ten', '11' => 'eleven', '12' => 'twelve',
-    '13' => 'thirteen', '14' => 'fourteen',
-    '15' => 'fifteen', '16' => 'sixteen', '17' => 'seventeen',
-    '18' => 'eighteen', '19' =>'nineteen', '20' => 'twenty',
-    '30' => 'thirty', '40' => 'forty', '50' => 'fifty',
-    '60' => 'sixty', '70' => 'seventy',
-    '80' => 'eighty', '90' => 'ninety');
-   $digits = array('', 'hundred', 'thousand', 'lakh', 'crore');
-   while ($i < $digits_1) {
-     $divider = ($i == 2) ? 10 : 100;
-     $number = floor($no % $divider);
-     $no = floor($no / $divider);
-     $i += ($divider == 10) ? 1 : 2;
-     if ($number) {
-        $plural = (($counter = count($str)) && $number > 9) ? 's' : null;
-        $hundred = ($counter == 1 && $str[0]) ? ' and ' : null;
-        $str [] = ($number < 21) ? $words[$number] .
-            " " . $digits[$counter] . $plural . " " . $hundred
-            :
-            $words[floor($number / 10) * 10]
-            . " " . $words[$number % 10] . " "
-            . $digits[$counter] . $plural . " " . $hundred;
-     } else $str[] = null;
-  }
-  $str = array_reverse($str);
-  $result = implode('', $str);
-  return $result ;
+    $no = floor($number);
+    $point = round($number - $no, 2) * 100;
+    $hundred = null;
+    $digits_1 = strlen($no);
+    $i = 0;
+    $str = array();
+    $words = array(
+        '0' => '', '1' => 'one', '2' => 'two',
+        '3' => 'three', '4' => 'four', '5' => 'five', '6' => 'six',
+        '7' => 'seven', '8' => 'eight', '9' => 'nine',
+        '10' => 'ten', '11' => 'eleven', '12' => 'twelve',
+        '13' => 'thirteen', '14' => 'fourteen',
+        '15' => 'fifteen', '16' => 'sixteen', '17' => 'seventeen',
+        '18' => 'eighteen', '19' => 'nineteen', '20' => 'twenty',
+        '30' => 'thirty', '40' => 'forty', '50' => 'fifty',
+        '60' => 'sixty', '70' => 'seventy',
+        '80' => 'eighty', '90' => 'ninety'
+    );
+    $digits = array('', 'hundred', 'thousand', 'lakh', 'crore');
+    while ($i < $digits_1) {
+        $divider = ($i == 2) ? 10 : 100;
+        $number = floor($no % $divider);
+        $no = floor($no / $divider);
+        $i += ($divider == 10) ? 1 : 2;
+        if ($number) {
+            $plural = (($counter = count($str)) && $number > 9) ? 's' : null;
+            $hundred = ($counter == 1 && $str[0]) ? ' and ' : null;
+            $str[] = ($number < 21) ? $words[$number] .
+                " " . $digits[$counter] . $plural . " " . $hundred
+                :
+                $words[floor($number / 10) * 10]
+                . " " . $words[$number % 10] . " "
+                . $digits[$counter] . $plural . " " . $hundred;
+        } else $str[] = null;
+    }
+    $str = array_reverse($str);
+    $result = implode('', $str);
+    return $result;
 }
 
-$get_amount= AmountInWords($Honorium);
+$get_amount = AmountInWords($Honorium);
 ?>
 <!doctype html>
 <html lang="en">
@@ -395,7 +397,7 @@ $get_amount= AmountInWords($Honorium);
                                     <ul class="agg-text">
 
                                         This <b>DISEASE AWARENESS / DIAGNOSTIC CAMP AGREEMENT (‘Agreement’)</b>shall become
-                                        effective as on the date of last signature of the parties <b><?php echo FormatDate(TODAY, 'H'); ?></b> by and between:<?php echo date('Y-m-d', strtotime(date('Y-m-d'). ' + 90 days')); ?>
+                                        effective as on the date of last signature of the parties <b><?php echo FormatDate(TODAY, 'H'); ?></b> by and between:<?php echo date('Y-m-d', strtotime(date('Y-m-d') . ' + 90 days')); ?>
                                         <br><br>
                                         <b>Micro Labs Limited</b>, a company existing under the laws of India, having its registered office at 31,
                                         Race Course Road, Bangalore - 560 001 (hereinafter referred to as <b>‘Company’</b> and/or <b>‘Micro labs’</b>)
@@ -411,11 +413,11 @@ $get_amount= AmountInWords($Honorium);
                                         The purpose of this written agreement is to sign off further to an oral agreement between the Parties – for the Recipient-HCP to support in organizing/conducting a Micro Labs initiated awareness, counselling and/or diagnostic camp (hereinafter referred to as <b>‘camp’</b>), as titled hereinunder:
                                         <br>
                                         <br>
-                                        <b>TITLE OF THE CAMP: <input type="text" name="title" value="<?php echo $topic;?>" id="title" style="border: none;border-bottom: 1px solid lightgrey;"> </b><br><br>
-                                        <b>DATE: <input type="date" name="mdate" id="mdate" value="<?php echo $meeting_date;?>" style="border: none;border-bottom: 1px solid lightgrey;"></b><br><br>
-                                        <b>VENUE: <input type="text" name="venue" id="venue" value="<?php echo $venue;?>" style="border: none;border-bottom: 1px solid lightgrey;"></b><br>
+                                        <b>TITLE OF THE CAMP: <input type="text" name="title" value="<?php echo $topic; ?>" id="title" style="border: none;border-bottom: 1px solid lightgrey;"> </b><br><br>
+                                        <b>DATE: <input type="date" name="mdate" id="mdate" value="<?php echo $meeting_date; ?>" style="border: none;border-bottom: 1px solid lightgrey;"></b><br><br>
+                                        <b>VENUE: <input type="text" name="venue" id="venue" value="<?php echo $venue; ?>" style="border: none;border-bottom: 1px solid lightgrey;"></b><br>
                                         <br>
-                                        As compensation of the Recipient-HCP’s time and efforts devoted in conducting the above-mentioned camp and/or sharing his/her advice with patients in the above-mentioned camp, the Parties have mutually agreed to an amount of INR <b><?php echo $Honorium;?></b>(Rupees <b><?php echo $get_amount;?></b>).
+                                        As compensation of the Recipient-HCP’s time and efforts devoted in conducting the above-mentioned camp and/or sharing his/her advice with patients in the above-mentioned camp, the Parties have mutually agreed to an amount of INR <b><?php echo $Honorium; ?></b>(Rupees <b><?php echo $get_amount; ?></b>).
                                         <br><br>
                                         <b>MUTUAL INTEREST OF THE PARTIES</b>: This Camp is of mutual interest to the parties because it:<br>
                                         • creates awareness to general public or provide counsel on various disease, treatment options, mental/physical wellbeing, dietary, etc. and/or <br>
@@ -444,7 +446,7 @@ $get_amount= AmountInWords($Honorium);
 
                                         • <b>Personal Data:</b> Recipient-HCP shall ensure there is no transfer of patient’s personal identifiable information such as name, contact number or email address, etc. to Micro Labs.<br><br>
 
-                                        • <b>Term & Termination</b> - This Agreement shall be effective until <b><?php echo date('d-m-Y', strtotime($sign_date. ' + 90 days')); ?></b> and can be terminated by either Party by giving a prior written notice of one (1) week to the other Party.<br><br>
+                                        • <b>Term & Termination</b> - This Agreement shall be effective until <b><?php echo date('d-m-Y', strtotime($sign_date . ' + 90 days')); ?></b> and can be terminated by either Party by giving a prior written notice of one (1) week to the other Party.<br><br>
 
                                         • <b>Representations and Warranties</b> - The Recipient-HCP hereby confirms that (a) the services provided by the him/her, and the compensation received by him/her under this Agreement follow the requirements of the Recipient-HCP’s employer or any Central or State government health care authority/body and (b) the performance of the Recipient-HCP’s obligation under this Agreement does not conflict with the performance of his/her other obligations under any other agreement.<br><br>
 
@@ -504,7 +506,7 @@ $get_amount= AmountInWords($Honorium);
                             <div class="row mlm-150">
                                 <div class="col-6">
 
-                                    <span>Signed and Delivered by <b><?php echo $hcp_name;?></b>, the within named Party of the Second Part.
+                                    <span>Signed and Delivered by <b><?php echo $hcp_name; ?></b>, the within named Party of the Second Part.
                                         Part.<br>
                                         <b>DATE:</b><?php echo $sign_date; ?>
 
@@ -549,7 +551,7 @@ $get_amount= AmountInWords($Honorium);
 
                 <div class="section full mt-2">
                     <div class="wide-block pt-2 pb-2">
-                        <form action="save_agreement_camp.php" method="post">
+                        <form action="save_agreement_camp.php" id="aggrement_form" method="post" onsubmit="return Form_validate();">
                             <input type="hidden" name="crm_hcp_information_id" value="<?php echo $hcp_information_ID; ?>">
                             <input type="hidden" name="rid" id="rid" value="<?php echo $rid; ?>">
                             <input type="hidden" name="prid" id="prid" value="<?php echo $prid; ?>">
@@ -569,9 +571,9 @@ $get_amount= AmountInWords($Honorium);
 								</div> -->
                                 <div class="col">
                                     <?php
-                                    if ($READ_MODE!='E') { ?>
+                                    if ($READ_MODE != 'E') { ?>
                                         <button type="submit" id="submitbutton" class="exampleBox btn btn-primary rounded me-1" onclick="validate();">Submit</button>
-                                 <?php   }
+                                    <?php   }
 
                                     ?>
                                 </div>
@@ -640,9 +642,9 @@ $get_amount= AmountInWords($Honorium);
             })
 
             function validate() {
-                var title=$('#title').val();
-                var mdate=$('#mdate').val();
-                var venue=$('#venue').val();
+                var title = $('#title').val();
+                var mdate = $('#mdate').val();
+                var venue = $('#venue').val();
                 var canvas = document.getElementById("signature-pad");
                 var data1 = canvas.toDataURL('image/png');
                 document.getElementById('signature1').value = data1;
@@ -774,6 +776,50 @@ $get_amount= AmountInWords($Honorium);
                 console.log("hello ooo");
                 //$("#btnsubmit").val('Submit');
                 //return true;
+            }
+
+            function Form_validate() {
+                var ret_val = true;
+                var title = $('#title');
+                var mdate = $('#mdate');
+                var venue = $('#venue');
+
+                if ($.trim(title.val()) == '') {
+                    alert('Please enter the title');
+                    return false;
+                    ret_val = false;
+                }
+
+                if (!(mdate.val())) {
+                    alert('Please pick the date');
+                    return false;
+                    ret_val = false;
+                }
+
+                if ($.trim(venue.val()) == '') {
+                    alert('Please enter the venue');
+                    return false;
+                    ret_val = false;
+                }
+
+
+                if (signaturePad.isEmpty()) {
+                    alert("Please provide a signature first.");
+                    return false;
+                    ret_val = false;
+                }
+
+                if (signaturePad1.isEmpty()) {
+                    alert("Please provide a signature first.");
+                    return false;
+                    ret_val = false;
+                }
+
+
+
+
+
+                return ret_val;
             }
         </script>
 

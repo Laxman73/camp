@@ -33,11 +33,19 @@ if ($mode == 'A') {
     //crm_naf_main update status
     $stmt = $pdo->prepare("update crm_naf_main set level=?,authorise=?,remarks=?,pendingwithid=? where id=? ");
     $stmt->execute(array($New_level, $STATUS, 'approve', $PENDING_WITH_ID, $rid));
+     //upadate log of crm_naf_approvereject
+     $stmt=$pdo->prepare("insert into crm_naf_approvereject (id,pma_request_id,userid,pendingwithid,authorise,level,remark,submitted_on,deleted) values(?,?,?,?,?,?,?,?,?) ");
+     $ID=NextID('id','crm_naf_approvereject');
+     $stmt->execute(array($ID,$rid,$USER_ID,$PENDING_WITH_ID,$STATUS,$New_level,'approve',NOW,0));
 
 } elseif ($mode == 'R') {
     //crm_naf_main update status
     $stmt = $pdo->prepare("update crm_naf_main set level=?,authorise=?,remarks=?,pendingwithid=? where id=? ");
     $stmt->execute(array($New_level, $STATUS, 'approve', $PENDING_WITH_ID, $rid));
+    //upadate log of crm_naf_approvereject
+   $stmt=$pdo->prepare("insert into crm_naf_approvereject (id,pma_request_id,userid,pendingwithid,authorise,level,remark,submitted_on,deleted) values(?,?,?,?,?,?,?,?,?) ");
+   $ID=NextID('id','crm_naf_approvereject');
+   $stmt->execute(array($ID,$rid,$USER_ID,0,4,$New_level,'reject',NOW,0));  
 }
 
 

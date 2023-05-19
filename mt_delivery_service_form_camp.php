@@ -27,20 +27,26 @@ $employee_name = GetXFromYID("select concat(first_name,' ',last_name) from users
 
 
 $readonly = $disabled = '';
-$employee_id = $type_of_activity = $comment = $mode = $vendor_services = $vendor_name = $vendor_description = $actual_vendor_cost = $naf_travel_flight_cost = $naf_insurance_cost = $naf_flight_cost = $naf_travel_cab_cost = $naf_visa_cost = $naf_stay_hotel_cost = $naf_audio_visual_cost =$activity_name= $naf_meal_snack_cost = $naf_banners_pamphlets_cost = $naf_other_additonal_cost = $MODE = '';
+$employee_id = $type_of_activity = $comment = $mode = $vendor_services = $vendor_name = $vendor_description = $actual_vendor_cost = $naf_travel_flight_cost = $naf_insurance_cost = $naf_flight_cost = $naf_travel_cab_cost = $naf_visa_cost = $naf_stay_hotel_cost = $naf_audio_visual_cost = $activity_name = $naf_meal_snack_cost = $naf_banners_pamphlets_cost = $naf_other_additonal_cost = $MODE = '';
 $PARENT_ID_NAF = GetXFromYID("select naf_no from crm_naf_main where id='$rid' and deleted=0 ");
-$PARENT_ID = GetXFromYID("select id from crm_naf_main where parent_id='$PARENT_ID_NAF' and deleted=0 ");
-$Delivery_form_count = GetXFromYID("select count(*) from crm_naf_delivery_form where crm_naf_main_id='$PARENT_ID' and deleted=0 ");
+$PARENT_ID = GetXFromYID("select id from crm_naf_main where parent_id='$PARENT_ID_NAF' and deleted=0  order by id DESC limit 1");
 
 
 
+$post_commmnet_submitted = GetXFromYID("select post_comment from crm_naf_main where id='$rid' and deleted=0 ");
+$post_commmnet_submitted = db_input2($post_commmnet_submitted);
 
-if ($Delivery_form_count > 0) {
+$hcp_tabs='index_naf_camp.php';
+
+
+if (!empty($post_commmnet_submitted)) {
 	$MODE = 'R';
 	$readonly = 'readonly';
 	$disabled = 'disabled';
 } else {
 	$MODE = 'A';
+	$activity_name = GetXFromYID("select naf_activity_name from crm_naf_main where id='$rid' and deleted=0 ");
+
 }
 if ($MODE == 'R' || $MODE == 'E') {
 	$DELIVERY_FORM_DATA = GetDataFromID('crm_naf_delivery_form', 'crm_naf_main_id', $PARENT_ID, "and deleted=0 ");
@@ -87,18 +93,18 @@ if ($MODE == 'A') {
 
 
 $naf_no = GetXFromYID("select naf_no from crm_naf_main where id='$rid'");
-$NAF_IDS = GetXArrFromYID(" select id from crm_naf_main where parent_id='QCAMDTF0162'");
+$NAF_IDS = GetXArrFromYID(" select id from crm_naf_main where parent_id='$naf_no' ");
 $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(honorarium_amount) from crm_naf_hcp_details  where naf_main_id in (" . implode(", ", $NAF_IDS) . ") ");
 $pending_with_id = GetXFromYID("select pendingwithid from crm_naf_main where id='$rid' and deleted=0 ");
 
-$NAF_ARRAY=GetXArrFromYID("select  t2.id
+$NAF_ARRAY = GetXArrFromYID("select  t2.id
 from crm_naf_main t1 inner join crm_naf_main t2 on t1.naf_no=t2.parent_id 
 where t1.id='$rid' and t1.deleted=0");
 
 $HCP_DATA = GetDataFromID('crm_naf_hcp_details', 'naf_main_id', $rid, "and deleted=0 ");
 
-$_q="select * from crm_naf_hcp_details where naf_main_id in (".implode(",", $NAF_ARRAY).") and deleted=0 ";
-$_r=sql_query($_q,"");
+$_q = "select * from crm_naf_hcp_details where naf_main_id in (" . implode(",", $NAF_ARRAY) . ") and deleted=0 ";
+$_r = sql_query($_q, "");
 
 //echo $MODE;
 
@@ -165,7 +171,7 @@ $_r=sql_query($_q,"");
         </div>-->
 
 
-	<?php include '_tabscamp.php'; ?>
+	<?php include '_tabscamp2.php'; ?>
 
 	<div id="appCapsule">
 
@@ -216,7 +222,7 @@ $_r=sql_query($_q,"");
 												foreach ($ACTIVITY_ARR as $key => $value) {
 													//echo $value[$key]['iModID'];
 													$selected =    ($type_of_activity == $key) ? 'selected' : '';
-													echo '<option value="' . $key . '" '.$selected.' >' . $value . '</option>';
+													echo '<option value="' . $key . '" ' . $selected . ' >' . $value . '</option>';
 												}
 												?>
 											</select>
@@ -530,18 +536,18 @@ $_r=sql_query($_q,"");
 						<div class="row">
 							<!-- <div class="col"><button type="button" class="exampleBox btn btn-primary rounded me-1">Save</button>
 						</div> -->
-						<button type="button" class="btn btn-primary rounded me-1 " onclick="showAllHCP()"><b>View all HCP</b></button>
+							<button type="button" class="btn btn-primary rounded me-1 " onclick="showAllHCP()"><b>View all HCP</b></button>
 
-						<?php
+							<?php
 
-if ($MODE != 'R') { ?>
-	<div class="col-4">
-		<button type="submit" class="exampleBox btn btn-primary rounded me-1">Submit</button>
-	</div>
-							
-					<?php	}
+							if ($MODE != 'R') { ?>
+								<div class="col-4">
+									<button type="submit" class="exampleBox btn btn-primary rounded me-1">Submit</button>
+								</div>
 
-						?>
+							<?php	}
+
+							?>
 
 
 
@@ -588,7 +594,7 @@ if ($MODE != 'R') { ?>
 							<tbody id="append_data">
 								<?php
 								if (sql_num_rows($_r)) {
-									for ($i = 0; $o=sql_fetch_object($_r); $i++) {
+									for ($i = 0; $o = sql_fetch_object($_r); $i++) {
 										$k = $i + 1;
 										$hcp_id = $o->hcp_id;
 										$masterid = GetXFromYID("select masterid from contactdetails where contactid='$hcp_id' ");
@@ -599,15 +605,18 @@ if ($MODE != 'R') { ?>
 										$hcp_associated_hospital_id = $o->hcp_associated_hospital_id;
 										$govt_type = $o->govt_type;
 										$yr_of_experience = $o->yr_of_experience;
+										$naf_main_id=$o->naf_main_id;
+										$naf_request_main_id=GetXFromYID("SELECT t2.id FROM crm_naf_main t1 INNER JOIN crm_request_main t2 ON t2.naf_no = t1.naf_no where t1.id=$naf_main_id ");
 										$role_of_hcp = $o->role_of_hcp;
 										$honorarium_amount = $o->honorarium_amount;
 										$mobile = $o->mobile;
+										$url = $hcp_tabs . "?rid=$naf_main_id&userid=$USER_ID&pid=$naf_request_main_id&display_all=1";
 								?>
 										<tr>
 											<td></td>
 											<td><?php echo $k; ?></td>
 											<td><?php echo $masterid; ?></td>
-											<td><?php echo $hcp_name; ?></td>
+											<td><a href="<?php echo $url;?>" target="_blank" rel="noopener noreferrer"><?php echo $hcp_name; ?></a></td>
 											<td><?php echo $hcp_address; ?></td>
 											<td><?php echo $honorarium_amount; ?></td>
 											<td><?php echo $role_of_hcp; ?></td>

@@ -88,7 +88,7 @@ list($city,$pincode)=sql_fetch_row($_c_r);
 
 
 
-$_q="select document_type_id,file_path from crm_naf_document_upload where crm_request_main_id='$pid' ";
+$_q="select document_type_id,file_path from crm_naf_document_upload where crm_request_main_id='$pid' and deleted=0 ";
 $_R=sql_query($_q,'');
 $ATTACHMENT_ARR=array();
 if (sql_num_rows($_R)) {
@@ -108,7 +108,7 @@ if ($sDate != '') {
 	$sDate = date('d M Y');
 }
 
-$hcp_information=GetDataFromID('crm_hcp_information','crm_request_main_id',$pid);
+$hcp_information=GetDataFromID('crm_hcp_information','crm_request_main_id',$pid," and deleted=0");
 $hcp_info_id=$hcp_information[0]->id;
 $hcp_agrrement_data=GetDataFromID('crm_hcp_agreement','crm_hcp_information_id',$hcp_info_id);
 $hcp_SIGN=$hcp_agrrement_data[0]->hcp_sign;

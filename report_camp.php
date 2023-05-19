@@ -127,13 +127,13 @@ if ($is_report_submitted > 0) {
 	$mode = 'A';
 }
 
-$sign_edit = $sign_display =$sign_date= $hcp_sign =$otp_verify_div=$registration_number= '';
+$sign_edit = $sign_display = $sign_date = $hcp_sign = $otp_verify_div = $registration_number = '';
 
 if ($mode == 'A') {
-	$otp_verify_div='display:block';
-	$sign_display= 'display:none';
+	$otp_verify_div = 'display:block';
+	$sign_display = 'display:none';
 	$readonly = '';
-	$sign_date=TODAY;
+	$sign_date = TODAY;
 	$objective = '';
 	$camp_duration = GetXFromYID("select proposed_camp_duration from crm_request_camp_letter where crm_request_main_id='$pid' ");
 	$type_of_diagnostic = '';
@@ -142,14 +142,14 @@ if ($mode == 'A') {
 	$camp_organised = '';
 	$camp_received = '';
 	$remarks = '';
-	$registration_number=GetXFromYID("select registration_no from contactmaster where id='$hcp_id' ");
+	$registration_number = GetXFromYID("select registration_no from contactmaster where id='$doctors_ID' ");
 } elseif ($mode == 'E') {
-	$otp_verify_div='display:none';
-	$sign_edit= 'display:none';
+	$otp_verify_div = 'display:none';
+	$sign_edit = 'display:none';
 	$DATA = GetDataFromID('crm_naf_camp_report', 'crm_request_id', $pid);
 	//DFA($DATA);
-	$hcp_sign=GetXFromYID("select e_sign_doctor from crm_request_main where id='$pid' ");
-	$sign_date=GetXFromYID("select e_sign_cheque_date from crm_request_main where id='$pid' ");
+	$hcp_sign = GetXFromYID("select e_sign_doctor from crm_request_main where id='$pid' ");
+	$sign_date = GetXFromYID("select e_sign_cheque_date from crm_request_main where id='$pid' ");
 	$readonly = 'readonly';
 	$objective = db_output2($DATA[0]->objective);
 	$camp_duration = db_output2($DATA[0]->camp_duration);
@@ -157,7 +157,7 @@ if ($mode == 'A') {
 	$diagnostic_charges = db_output2($DATA[0]->diagnostic_charges);
 	$total_no_ind = db_output2($DATA[0]->total_no_ind);
 	$camp_organised = db_output2($DATA[0]->camp_organised);
-	$registration_number=db_output2($DATA[0]->hcp_reg_no);
+	$registration_number = db_output2($DATA[0]->hcp_reg_no);
 	$camp_received = db_output2($DATA[0]->camp_received);
 	$remarks = db_output2($DATA[0]->remarks);
 	$hcp_sign = GetXFromYID("select e_sign_doctor from crm_request_main where id='$pid' and deleted=0 ");
@@ -166,14 +166,14 @@ if ($mode == 'A') {
 $CHECKBOXES = array('1' => 'Excellent', '2' => 'Good', '3' => 'Average', '4' => 'Poor');
 
 
-$HCP_NAF_DETAILS=GetDataFromID('crm_naf_hcp_details','naf_main_id',$rid,"");
-$hcp_id=$HCP_NAF_DETAILS[0]->hcp_id;
-$hcp_name=GetXFromYID("SELECT CONCAT(firstname, ' ', lastname) AS full_name FROM contactmaster where  id='$hcp_id' ");
-$hcp_address=$HCP_NAF_DETAILS[0]->hcp_address;
-$hcp_associated_hospital_id=$HCP_NAF_DETAILS[0]->hcp_associated_hospital_id;
-$crm_naf_hcp_details_id=$HCP_NAF_DETAILS[0]->id;
-$collaboration_with_diag=GetXFromYID("select diagnostic_lab from crm_naf_camp_letter where crm_naf_hcp_details_id='$crm_naf_hcp_details_id' ");
-$medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where naf_field_id=24 and naf_request_id='$rid' ");
+$HCP_NAF_DETAILS = GetDataFromID('crm_naf_hcp_details', 'naf_main_id', $rid, "");
+$hcp_id = $HCP_NAF_DETAILS[0]->hcp_id;
+$hcp_name = GetXFromYID("SELECT CONCAT(firstname, ' ', lastname) AS full_name FROM contactmaster where  id='$hcp_id' ");
+$hcp_address = $HCP_NAF_DETAILS[0]->hcp_address;
+$hcp_associated_hospital_id = $HCP_NAF_DETAILS[0]->hcp_associated_hospital_id;
+$crm_naf_hcp_details_id = $HCP_NAF_DETAILS[0]->id;
+$collaboration_with_diag = GetXFromYID("select diagnostic_lab from crm_naf_camp_letter where crm_naf_hcp_details_id='$crm_naf_hcp_details_id' ");
+$medical_cost = GetXFromYID("select naf_expense from crm_naf_cost_details where naf_field_id=24 and naf_request_id='$rid' ");
 
 ?>
 <!doctype html>
@@ -291,7 +291,7 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 
 	<div id="appCapsule">
 
-		<form action="save_camp_report.php"  method="post" id="camp_report_form">
+		<form action="save_camp_report.php" method="post" id="camp_report_form">
 			<input type="hidden" name="userid" value="<?php echo $USER_ID; ?>">
 			<input type="hidden" name="pid" value="<?php echo $pid; ?>">
 			<input type="hidden" name="rid" id="rid" value="<?php echo $rid; ?>">
@@ -310,16 +310,16 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 
 							<div class="wide-block pt-2 pb-2">
 
-							
 
-								<?php if ($mode=='E') { ?>
-									<a href="pdf_camp.php?rid=<?php echo $rid;?>&pid=<?php echo $pid;?>" class="btn btn-success" target="_blank" rel="noopener noreferrer" style="float: right;"> view Pdf</a>
+
+								<?php if ($mode == 'E') { ?>
+									<a href="pdf_camp.php?rid=<?php echo $rid; ?>&pid=<?php echo $pid; ?>" class="btn btn-success" target="_blank" rel="noopener noreferrer" style="float: right;"> view Pdf</a>
 									<br><br>
 
-									
-							<?php	}  ?>
 
-							
+								<?php	}  ?>
+
+
 
 
 
@@ -500,7 +500,7 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 									</div>
 
 									<div class="col-9">
-										<div class="input-wrapper"><input type="text" value="<?php echo $registration_number;?>" name="registration_number" class="form-control" id="registration_number"></div>
+										<div class="input-wrapper"><input type="text" value="<?php echo $registration_number; ?>" name="registration_number" class="form-control" id="registration_number" required> </div>
 									</div>
 
 								</div>
@@ -515,7 +515,7 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 									</div>
 
 									<div class="col-9">
-										<div class="input-wrapper"><input type="text" value="<?php echo $hcp_associated_hospital_id;?>" class="form-control" id="hospital_name" name="hospital_name"></div>
+										<div class="input-wrapper"><input type="text" value="<?php echo $hcp_associated_hospital_id; ?>" class="form-control" id="hospital_name" name="hospital_name" required></div>
 									</div>
 
 								</div>
@@ -543,7 +543,7 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 									</div>
 
 									<div class="col-9">
-										<div class="input-wrapper"><input type="text" class="form-control" id="collab" value="<?php echo $collaboration_with_diag;?>" name="collab" ></div>
+										<div class="input-wrapper"><input type="text" class="form-control" id="collab" value="<?php echo $collaboration_with_diag; ?>" name="collab" required></div>
 									</div>
 
 								</div>
@@ -559,7 +559,7 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 									</div>
 
 									<div class="col-9">
-										<div class="input-wrapper"><input type="number" value="<?php echo $diagnostic_charges; ?>" class="form-control" id="diagnostic_charges" name="diagnostic_charges" required></div>
+										<div class="input-wrapper"><input type="number" value="<?php echo $diagnostic_charges; ?>" class="form-control" id="diagnostic_charges" name="diagnostic_charges" ></div>
 									</div>
 
 								</div>
@@ -574,7 +574,7 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 									</div>
 
 									<div class="col-9">
-										<div class="input-wrapper"><input type="number" class="form-control" id="medical_equipment_cost" name="medical_equipment_cost" value="<?php echo $medical_cost;?>" ></div>
+										<div class="input-wrapper"><input type="number" class="form-control" id="medical_equipment_cost" name="medical_equipment_cost" value="<?php echo $medical_cost; ?>" required></div>
 									</div>
 
 								</div>
@@ -629,7 +629,7 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 									# code...
 									//echo '<div class="custom-control custom-radio mb-1">';
 									$checked = ($camp_organised == $key) ? 'checked' : '';
-									echo '<input type="radio" class="" name="camp_organised" value="' . $key . '" ' . $checked . '> ' . $value . '<br>';
+									echo '<input type="radio" class=""  name="camp_organised" value="' . $key . '" ' . $checked . '> ' . $value . '<br>';
 								}
 
 
@@ -696,7 +696,7 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 								<div class="form-group basic">
 									<div class="input-wrapper">
 										<label class="label" for="">HCP Comments/Suggestions (to be completed by HCP)</label>
-										<textarea id="remarks" name="remarks" rows="3" class="form-control"><?php echo $remarks; ?></textarea>
+										<textarea id="remarks" name="remarks" rows="3" class="form-control" required><?php echo $remarks; ?></textarea>
 									</div>
 								</div>
 
@@ -717,7 +717,7 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 					<div class="col-6">
 
 						SIGNED AND DELIVERED by <b></b>, acting
-						through its Authorised Signatory, Mr. <b><?php echo $hcp_name;?></b>, the within
+						through its Authorised Signatory, Mr. <b><?php echo $hcp_name; ?></b>, the within
 						named Party of the First Part.<br>
 						<b>DATE:<?php echo $sign_date; ?></b>
 
@@ -739,7 +739,7 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 
 							<div class="custom-signature-upload" style="<?php echo $sign_display; ?>">
 								<div class="wrapper1">
-									<img src="<?php echo $hcp_sign;?>" width="95%" height="95%" alt="Italian Trulli">
+									<img src="<?php echo $hcp_sign; ?>" width="95%" height="95%" alt="Italian Trulli">
 								</div>
 							</div>
 
@@ -747,27 +747,27 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 					</div>
 				</div>
 
-				<div style="<?php echo $otp_verify_div;?>">
+				<div style="<?php echo $otp_verify_div; ?>">
 
 					<div class="row mt-3" id="hideDiv" style="display:block;">
 						<input type="hidden" id="questionID" name="questionID" value="1">
 						<input type="hidden" name="user_name" id="user_name" value="<?php echo $user_name; ?>">
-	
+
 						<label for="otpmobilenumber" class="col-sm-3 col-form-label"><b>Verify Your Phone Number</b></label>
 						<div class="col-sm-3">
 							<input type="number" class="form-control" id="otpmobilenumber" name="otpmobilenumber" placeholder="" required="">
-	
+
 						</div>
 						<div class="col-sm-3">
 							<button type="button" class="btn btn-primary" onclick="createOTP()">Generate OTP</button>
 						</div>
 					</div>
-	
+
 					<div class="row mt-3" id="enterOtp_div" style="display:block;">
 						<label for="enter_otp" class="col-sm-3 col-form-label"><b>Enter OTP</b></label>
 						<div class="col-sm-3">
 							<input type="number" class="form-control" id="enter_otp" name="enter_otp" placeholder="" required="">
-	
+
 						</div>
 						<div class="col-sm-3">
 							<button type="button" class="btn btn-primary" onclick="validateOTP()">Confirm</button>
@@ -855,10 +855,34 @@ $medical_cost=GetXFromYID("select naf_expense from crm_naf_cost_details where na
 		}
 
 
-		$('#camp_report_form').submit(function(){
+		$('#camp_report_form').submit(function() {
+			var ret_val = true;
 			validate();
 
-			return true;
+			var camp_organised = $("input[name='camp_organised']:checked").val();
+			var camp_received = $("input[name='camp_received']:checked").val();
+
+			if (camp_organised === undefined) {
+				alert("Please select a camp_organised option.");
+				return false; // Stop further processing
+				ret_val = false;
+			}
+
+			if (camp_received === undefined) {
+				alert("Please select a camp_received option.");
+				return false; // Stop further processing
+				ret_val = false;
+			}
+
+			if (signaturePad.isEmpty()) {
+				alert("Please provide a signature first.");
+				return false;
+				ret_val=false;
+			}
+
+
+
+			return ret_val;
 		});
 
 

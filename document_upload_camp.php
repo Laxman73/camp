@@ -9,7 +9,7 @@ $display_all = (isset($_GET['display_all'])) ? $_GET['display_all'] : '0';
 
 
 //type id 7 for attendance sheet
-$READ_MODE='';
+$READ_MODE = '';
 
 //if(empty($USER_ID) || (!empty($USER_ID) && !is_numeric($USER_ID))|| $USER_ID!='2')
 if (empty($USER_ID) || (!empty($USER_ID) && !is_numeric($USER_ID))) {
@@ -176,10 +176,10 @@ if ($MODE == 'R' || $MODE == 'E') {
 						<div class="row">
 							<!-- <div class="col"><button type="button" class="exampleBox btn btn-primary rounded me-1">Save</button>
 								</div> -->
-							<?php if ( $READ_MODE!='E') { ?>
-							<div class="col">
-								<button type="submit" id="BtnSUBMIT" class="exampleBox btn btn-primary rounded me-1">Submit</button>
-							</div>
+							<?php if ($READ_MODE != 'E') { ?>
+								<div class="col">
+									<button type="submit" id="BtnSUBMIT" class="exampleBox btn btn-primary rounded me-1">Submit</button>
+								</div>
 							<?php } ?>
 							<!-- <div class="col">
 									<a href="#"><button type="button" class="exampleBox btn btn-primary rounded me-1">Cancel</button></a>
@@ -213,141 +213,34 @@ if ($MODE == 'R' || $MODE == 'E') {
 	<!-- Base Js File -->
 	<script src="assets/js/base.js"></script>
 	<script>
-		function ShowError(element, mesg) {
-			var spanID = element + "_span";
-
-			if ($(element).hasClass("is-invalid")) {
-
-			} else {
-				$(element).addClass("is-invalid");
-				$('<span id="' + spanID + '";" class="invalid-feedback em">' + mesg + '</span>').insertAfter(element);
-			}
-		}
-
-		function HideError(element) {
-			var elemID = $(element).attr('id');
-			var spanID = elemID + "_span";
-
-			$(element).removeClass("is-invalid");
-			$('#' + spanID).remove();
-		}
-
-
-
-
-
-
 		$('#DOC_FORM').submit(function() {
-			var ret = true;
-			console.log($('#pan').length);
-			if ($('#pan').length) {
-				var pan = $('#pan')[0].files;
-				if (pan.length > 0) {
-					if (pan[0].size > 3000000) {
-						alert('Pan Card size should be less than 3 MB');
-						ret = false;
-					}
 
-				} else {
-					alert('Please select the file');
-					ret = false;
+			var fileInput = $("#attendance_sheet")[0];
+			var file = fileInput.files[0];
+			console.log(file);
 
-				}
+			// Check if a file is selected
+			if (!file) {
+				alert("Please select a file.");
+				return false; // Stop further processing
 			}
 
-			if ($('#cancel_check').length) {
-				var cancel_check = $('#cancel_check')[0].files;
-				if (cancel_check.length > 0) {
-					if (cancel_check[0].size > 3000000) {
-						alert('Cancel check size should be less than 3 MB');
-						ret = false;
-					}
-
-				} else {
-					alert('Please select the file');
-					ret = false;
-
-				}
-
+			// Check file size
+			var fileSize = file.size / 1024 / 1024; // in MB
+			if (fileSize > 3) {
+				alert("File size exceeds the limit of 3MB.");
+				return false; // Stop further processing
 			}
 
-
-			if ($('#visiting_card').length) {
-				if ($('#visiting_card').length > 0) {
-					var visiting_card = $('#visiting_card')[0].files;
-					if (visiting_card[0].size > 3000000) {
-						alert('Visiting card size should be less than 3 MB');
-						ret = false;
-					}
-
-				} else {
-					alert('Please select the file');
-					ret = false;
-
-				}
+			// Check file type
+			var allowedTypes = ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/pdf"];
+			if (allowedTypes.indexOf(file.type) === -1) {
+				alert("Only Excel, Word, and PDF files are allowed.");
+				return false; // Stop further processing
 			}
 
-			// if ($('#visiting_card').length || $('#cancel_check').length || $('#pan').length ) {
+			//return false;
 
-			// }else{
-			// 	alert('Please upload the files before submitting');
-			// 	ret=false;
-			// }
-
-
-
-			// if (pan.length > 0 && cancel_check.length > 0 && visiting_card.length > 0) {
-			// 	if (pan[0].size > 3000000) {
-			// 		alert('Pan Card size should be less than 3 MB');
-			// 		ret = false;
-			// 	}
-			// 	if (cancel_check[0].size > 3000000) {
-			// 		alert('Cancel check size should be less than 3 MB');
-			// 		ret = false;
-			// 	}
-			// 	if (visiting_card[0].size > 3000000) {
-			// 		alert('Visiting card size should be less than 3 MB');
-			// 		ret = false;
-			// 	}
-			// } else {
-			// 	alert('Please select  all the  files ');
-			// 	ret = false;
-			// }
-
-			if (ret) {
-				//BtnSUBMIT
-				$('#BtnSUBMIT').prop('disabled', true); //disable button upload existing		
-			}
-
-
-			return ret;
-
-		});
-
-		$(document).ready(function() {
-			$(document).on('click', '.DeletePansrc', function() {
-				$('#pan_SRC').remove();
-				$(".PANDIV").empty();
-				$(".PANDIV").append(`<input type="file" id="pan" name="pan" accept=".png, .jpg, .jpeg" class="form-control">`);
-
-
-			});
-
-			$(document).on('click', '.DeleteCancelSrc', function() {
-				//$('#pan_SRC').remove();
-				$(".CANCEL_CHECKDIV").empty();
-				$(".CANCEL_CHECKDIV").append(`<input type="file" id="cancel_check" name="cancel_check" accept=".png, .jpg, .jpeg" class="form-control">`);
-
-
-			});
-
-			$(document).on('click', '.DeleteVisitingSrc', function() {
-				//$('#pan_SRC').remove();
-				$(".VISITING_CARD").empty();
-				$(".VISITING_CARD").append(`<input type="file" id="visiting_card" name="visiting_card" accept=".png, .jpg, .jpeg" class="form-control">`);
-
-
-			});
 		});
 	</script>
 

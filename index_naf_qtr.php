@@ -210,7 +210,7 @@ if ($mode == 'A') {
 
 
 
-	<?php include '_tabscamp.php'; ?>
+	<?php include '_tabscamp2.php'; ?>
 	<!--<div class="col-2">
                         <a href="#"><div class="tabBox">NAF Form</div></a>
                     </div>
@@ -234,7 +234,7 @@ if ($mode == 'A') {
 
 	<div id="appCapsule">
 
-		<form action="save_nafQtr.php" method="post">
+		<form action="save_nafQtr.php" method="post" id="naf_qtr_form">
 			<input type="hidden" name="userid" id="userid" value="<?php echo $USER_ID; ?>">
 			<div class="tab-content mt-1">
 
@@ -309,7 +309,7 @@ if ($mode == 'A') {
 								<div class="row">
 
 									<div class="col-3">
-										<b>Name of activity:</b>
+										<b>Name of Activity:<span style="color:#ff0000">*</span></b>
 									</div>
 
 									<div class="col-9">
@@ -327,43 +327,6 @@ if ($mode == 'A') {
 
 								<br>
 
-								<!-- <div class="row">
-
-								<div class="col-3">
-									<b>Please tick the appropriate box:</b>
-								</div>
-								<div class="col-9">
-									<div class="input-wrapper">
-
-
-										<div class="custom-control custom-radio mb-1">
-											<input type="radio" id="customRadio-1" name="customRadio1" class="custom-control-input">
-											<label class="custom-control-label" for="customRadio-1">Continuous Medical Education Program</label>
-										</div>
-										<div class="custom-control custom-radio mb-1">
-											<input type="radio" id="customRadio-2" name="customRadio1" class="custom-control-input">
-											<label class="custom-control-label" for="customRadio-2">Speakership Program</label>
-										</div>
-										<div class="custom-control custom-radio mb-1">
-											<input type="radio" id="customRadio-3" name="customRadio1" class="custom-control-input">
-											<label class="custom-control-label" for="customRadio-3">Consulting Services</label>
-										</div>
-										<div class="custom-control custom-radio mb-1">
-											<input type="radio" id="customRadio-4" name="customRadio1" class="custom-control-input">
-											<label class="custom-control-label" for="customRadio-4">Others, please specify</label>
-										</div>
-
-
-										<input type="text" class="form-control" id="" placeholder="" required="">
-
-
-									</div>
-								</div>
-
-							</div> -->
-
-
-								<br>
 
 
 								<div class="row">
@@ -726,6 +689,20 @@ if ($mode == 'A') {
 	<script src="assets/js/plugins/owl-carousel/owl.carousel.min.js"></script>
 	<!-- Base Js File -->
 	<script src="assets/js/base.js"></script>
+	<script>
+		$('#naf_qtr_form').submit(function(){
+			var ret_val=false;
+			
+			var targetspeciality=$('#targetedSpeciality');
+			if(($("select[name='targetedSpeciality[]'] option:selected").length)>0){
+				ret_val=true;
+			}else{
+				alert('Please select the specaility from the dropdown');
+			}
+			
+			return ret_val;
+		});
+	</script>
 
 
 </body>
