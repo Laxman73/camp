@@ -75,6 +75,13 @@ if ($is_agreement_submitted > 0) {
     $READ_MODE = 'E';
 }
 
+if ($READ_MODE=='A') {
+    $q="select naf_activity_name,date,naf_proposed_venue from crm_naf_main where id='$rid' ";
+    $r=sql_query($q,"ERRR.4545");
+    list($topic,$meeting_date,$venue)=sql_fetch_row($r);
+
+}
+
 
 if ($sign_date != '') {
     $sign_date = date('d M Y', strtotime($sign_date));

@@ -35,6 +35,9 @@ $ACTIVITY_ARR = GetXArrFromYID('SELECT id as id,`activityname`  as name FROM `cr
 
 $DATA = GetDataFromID('crm_naf_main', 'id', $rid);
 
+
+$hcp_mobile=GetXFromYID("select mobile from crm_naf_hcp_details where naf_main_id='$rid' and deleted=0 ");
+
 $requestorID = $DATA[0]->userid;
 $date = $DATA[0]->date;
 $submited_date = $DATA[0]->submitted_on;
@@ -755,7 +758,7 @@ $medical_cost = GetXFromYID("select naf_expense from crm_naf_cost_details where 
 
 						<label for="otpmobilenumber" class="col-sm-3 col-form-label"><b>Verify Your Phone Number</b></label>
 						<div class="col-sm-3">
-							<input type="number" class="form-control" id="otpmobilenumber" name="otpmobilenumber" placeholder="" required="">
+							<input type="number" value="<?php echo $hcp_mobile;?>" class="form-control" id="otpmobilenumber" name="otpmobilenumber" placeholder="" required="">
 
 						</div>
 						<div class="col-sm-3">
