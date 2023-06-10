@@ -354,7 +354,7 @@ $_r = sql_query($_q, "");
 											</select>
 										</div>
 										<br>
-										<input type="text" class="form-control" id="others" size="70" value="<?php echo $Other_textbox; ?>" placeholder="Enter product here " name="others" style="<?php echo  $display_other_textbox_style; ?>" <?php echo $readonly; ?>>
+										<input type="text" class="form-control" id="others" size="70" value="<?php echo $Other_textbox; ?>" placeholder="Enter product here " name="others" style="" <?php echo $readonly; ?>>
 									</div>
 								</div>
 
@@ -1450,6 +1450,8 @@ $_r = sql_query($_q, "");
 	<script src="assets/js/base.js"></script>
 
 	<script>
+
+
 		const dropdown = document.getElementById('dropdown');
 		const form = document.getElementById('form');
 
@@ -1470,8 +1472,10 @@ $_r = sql_query($_q, "");
 			//alert(x);
 			if (x == 0) {
 				document.getElementById("others").style.display = '';
+				$("#others").prop('required', true);
 			} else {
 				document.getElementById("others").style.display = 'none';
+				$("#others").prop('required', false);
 			}
 		}
 
@@ -1794,7 +1798,7 @@ $_r = sql_query($_q, "");
 			}
 
 			$('#selected_hcp').val(JSON.stringify(addeddocarray)); //store array
-			var value = $('#selected_hcp').val(); //retrieve arra
+			var value = $('#selected_hcp').val(); //retrieve array
 			value = JSON.parse(value);
 
 
@@ -1916,6 +1920,7 @@ $_r = sql_query($_q, "");
 		}
 
 		$(document).ready(function() {
+			chkothers();
 			var table = $('#example').DataTable({
 				rowReorder: {
 					selector: 'td:nth-child(2)'

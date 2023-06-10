@@ -578,6 +578,7 @@ $_r = sql_query($_q, "");
 									<th></th>
 									<th>Sr. No</th>
 									<th>HCP Universal ID</th>
+									<th>Event ID</th>
 									<th>Name of the HCP</th>
 									<th>Address(city)</th>
 									<th>Honrarium Amount</th>
@@ -606,6 +607,7 @@ $_r = sql_query($_q, "");
 										$govt_type = $o->govt_type;
 										$yr_of_experience = $o->yr_of_experience;
 										$naf_main_id=$o->naf_main_id;
+										$naf_no=GetXFromYID("select naf_no from crm_naf_main where id='$naf_main_id' and deleted=0 ");
 										$naf_request_main_id=GetXFromYID("SELECT t2.id FROM crm_naf_main t1 INNER JOIN crm_request_main t2 ON t2.naf_no = t1.naf_no where t1.id=$naf_main_id ");
 										$role_of_hcp = $o->role_of_hcp;
 										$honorarium_amount = $o->honorarium_amount;
@@ -616,6 +618,7 @@ $_r = sql_query($_q, "");
 											<td></td>
 											<td><?php echo $k; ?></td>
 											<td><?php echo $masterid; ?></td>
+											<td><?php echo $naf_no;?></td>
 											<td><a href="<?php echo $url;?>" target="_blank" rel="noopener noreferrer"><?php echo $hcp_name; ?></a></td>
 											<td><?php echo $hcp_address; ?></td>
 											<td><?php echo $honorarium_amount; ?></td>
