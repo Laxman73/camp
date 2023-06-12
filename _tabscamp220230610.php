@@ -185,7 +185,7 @@ if ($PROFILE_ID == 22) {
 			$raised_count = GetXFromYID("select count(t2.id) from crm_naf_main t1 inner join crm_naf_main t2 on t1.naf_no=t2.parent_id where t1.id='$rid' and t1.deleted=0");
 
 			if (($level == 4 && $Authorise != 4) || ($level > 3)) { // Darshan 20230608
-				if ($raised_count>0) { //chnages done on request if raised request is greater then zero then Final Dos will be able to submit
+				if ($activity_count == $raised_count) { //chnages done on request if raised request is greater then zero then Final Dos will be able to submit
 
 					array_push($user_tabs, 10);
 				}

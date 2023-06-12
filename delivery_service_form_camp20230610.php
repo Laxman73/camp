@@ -703,35 +703,23 @@ $HCP_DATA = GetDataFromID('crm_naf_hcp_details', 'naf_main_id', $rid, "and delet
 				<?php   }
 				?>
 
+				<div class=" pt-2 pb-2" style="width: 100%;justify-content: center;text-align: center;">
 
+
+					<?php
+					if (($MODE == 'A') && ($PROFILE_ID == 6 || $PROFILE_ID == 7)) { ?>
+
+						<button type="submit" class="btn btn-primary rounded me-1 "><b>Submit</b></button>
+					<?php	}
+					?>
+
+
+				</div>
 
 
 
 
 			</div>
-
-			<div class=" pt-2 pb-2" style="width: 100%;justify-content: center;text-align: center;">
-
-
-				<?php
-				if (($MODE == 'A') && ($PROFILE_ID == 6 || $PROFILE_ID == 7)) { ?>
-
-
-					<div class="row">
-						<div class="col">
-							<button type="submit" class="exampleBox btn btn-primary rounded me-1 "><b>Submit</b></button>
-						</div>
-						<div class="col">
-							<a href="index_PM.php?userid=<?php echo $USER_ID ?>"><button type="button" class="exampleBox btn btn-primary rounded me-1">Cancel</button></a>
-						</div>
-					</div>
-
-				<?php	}
-				?>
-
-
-			</div>
-
 
 		</form>
 
@@ -815,16 +803,6 @@ $HCP_DATA = GetDataFromID('crm_naf_hcp_details', 'naf_main_id', $rid, "and delet
 				</div>
 			</div>
 		</div>
-
-
-
-		<?php if ($readonly != '') { ?>
-			<div class="row">
-				<div class="col">
-					<a href="index_PM.php?userid=<?php echo $USER_ID ?>"><button type="button" class="exampleBox btn btn-primary rounded me-1">Cancel</button></a>
-				</div>
-			</div>
-		<?php } ?>
 
 	</div>
 

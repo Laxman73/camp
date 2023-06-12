@@ -97,6 +97,8 @@ $NAF_IDS = GetXArrFromYID(" select id from crm_naf_main where parent_id='$naf_no
 $TOTAL_HONORIUM_AMT = GetXFromYID("select sum(honorarium_amount) from crm_naf_hcp_details  where naf_main_id in (" . implode(", ", $NAF_IDS) . ") ");
 $pending_with_id = GetXFromYID("select pendingwithid from crm_naf_main where id='$rid' and deleted=0 ");
 
+$total_budget_amt=GetXFromYID("select budget_amount from crm_naf_main where id='$rid' and deleted=0 ");
+
 $NAF_ARRAY = GetXArrFromYID("select  t2.id
 from crm_naf_main t1 inner join crm_naf_main t2 on t1.naf_no=t2.parent_id 
 where t1.id='$rid' and t1.deleted=0");
@@ -464,7 +466,7 @@ $_r = sql_query($_q, "");
 
 										<div class="col-9">
 											<div class="input-wrapper">
-												<input type="number" class="form-control" value="<?php echo $TOTAL_HONORIUM_AMT; ?>" id="total_AMT" readonly>
+												<input type="number" class="form-control" value="<?php echo $total_budget_amt; ?>" id="total_AMT" readonly>
 											</div>
 										</div>
 
